@@ -1,0 +1,10 @@
+{
+    // Exclude files from the VS Code Explorer
+    "files.exclude": {
+        "node_modules": true,
+        "typings": true,
+        "app/*.js": true,
+        "app/*.js.map": true
+    },
+    "typescript.tsdk": "./node_modules/typescript/lib" // Necessary for IntelliSense
+}
