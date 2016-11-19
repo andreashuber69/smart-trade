@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import hashes = require('crypto-js');
 
 @Component({
     moduleId: module.id,
@@ -12,7 +13,8 @@ export class DashboardComponent {
     public apiSecret: string;
 
     public doIt(): void {
-
+        let result = hashes.HmacSHA1("Hello", "there");
+        console.log(result);
     }
 
     public constructor() {

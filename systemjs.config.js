@@ -18,12 +18,14 @@
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
 
             // other libraries
-            'rxjs': 'npm:rxjs'
+            'rxjs': 'npm:rxjs',
+            'crypto-js': 'npm:crypto-js'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
             app: { main: './main.js', defaultExtension: 'js' },
-            rxjs: { defaultExtension: 'js' }
+            rxjs: { defaultExtension: 'js' },
+            'crypto-js': { main: 'crypto-js.js', defaultExtension: 'js' }
         }
     });
 })(this);
