@@ -1,0 +1,22 @@
+{
+  "name": "smart-trade",
+  "version": "1.0.0",
+  "description": "Buys or sells on bitstamp.net with a unit cost averaging strategy.",
+  "devDependencies": {
+    "typescript": "^2.0.10"
+  },
+  "scripts": {
+    "postinstall": "cordova prepare",
+    "start": "tsc && cordova run android"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreashuber69/smart-trade.git"
+  },
+  "author": "Andreas Huber",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andreashuber69/smart-trade/issues"
+  },
+  "homepage": "https://github.com/andreashuber69/smart-trade#readme"
+}

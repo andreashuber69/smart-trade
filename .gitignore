@@ -1,3 +1,4 @@
-.vscode
+.vscode/typings
 platforms
 plugins
+node_modules
