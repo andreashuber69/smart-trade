@@ -15,7 +15,7 @@ Android application that buys or sells on bitstamp.net with a unit cost averagin
 1. Install [node.js](https://nodejs.org/en/download/).
 2. Follow
    [Installing the Requirements](https://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html#installing-the-requirements)
-   to install the **Androi** prerequisites. See step 3 on how to install the **Android SDK**.
+   to install the **Android** prerequisites. See step 3 on how to install the **Android SDK**.
 3. Download the **SDK tools package**, which can be found at the **bottom** of the
    [Android Studio Page](https://developer.android.com/studio/index.html).
 4. Install the SDK tools package with default settings and let the installer run the **SDK Manager** at the end.
