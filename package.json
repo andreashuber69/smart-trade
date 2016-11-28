@@ -2,6 +2,7 @@
   "name": "smart-trade",
   "version": "1.0.0",
   "description": "Buys or sells on bitstamp.net with a unit cost averaging strategy.",
+  "_comment": "Additional development dependencies for the android platform are documented here:\r\nhttps://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html\r\nThese need to be installed before executing npm install",
   "devDependencies": {
     "cordova": "^6.4.0",
     "typescript": "^2.0.10"
