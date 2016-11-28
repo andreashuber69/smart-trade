@@ -28,5 +28,5 @@ Android application that buys or sells on bitstamp.net with a unit cost averagin
 9. Back in the **SDK Manager**, verify the packages mentioned in step 8 and check the ones that are not yet installed.
 10. Install the packages.
 11. Back on the command line, execute `npm install` again and make sure there are no error messages.
-12. Connect an Android device via USB.
+12. Connect an **Android** device via USB.
 13. Enter `npm start` on the command line. This should start the application on the connected device.
