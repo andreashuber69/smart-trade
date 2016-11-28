@@ -16,9 +16,9 @@ Android application that buys or sells on bitstamp.net with a unit cost averagin
 2. Follow
    [Installing the Requirements](https://cordova.apache.org/docs/en/latest/guide/platforms/android/index.html#installing-the-requirements)
    to install the **Android** prerequisites. See step 3 on how to install the **Android SDK**.
-3. Download the **SDK tools package**, which can be found at the **bottom** of the
+3. Download the **Android SDK**, which can be found at the **bottom** of the
    [Android Studio Page](https://developer.android.com/studio/index.html).
-4. Install the SDK tools package with default settings and let the installer run the **SDK Manager** at the end.
+4. Install the **Android SDK** with default settings and let the installer run the **SDK Manager** at the end.
 5. Make sure at least the following packages are selected to be installed: **Android SDK Tools**,
    **Android Support Repository** and **Google USB Driver**.
 6. Install the selected packages and leave the **SDK Manager** open.
@@ -28,5 +28,5 @@ Android application that buys or sells on bitstamp.net with a unit cost averagin
 9. Back in the **SDK Manager**, verify the packages mentioned in step 8 and check the ones that are not yet installed.
 10. Install the packages.
 11. Back on the command line, execute `npm install` again and make sure there are no error messages.
-12. Connect an **Android** device via USB.
+12. Connect an **Android** device via USB and enable debug mode.
 13. Enter `npm start` on the command line. This should start the application on the connected device.
