@@ -11,7 +11,7 @@
     "scripts": {
         "cordova": "cordova",
         "postinstall": "cordova prepare",
-        "start": "tsc -p scripts && cordova run android"
+        "start": "tsc -p scripts && cordova run"
     },
     "repository": {
         "type": "git",
