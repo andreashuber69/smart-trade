@@ -14,7 +14,7 @@
     "dependencies": {},
     "scripts": {
         "cordova": "cordova",
-        "postinstall": "cordova requirements && cordova prepare",
+        "postinstall": "cordova prepare & cordova requirements",
         "start": "tsc -p scripts && cordova run"
     },
     "repository": {
