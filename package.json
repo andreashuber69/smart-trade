@@ -7,7 +7,7 @@
   },
   "scripts": {
     "postinstall": "cordova prepare",
-    "start": "tsc && cordova run android"
+    "start": "tsc -p scripts && cordova run android"
   },
   "repository": {
     "type": "git",
