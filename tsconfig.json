@@ -1,9 +1,9 @@
 {
-    "compilerOptions": { 
+    "compilerOptions": {
         "noImplicitAny": false,
         "noEmitOnError": true,
         "sourceMap": true,
-        "outDir": "../www/js",
+        "outDir": "www/js",
         "target": "es5"
     }
 }

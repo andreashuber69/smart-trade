@@ -13,9 +13,10 @@
     },
     "dependencies": {},
     "scripts": {
-        "cordova": "cordova",
         "postinstall": "cordova prepare & cordova requirements",
-        "start": "tsc -p scripts && cordova run"
+        "cordova": "cordova",
+        "start": "tsc && cordova run",
+        "tsc": "tsc"
     },
     "repository": {
         "type": "git",

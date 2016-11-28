@@ -4,7 +4,6 @@
     "version": "0.1.0",
     "command": ".\\node_modules\\.bin\\tsc",
     "isShellCommand": true,
-    "args": [ "-p", "scripts" ],
     "showOutput": "always",
     "echoCommand": true,
     "suppressTaskName": true,
