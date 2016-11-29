@@ -5,7 +5,8 @@
         "platforms": true,
         "plugins": true,
         "node_modules": true,
-        ".vscode/typings/**": true
+        ".vscode/typings/**": true,
+        "www/js/**": true
     },
     "typescript.tsdk": "./node_modules/typescript/lib" // Necessary for IntelliSense with local ts compiler
 }
