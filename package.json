@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "Buys or sells on bitstamp.net with a unit cost averaging strategy.",
     "devDependencies": {
-        "cordova": "6.3.1",
+        "cordova": "^6.4.0",
         "typescript": "^2.0.10"
     },
     "dependencies": {},
