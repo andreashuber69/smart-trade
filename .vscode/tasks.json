@@ -2,15 +2,24 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "0.1.0",
-    "command": ".\\node_modules\\.bin\\tsc",
+    "command": "npm",
     "isShellCommand": true,
-    "showOutput": "always",
+    "showOutput": "silent",
     "echoCommand": true,
     "suppressTaskName": true,
     "tasks": [
         {
             "taskName": "build",
+            "args": [ "run", "tsc" ], 
             "problemMatcher": "$tsc"
+        },
+        {
+            "taskName": "runAndroid",
+            "args": [ "start", "--", "android" ] 
+        },
+        {
+            "taskName": "runIos",
+            "args": [ "start", "--", "ios" ] 
         }
     ]
 }
