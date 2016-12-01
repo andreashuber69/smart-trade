@@ -3,6 +3,7 @@
         "noImplicitAny": false,
         "noEmitOnError": true,
         "sourceMap": true,
+        "sourceRoot": "scripts",
         "outDir": "www/js",
         "target": "es5"
     }

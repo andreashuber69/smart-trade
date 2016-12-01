@@ -20,6 +20,7 @@ let app = {
     // Application Constructor
     initialize(): void {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
+        document.addEventListener('pause', this.onDeviceReady.bind(this), false);
     },
 
     // deviceready Event Handler
