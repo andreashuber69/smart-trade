@@ -1,4 +1,4 @@
-import Blah = require('./blah');
+import { Blah } from './blah';
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
