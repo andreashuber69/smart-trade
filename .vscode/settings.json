@@ -6,7 +6,14 @@
         "plugins": true,
         "node_modules": true,
         ".vscode/typings/**": true,
-        "www/js/**": true
+        "www/js/[^m]*": true, // http://stackoverflow.com/questions/36646108/visual-studio-code-make-exception-to-files-exclude
+        "www/js/?[^a]*": true,
+        "www/js/??[^i]*": true,
+        "www/js/???[^n]*": true,
+        "www/js/????[^.]*": true,
+        "www/js/????.[^j]*": true,
+        "www/js/????.?[^s]": true,
+        "www/js/main.js?*": true
     },
     "typescript.tsdk": "./node_modules/typescript/lib" // Necessary for IntelliSense with local ts compiler
 }

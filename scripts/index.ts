@@ -1,3 +1,5 @@
+import Blah = require('./blah');
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -29,6 +31,8 @@ let app = {
     // 'pause', 'resume', etc.
     onDeviceReady(): void {
         this.receivedEvent('deviceready');
+        let blah = new Blah();
+        blah.schnapp();
     },
 
     // Update DOM on a Received Event
