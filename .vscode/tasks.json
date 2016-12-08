@@ -11,7 +11,7 @@
     "tasks": [
         {
             "taskName": "build",
-            "args": [ "tsc" ], 
+            "args": [ "build" ], 
             "problemMatcher": "$tsc"
         },
         {

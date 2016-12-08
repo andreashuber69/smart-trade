@@ -13,9 +13,9 @@
   },
   "scripts": {
     "postinstall": "cordova prepare & cordova requirements",
-    "cordova": "cordova",
-    "start": "cordova run",
-    "tsc": "browserify scripts/index.ts -p [ tsify ] --debug | exorcist www/js/index.js.map -r C:\\Users\\hubera01\\Documents\\git\\smart-trade\\scripts -b scripts >www/js/index.js"
+    "build": "browserify scripts/index.ts -p [ tsify ] --debug | exorcist www/js/index.js.map -r C:\\Users\\hubera01\\Documents\\git\\smart-trade\\scripts -b scripts >www/js/index.js",
+    "start": "npm run build && cordova run",
+    "cordova": "cordova"
   },
   "repository": {
     "type": "git",
