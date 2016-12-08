@@ -2,5 +2,4 @@
 /plugins
 /node_modules
 /.vscode/typings
-/www/js/*
-!/www/js/main.js
+/www/js
