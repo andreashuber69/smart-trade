@@ -13,8 +13,8 @@ class Notification {
 
 interface Local {
     schedule(notifications: Notification | Notification[], callback?: (notification: Notification) => void, scope?: any, args?: any): void;
-    on(event: "trigger", callback: (notification: Notification) => void, scope?: any): void;
-    on(event: "click", callback: (notification: Notification) => void, scope?: any): void;
+    on(event: 'trigger', callback: (notification: Notification) => void, scope?: any): void;
+    on(event: 'click', callback: (notification: Notification) => void, scope?: any): void;
     hasPermission(callback: (granted: boolean) => void, scope?: any);
 }
 
