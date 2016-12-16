@@ -1,21 +1,35 @@
-class Notification {
-    public constructor(
-        public readonly id: number,
-        public readonly title: string,
-        public readonly text: string,
-        public readonly sound: string,
-        public readonly firstAt: number,
-        public readonly at: number,
-        public readonly every: number,
-        public readonly data: any) {
-    }
+interface NotificationInfo {
+    id?: number;
+    title?: string;
+    text?: string;
+
+    // number is only allowed on Android and specifies an interval in minutes
+    every?: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year' | number;
+    at?: Date | number;
+    firstAt?: Date | number;
+    badge?: number;
+    sound?: string;
+    data?: string;
+
+    // Android-specific
+    icon?: string;
+    smallIcon?: string;
+    ongoing?: boolean;
+    led?: string; // RGB value from 000000 to FFFFFF encoding the color of the device LED.
 }
 
 interface Local {
-    schedule(notifications: Notification | Notification[], callback?: (notification: Notification) => void, scope?: any, args?: any): void;
-    on(event: 'trigger', callback: (notification: Notification) => void, scope?: any): void;
-    on(event: 'click', callback: (notification: Notification) => void, scope?: any): void;
-    hasPermission(callback: (granted: boolean) => void, scope?: any);
+    schedule(
+        notifications: NotificationInfo | NotificationInfo[],
+        callback?: (notification: NotificationInfo) => void,
+        scope?: any,
+        args?: any): void;
+    on(
+        event: 'schedule' | 'update' | 'clear' | 'cancel' | 'trigger' | 'click',
+        callback: (notification: NotificationInfo) => void,
+        scope?: any): void;
+    hasPermission(
+        callback: (granted: boolean) => void, scope?: any);
 }
 
 interface Notification {

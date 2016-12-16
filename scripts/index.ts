@@ -1,11 +1,16 @@
 let app = {
     initialize(): void {
-        document.addEventListener('deviceready', () => setTimeout(() => this.doIt(), 2000), false);
+        // Delay to allow the debugger to attach itself
+        document.addEventListener('deviceready', () => setTimeout(() => this.deviceReady(), 2000), false);
     },
 
-    doIt() : void {
+    deviceReady(): void {
         let button = <HTMLButtonElement>document.getElementById('goButton');
-        button.addEventListener('click', function() { console.log('yeei'); });
+        button.onclick = this.onClick;
+    },
+
+    onClick(ev: MouseEvent): void {
+        cordova.plugins.notification.local.schedule({ title: 'Test', text: 'Hurrah!', at: Date.now() + 10000 });
     }
 };
 
