@@ -8,10 +8,7 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        internal string GetFormattedTimestamp()
-        {
-            TimeSpan duration = DateTime.UtcNow.Subtract(startTime);
-            return $"Service started at {startTime} ({duration:c} ago).";
-        }
+        internal string GetFormattedTimestamp() =>
+            $"Service started at {startTime} ({DateTime.UtcNow.Subtract(startTime):c} ago).";
     }
 }
