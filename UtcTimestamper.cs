@@ -1,26 +1,17 @@
-using System;
-using Android.App;
-using Android.Util;
-using Android.Content;
-using Android.OS;
-
 namespace SmartTrade
 {
-	public class UtcTimestamper
-	{
-		DateTime startTime;
+    using System;
 
-		public UtcTimestamper()
-		{
-			startTime = DateTime.UtcNow;
-		}
+    internal sealed class UtcTimestamper
+    {
+        private readonly DateTime startTime = DateTime.UtcNow;
 
-		public string GetFormattedTimestamp()
-		{
-			TimeSpan duration = DateTime.UtcNow.Subtract(startTime);
-			return $"Service started at {startTime} ({duration:c} ago).";
-		}
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	}
-	
+        internal string GetFormattedTimestamp()
+        {
+            TimeSpan duration = DateTime.UtcNow.Subtract(startTime);
+            return $"Service started at {startTime} ({duration:c} ago).";
+        }
+    }
 }
