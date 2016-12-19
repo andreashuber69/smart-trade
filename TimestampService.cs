@@ -1,6 +1,6 @@
 ﻿namespace SmartTrade
 {
-    using System;
+    using System.Threading.Tasks;
     using Android.App;
     using Android.Util;
     using Android.Content;
@@ -18,9 +18,6 @@
         private const int DelayBetweenLogMessages = 5000; // milliseconds
         private const int NotificationId = 10000;
 
-        private UtcTimestamper timestamper;
-        private Handler handler;
-        private Action runnable;
         private bool isStarted;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,19 +26,6 @@
         {
             base.OnCreate();
             Log.Info(Tag, "OnCreate: the service is initializing.");
-
-            this.timestamper = new UtcTimestamper();
-            this.handler = new Handler();
-
-            // This Action is only for demonstration purposes.
-            this.runnable = new Action(() =>
-                            {
-                                if (this.timestamper != null)
-                                {
-                                    Log.Debug(Tag, this.timestamper.GetFormattedTimestamp());
-                                    handler.PostDelayed(this.runnable, DelayBetweenLogMessages);
-                                }
-                            });
         }
 
         public sealed override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
@@ -52,10 +36,10 @@
             }
             else
             {
+                this.isStarted = true;
                 Log.Info(Tag, "OnStartCommand: The service is starting.");
                 DispatchNotificationThatServiceIsRunning();
-                this.handler.PostDelayed(runnable, DelayBetweenLogMessages);
-                this.isStarted = true;
+                new Handler().Post(this.ServiceActivity);
             }
 
             // This tells Android not to restart the service if it is killed to reclaim resources.
@@ -72,26 +56,27 @@
         public sealed override void OnDestroy()
         {
             // We need to shut things down.
-            Log.Debug(Tag, GetFormattedTimestamp());
             Log.Info(Tag, "OnDestroy: The started service is shutting down.");
 
-            // Stop the handler.
-            handler.RemoveCallbacks(runnable);
-
             // Remove the notification from the status bar.
-            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
-            notificationManager.Cancel(NotificationId);
+            ((NotificationManager)GetSystemService(NotificationService)).Cancel(NotificationId);
 
-            timestamper = null;
             isStarted = false;
             base.OnDestroy();
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        /// <summary>This method will return a formatted timestamp to the client.</summary>
-        /// <returns>A string that details what time the service started and how long it has been running.</returns>
-        private string GetFormattedTimestamp() => timestamper?.GetFormattedTimestamp();
+        private async void ServiceActivity()
+        {
+            var timestamper = new UtcTimestamper();
+
+            while (this.isStarted)
+            {
+                Log.Debug(Tag, timestamper.GetFormattedTimestamp());
+                await Task.Delay(DelayBetweenLogMessages);
+            }
+        }
 
         private void DispatchNotificationThatServiceIsRunning()
         {
