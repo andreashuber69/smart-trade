@@ -41,11 +41,33 @@ namespace SmartTrade
 			}
 		}
 		
+		public partial class Dimension
+		{
+			
+			// aapt resource value: 0x7f050000
+			public const int left_padding = 2131034112;
+			
+			// aapt resource value: 0x7f050001
+			public const int right_padding = 2131034113;
+			
+			// aapt resource value: 0x7f050002
+			public const int top_margin = 2131034114;
+			
+			static Dimension()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Dimension()
+			{
+			}
+		}
+		
 		public partial class Drawable
 		{
 			
 			// aapt resource value: 0x7f020000
-			public const int Icon = 2130837504;
+			public const int ic_stat_name = 2130837504;
 			
 			static Drawable()
 			{
@@ -60,8 +82,11 @@ namespace SmartTrade
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050000
-			public const int MyButton = 2131034112;
+			// aapt resource value: 0x7f070000
+			public const int start_timestamp_service_button = 2131165184;
+			
+			// aapt resource value: 0x7f070001
+			public const int stop_timestamp_service_button = 2131165185;
 			
 			static Id()
 			{
@@ -76,8 +101,8 @@ namespace SmartTrade
 		public partial class Layout
 		{
 			
-			// aapt resource value: 0x7f030000
-			public const int Main = 2130903040;
+			// aapt resource value: 0x7f040000
+			public const int Main = 2130968576;
 			
 			static Layout()
 			{
@@ -89,14 +114,42 @@ namespace SmartTrade
 			}
 		}
 		
+		public partial class Mipmap
+		{
+			
+			// aapt resource value: 0x7f030000
+			public const int Icon = 2130903040;
+			
+			static Mipmap()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Mipmap()
+			{
+			}
+		}
+		
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f040001
-			public const int ApplicationName = 2130968577;
+			// aapt resource value: 0x7f060004
+			public const int app_description = 2131099652;
 			
-			// aapt resource value: 0x7f040000
-			public const int Hello = 2130968576;
+			// aapt resource value: 0x7f060002
+			public const int app_name = 2131099650;
+			
+			// aapt resource value: 0x7f060005
+			public const int notification_text = 2131099653;
+			
+			// aapt resource value: 0x7f060001
+			public const int restart_timestamp_service_button_text = 2131099649;
+			
+			// aapt resource value: 0x7f060003
+			public const int service_started = 2131099651;
+			
+			// aapt resource value: 0x7f060000
+			public const int stop_timestamp_service_button_text = 2131099648;
 			
 			static String()
 			{

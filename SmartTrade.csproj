@@ -54,22 +54,52 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimestampService.cs" />
+    <Compile Include="UtcTimestamper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GettingStarted.Xamarin" />
     <None Include="Resources\AboutResources.txt" />
+    <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
+    <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-mdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
+    <AndroidResource Include="Resources\values\dimen.xml" />
+    <AndroidResource Include="Resources\drawable-hdpi\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-hdpi-v11\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-hdpi-v9\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-mdpi-v11\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-mdpi-v9\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi-v11\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi-v9\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi-v11\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi-v9\ic_stat_name.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\Icon.png" />
+    <Folder Include="Resources\drawable\" />
+    <Folder Include="Resources\drawable-hdpi-v11\" />
+    <Folder Include="Resources\drawable-hdpi-v9\" />
+    <Folder Include="Resources\drawable-mdpi\" />
+    <Folder Include="Resources\drawable-mdpi-v11\" />
+    <Folder Include="Resources\drawable-mdpi-v9\" />
+    <Folder Include="Resources\drawable-xhdpi\" />
+    <Folder Include="Resources\drawable-xhdpi-v11\" />
+    <Folder Include="Resources\drawable-xhdpi-v9\" />
+    <Folder Include="Resources\drawable-xxhdpi\" />
+    <Folder Include="Resources\drawable-xxhdpi-v11\" />
+    <Folder Include="Resources\drawable-xxhdpi-v9\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
