@@ -51,8 +51,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlarmReceiver.cs" />
+    <Compile Include="BootCompletedReceiver.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="NotificationPopup.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimestampService.cs" />

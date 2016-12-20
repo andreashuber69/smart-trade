@@ -95,7 +95,7 @@
 
         private void ScheduleAlarm()
         {
-            var intent = new Intent(Application.Context, typeof(AlarmReceiver));
+            var intent = new Intent(Application.Context, typeof(BootCompletedReceiver));
             var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.UpdateCurrent);
             var manager = AlarmManager.FromContext(Application.Context);
             manager.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + 10000, pendingIntent);

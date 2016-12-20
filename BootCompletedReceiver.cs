@@ -5,7 +5,7 @@ namespace SmartTrade
 
     [BroadcastReceiver(Enabled = true, Exported = true, Permission = "RECEIVE_BOOT_COMPLETED")]
     [IntentFilter(new string[] { Intent.ActionBootCompleted })]
-    public class AlarmReceiver : BroadcastReceiver
+    public class BootCompletedReceiver : BroadcastReceiver
     {
         public override void OnReceive(Context context, Intent intent)
         {
@@ -16,7 +16,7 @@ namespace SmartTrade
                 .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
                 .SetContentText(context.Resources.GetString(Resource.String.notification_text));
 
-            NotificationManager.FromContext(context).Notify(10001, notificationBuilder.Build());
+            var popup = new NotificationPopup(context, notificationBuilder);
         }
     }
 }

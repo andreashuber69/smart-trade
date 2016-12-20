@@ -1,6 +1,5 @@
 ﻿namespace SmartTrade
 {
-    using System.Threading.Tasks;
     using Android.App;
     using Android.Util;
     using Android.Content;
@@ -15,10 +14,7 @@
     public class TimestampService : Service
     {
         private static readonly string Tag = typeof(TimestampService).FullName;
-        private const int DelayBetweenLogMessages = 5000; // milliseconds
-        private const int NotificationId = 10000;
-
-        private bool isStarted;
+        private NotificationPopup popup;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -30,16 +26,18 @@
 
         public sealed override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
-            if (this.isStarted)
+            if (this.popup == null)
             {
-                Log.Info(Tag, "OnStartCommand: This service has already been started.");
+                Log.Info(Tag, "OnStartCommand: The service is starting.");
+                var notificationBuilder = new Notification.Builder(this)
+                    .SetSmallIcon(Resource.Drawable.ic_stat_name)
+                    .SetContentTitle(Resources.GetString(Resource.String.app_name))
+                    .SetContentText(Resources.GetString(Resource.String.notification_text));
+                this.popup = new NotificationPopup(this, notificationBuilder);
             }
             else
             {
-                this.isStarted = true;
-                Log.Info(Tag, "OnStartCommand: The service is starting.");
-                DispatchNotificationThatServiceIsRunning();
-                new Handler().Post(this.ServiceActivity);
+                Log.Info(Tag, "OnStartCommand: This service has already been started.");
             }
 
             // This tells Android not to restart the service if it is killed to reclaim resources.
@@ -57,36 +55,9 @@
         {
             // We need to shut things down.
             Log.Info(Tag, "OnDestroy: The started service is shutting down.");
-
-            // Remove the notification from the status bar.
-            ((NotificationManager)GetSystemService(NotificationService)).Cancel(NotificationId);
-
-            isStarted = false;
+            this.popup?.Dispose();
+            this.popup = null;
             base.OnDestroy();
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private async void ServiceActivity()
-        {
-            var timestamper = new UtcTimestamper();
-
-            while (this.isStarted)
-            {
-                Log.Debug(Tag, timestamper.GetFormattedTimestamp());
-                await Task.Delay(DelayBetweenLogMessages);
-            }
-        }
-
-        private void DispatchNotificationThatServiceIsRunning()
-        {
-            var notificationBuilder = new Notification.Builder(this)
-                .SetSmallIcon(Resource.Drawable.ic_stat_name)
-                .SetContentTitle(Resources.GetString(Resource.String.app_name))
-                .SetContentText(Resources.GetString(Resource.String.notification_text));
-
-            var notificationManager = (NotificationManager)GetSystemService(NotificationService);
-            notificationManager.Notify(NotificationId, notificationBuilder.Build());
         }
     }
 }
