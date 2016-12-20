@@ -16,8 +16,7 @@ namespace SmartTrade
                 .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
                 .SetContentText(context.Resources.GetString(Resource.String.notification_text));
 
-            var notificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
-            notificationManager.Notify(10001, notificationBuilder.Build());
+            NotificationManager.FromContext(context).Notify(10001, notificationBuilder.Build());
         }
     }
 }

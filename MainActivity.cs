@@ -97,7 +97,7 @@
         {
             var intent = new Intent(Application.Context, typeof(AlarmReceiver));
             var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.UpdateCurrent);
-            var manager = (AlarmManager)Application.Context.GetSystemService(Context.AlarmService);
+            var manager = AlarmManager.FromContext(Application.Context);
             manager.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + 10000, pendingIntent);
         }
     }
