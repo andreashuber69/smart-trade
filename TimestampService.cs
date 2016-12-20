@@ -32,7 +32,7 @@
                 var notificationBuilder = new Notification.Builder(this)
                     .SetSmallIcon(Resource.Drawable.ic_stat_name)
                     .SetContentTitle(Resources.GetString(Resource.String.app_name))
-                    .SetContentText(Resources.GetString(Resource.String.notification_text));
+                    .SetContentText(Resources.GetString(Resource.String.service_started));
                 this.popup = new NotificationPopup(this, notificationBuilder);
             }
             else

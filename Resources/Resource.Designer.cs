@@ -85,9 +85,6 @@ namespace SmartTrade
 			// aapt resource value: 0x7f070000
 			public const int start_timestamp_service_button = 2131165184;
 			
-			// aapt resource value: 0x7f070001
-			public const int stop_timestamp_service_button = 2131165185;
-			
 			static Id()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
@@ -133,23 +130,20 @@ namespace SmartTrade
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f060004
-			public const int app_description = 2131099652;
+			// aapt resource value: 0x7f060003
+			public const int alarms_scheduled = 2131099651;
 			
 			// aapt resource value: 0x7f060002
-			public const int app_name = 2131099650;
-			
-			// aapt resource value: 0x7f060005
-			public const int notification_text = 2131099653;
+			public const int app_description = 2131099650;
 			
 			// aapt resource value: 0x7f060001
-			public const int restart_timestamp_service_button_text = 2131099649;
-			
-			// aapt resource value: 0x7f060003
-			public const int service_started = 2131099651;
+			public const int app_name = 2131099649;
 			
 			// aapt resource value: 0x7f060000
-			public const int stop_timestamp_service_button_text = 2131099648;
+			public const int restart_timestamp_service_button_text = 2131099648;
+			
+			// aapt resource value: 0x7f060004
+			public const int service_started = 2131099652;
 			
 			static String()
 			{
