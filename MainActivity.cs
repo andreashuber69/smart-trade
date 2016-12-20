@@ -80,6 +80,7 @@
 
         private void StartServiceButton_Click(object sender, System.EventArgs e)
         {
+            this.ScheduleAlarm();
             startServiceButton.Enabled = false;
             startServiceButton.Click -= StartServiceButton_Click;
 
@@ -90,6 +91,14 @@
             stopServiceButton.Click += StopServiceButton_Click;
 
             stopServiceButton.Enabled = true;
+        }
+
+        private void ScheduleAlarm()
+        {
+            var intent = new Intent(Application.Context, typeof(AlarmReceiver));
+            var pendingIntent = PendingIntent.GetBroadcast(Application.Context, 0, intent, PendingIntentFlags.UpdateCurrent);
+            var manager = (AlarmManager)Application.Context.GetSystemService(Context.AlarmService);
+            manager.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + 10000, pendingIntent);
         }
     }
 }
