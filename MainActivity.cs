@@ -32,7 +32,7 @@
 
         private void StartServiceButton_Click(object sender, System.EventArgs e)
         {
-            this.SendBroadcast(new Intent(Application.Context, typeof(BootCompletedReceiver)));
+            this.SendBroadcast(new Intent(Application.Context, typeof(SetAlarmReceiver)));
             Log.Info(Tag, "User requested that the service be started.");
         }
     }

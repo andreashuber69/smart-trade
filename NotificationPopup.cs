@@ -11,6 +11,12 @@ namespace SmartTrade
         private static int lastId = 0;
         private readonly Action cancel;
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public void Dispose() => this.cancel();
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         internal NotificationPopup(Context context, Notification.Builder builder)
         {
             var manager = NotificationManager.FromContext(context);
@@ -18,7 +24,5 @@ namespace SmartTrade
             this.cancel = () => manager.Cancel(id);
             manager.Notify(id, builder.Build());
         }
-
-        public void Dispose() => this.cancel();
     }
 }
