@@ -2,8 +2,9 @@ namespace SmartTrade
 {
     using System;
     using System.Runtime.CompilerServices;
-
+    using Android.App;
     using Android.Content;
+    using Android.Preferences;
 
     internal sealed class Settings : IDisposable
     {
@@ -20,9 +21,9 @@ namespace SmartTrade
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        internal Settings(ContextWrapper context)
+        internal Settings()
         {
-            this.preferences = context.GetSharedPreferences(typeof(Settings).FullName, FileCreationMode.Private);
+            this.preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
             this.editor = this.preferences.Edit();
         }
 

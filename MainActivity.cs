@@ -11,14 +11,12 @@
     public class MainActivity : Activity
     {
         private static readonly string Tag = typeof(MainActivity).FullName;
-        private readonly Settings settings;
         private Button startServiceButton;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         public MainActivity()
         {
-            this.settings = new Settings(this);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,23 +29,16 @@
             this.startServiceButton.Click += this.StartServiceButton_Click;
         }
 
-        protected sealed override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.settings.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
-
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private void StartServiceButton_Click(object sender, EventArgs e)
         {
-            this.settings.IsStarted = !this.settings.IsStarted;
-            this.startServiceButton.Text = this.settings.IsStarted ? "Stop" : "Start";
-            this.SendBroadcast(new Intent(Application.Context, typeof(SetAlarmReceiver)));
+            using (var settings = new Settings())
+            {
+                settings.IsStarted = !settings.IsStarted;
+                this.startServiceButton.Text = settings.IsStarted ? "Stop" : "Start";
+                this.SendBroadcast(new Intent(Application.Context, typeof(SetAlarmReceiver)));
+            }
         }
     }
 }

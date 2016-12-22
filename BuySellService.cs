@@ -16,7 +16,7 @@
                 .SetContentTitle(Resources.GetString(Resource.String.app_name))
                 .SetContentText(Resources.GetString(Resource.String.service_started));
 
-            using (var settings = new Settings(this))
+            using (var settings = new Settings())
             {
                 if (settings.IsStarted)
                 {
