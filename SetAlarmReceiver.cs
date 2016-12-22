@@ -3,11 +3,13 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
 
-    [BroadcastReceiver(Enabled = true, Exported = true, Permission = "RECEIVE_BOOT_COMPLETED")]
+    /// <summary>Sets or cancels an alarm which calls the <see cref="BuySellService"/> depending on whether trading
+    /// is currently enabled.</summary>
+    [BroadcastReceiver(Permission = "RECEIVE_BOOT_COMPLETED")]
     [IntentFilter(new string[] { Intent.ActionBootCompleted })]
-    public class SetAlarmReceiver : BroadcastReceiver
+    internal sealed class SetAlarmReceiver : BroadcastReceiver
     {
-        public override void OnReceive(Context context, Intent intent)
+        public sealed override void OnReceive(Context context, Intent intent)
         {
             var alarmIntent = PendingIntent.GetService(
                 context, 0, new Intent(context, typeof(BuySellService)), PendingIntentFlags.UpdateCurrent);

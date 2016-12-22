@@ -8,7 +8,7 @@
     using Android.Widget;
 
     [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@mipmap/icon")]
-    public class MainActivity : Activity
+    internal sealed class MainActivity : Activity
     {
         private Button startServiceButton;
 

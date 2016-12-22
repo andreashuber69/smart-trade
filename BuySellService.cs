@@ -5,9 +5,9 @@
     using Android.App;
     using Android.Content;
 
-    /// <summary></summary>
+    /// <summary>Buys or sells according to the configured schedule.</summary>
     [Service]
-    public class BuySellService : IntentService
+    internal sealed class BuySellService : IntentService
     {
         protected sealed override async void OnHandleIntent(Intent intent)
         {
