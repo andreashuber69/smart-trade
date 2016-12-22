@@ -137,19 +137,19 @@ namespace SmartTrade
 			public const int app_name = 2131099648;
 			
 			// aapt resource value: 0x7f060003
-			public const int pause_service = 2131099651;
+			public const int disable_service = 2131099651;
 			
 			// aapt resource value: 0x7f060002
-			public const int resume_service = 2131099650;
+			public const int enable_service = 2131099650;
 			
 			// aapt resource value: 0x7f060006
 			public const int service_buying = 2131099654;
 			
 			// aapt resource value: 0x7f060004
-			public const int service_paused = 2131099652;
+			public const int service_disabled = 2131099652;
 			
 			// aapt resource value: 0x7f060005
-			public const int service_running = 2131099653;
+			public const int service_enabled = 2131099653;
 			
 			static String()
 			{

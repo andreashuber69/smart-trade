@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Smart Trade</string>
-  <string name="app_description">This app is a demonstration of a started service in Xamarin.Android. When started the service will dump messages via Android.Util.Log every 5 seconds. </string>
-  <string name="resume_service">Resume</string>
-  <string name="pause_service">Pause</string>
-  <string name="service_paused">Smart Trade is paused.</string>
-  <string name="service_running">Smart Trade is running.</string>
+  <string name="app_description">Buys or sells Bitcoin on Bitstamp with a unit cost averaging strategy.</string>
+  <string name="enable_service">Enable</string>
+  <string name="disable_service">Disable</string>
+  <string name="service_disabled">Smart Trade is disabled.</string>
+  <string name="service_enabled">Smart Trade is enabled.</string>
   <string name="service_buying">Smart Trade is buying.</string>
 </resources>

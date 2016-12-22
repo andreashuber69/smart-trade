@@ -33,6 +33,6 @@
         }
 
         private void UpdateGui() => this.startServiceButton.Text = Resources.GetString(
-            Settings.IsRunning ? Resource.String.pause_service : Resource.String.resume_service);
+            Settings.IsRunning ? Resource.String.disable_service : Resource.String.enable_service);
     }
 }

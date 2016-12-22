@@ -6,6 +6,7 @@
     using Android.Content;
 
     /// <summary>Buys or sells according to the configured schedule.</summary>
+    /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
     [Service]
     internal sealed class BuySellService : IntentService
     {

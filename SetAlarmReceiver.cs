@@ -18,12 +18,12 @@ namespace SmartTrade
             if (Settings.IsRunning)
             {
                 manager.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + 10000, alarmIntent);
-                this.ShowNotification(context, Resource.String.service_running);
+                this.ShowNotification(context, Resource.String.service_enabled);
             }
             else
             {
                 manager.Cancel(alarmIntent);
-                this.ShowNotification(context, Resource.String.service_paused);
+                this.ShowNotification(context, Resource.String.service_disabled);
             }
         }
 
