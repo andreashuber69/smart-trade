@@ -1,8 +1,9 @@
 ﻿namespace SmartTrade
 {
+    using System.Threading.Tasks;
+
     using Android.App;
     using Android.Content;
-    using System.Threading.Tasks;
 
     /// <summary></summary>
     [Service]
@@ -15,9 +16,15 @@
                 .SetContentTitle(Resources.GetString(Resource.String.app_name))
                 .SetContentText(Resources.GetString(Resource.String.service_started));
 
-            using (new NotificationPopup(this, notificationBuilder))
+            using (var settings = new Settings(this))
             {
-                await Task.Delay(5000);
+                if (settings.IsStarted)
+                {
+                    using (new NotificationPopup(this, notificationBuilder))
+                    {
+                        await Task.Delay(5000);
+                    }
+                }
             }
         }
     }
