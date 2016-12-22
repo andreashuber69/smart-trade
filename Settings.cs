@@ -6,38 +6,42 @@ namespace SmartTrade
     using Android.Content;
     using Android.Preferences;
 
-    internal sealed class Settings : IDisposable
+    internal static class Settings
     {
-        private readonly ISharedPreferences preferences;
-        private readonly ISharedPreferencesEditor editor;
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public void Dispose()
-        {
-            this.editor.Dispose();
-            this.preferences.Dispose();
-        }
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        internal Settings()
-        {
-            this.preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
-            this.editor = this.preferences.Edit();
-        }
-
-        internal bool IsStarted
+        internal static bool IsRunning
         {
             get { return GetBoolean(); }
-            set { this.SetBoolean(value); }
+            set { SetBoolean(value); }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private bool GetBoolean([CallerMemberName] string key = null) => this.preferences.GetBoolean(key, false);
+        private static bool GetBoolean([CallerMemberName] string key = null) =>
+            GetValue(p => p.GetBoolean(key, false));
 
-        private void SetBoolean(bool value, [CallerMemberName] string key = null) =>
-            this.editor.PutBoolean(key, value).Apply();
+        private static void SetBoolean(bool value, [CallerMemberName] string key = null) =>
+            SetValue(p => p.PutBoolean(key, value));
+
+        private static void SetValue(Action<ISharedPreferencesEditor> setValue)
+        {
+            GetValue(
+                p =>
+                {
+                    using (var editor = p.Edit())
+                    {
+                        setValue(editor);
+                        editor.Apply();
+                        return false;
+                    }
+                });
+        }
+
+        private static T GetValue<T>(Func<ISharedPreferences, T> getValue)
+        {
+            using (var preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context))
+            {
+                return getValue(preferences);
+            }
+        }
     }
 }

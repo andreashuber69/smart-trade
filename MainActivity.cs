@@ -10,14 +10,7 @@
     [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@mipmap/icon")]
     public class MainActivity : Activity
     {
-        private static readonly string Tag = typeof(MainActivity).FullName;
         private Button startServiceButton;
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        public MainActivity()
-        {
-        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -26,19 +19,20 @@
             base.OnCreate(savedInstanceState);
             this.SetContentView(Resource.Layout.Main);
             this.startServiceButton = FindViewById<Button>(Resource.Id.start_timestamp_service_button);
-            this.startServiceButton.Click += this.StartServiceButton_Click;
+            this.startServiceButton.Click += this.OnStartServiceButtonClicked;
+            this.UpdateGui();
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private void StartServiceButton_Click(object sender, EventArgs e)
+        private void OnStartServiceButtonClicked(object sender, EventArgs e)
         {
-            using (var settings = new Settings())
-            {
-                settings.IsStarted = !settings.IsStarted;
-                this.startServiceButton.Text = settings.IsStarted ? "Stop" : "Start";
-                this.SendBroadcast(new Intent(Application.Context, typeof(SetAlarmReceiver)));
-            }
+            Settings.IsRunning = !Settings.IsRunning;
+            this.UpdateGui();
+            this.SendBroadcast(new Intent(Application.Context, typeof(SetAlarmReceiver)));
         }
+
+        private void UpdateGui() => this.startServiceButton.Text = Resources.GetString(
+            Settings.IsRunning ? Resource.String.pause_service : Resource.String.resume_service);
     }
 }

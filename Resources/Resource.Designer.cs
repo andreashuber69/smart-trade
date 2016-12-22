@@ -130,20 +130,26 @@ namespace SmartTrade
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f060003
-			public const int alarms_scheduled = 2131099651;
-			
-			// aapt resource value: 0x7f060002
-			public const int app_description = 2131099650;
-			
 			// aapt resource value: 0x7f060001
-			public const int app_name = 2131099649;
+			public const int app_description = 2131099649;
 			
 			// aapt resource value: 0x7f060000
-			public const int restart_timestamp_service_button_text = 2131099648;
+			public const int app_name = 2131099648;
+			
+			// aapt resource value: 0x7f060003
+			public const int pause_service = 2131099651;
+			
+			// aapt resource value: 0x7f060002
+			public const int resume_service = 2131099650;
+			
+			// aapt resource value: 0x7f060006
+			public const int service_buying = 2131099654;
 			
 			// aapt resource value: 0x7f060004
-			public const int service_started = 2131099652;
+			public const int service_paused = 2131099652;
+			
+			// aapt resource value: 0x7f060005
+			public const int service_running = 2131099653;
 			
 			static String()
 			{

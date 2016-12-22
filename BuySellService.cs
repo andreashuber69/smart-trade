@@ -14,17 +14,11 @@
             var notificationBuilder = new Notification.Builder(this)
                 .SetSmallIcon(Resource.Drawable.ic_stat_name)
                 .SetContentTitle(Resources.GetString(Resource.String.app_name))
-                .SetContentText(Resources.GetString(Resource.String.service_started));
+                .SetContentText(Resources.GetString(Resource.String.service_buying));
 
-            using (var settings = new Settings())
+            using (new NotificationPopup(this, notificationBuilder))
             {
-                if (settings.IsStarted)
-                {
-                    using (new NotificationPopup(this, notificationBuilder))
-                    {
-                        await Task.Delay(5000);
-                    }
-                }
+                await Task.Delay(5000);
             }
         }
     }
