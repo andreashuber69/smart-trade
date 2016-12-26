@@ -5,7 +5,7 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
 
-    /// <summary>Sets or cancels an alarm which calls the <see cref="BuySellService"/> depending on whether trading
+    /// <summary>Sets or cancels an alarm which calls the <see cref="TradeService"/> depending on whether trading
     /// is currently enabled.</summary>
     [BroadcastReceiver(Permission = "RECEIVE_BOOT_COMPLETED")]
     [IntentFilter(new string[] { Intent.ActionBootCompleted })]
@@ -14,7 +14,7 @@ namespace SmartTrade
         public sealed override void OnReceive(Context context, Intent intent)
         {
             var alarmIntent = PendingIntent.GetService(
-                context, 0, new Intent(context, typeof(BuySellService)), PendingIntentFlags.UpdateCurrent);
+                context, 0, new Intent(context, typeof(TradeService)), PendingIntentFlags.UpdateCurrent);
             var manager = AlarmManager.FromContext(context);
             var earliestNextTradeTime = Java.Lang.JavaSystem.CurrentTimeMillis() + 10 * 1000;
             var nextTradeTime = Math.Max(earliestNextTradeTime, Settings.NextTradeTime);
