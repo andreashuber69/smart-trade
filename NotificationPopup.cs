@@ -19,6 +19,12 @@ namespace SmartTrade
 
         internal NotificationPopup(Context context, Notification.Builder builder)
         {
+            builder
+                .SetSmallIcon(Resource.Drawable.ic_stat_name)
+                .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
+                .SetContentIntent(PendingIntent.GetActivity(context, 0, new Intent(context, typeof(MainActivity)), 0))
+                .SetAutoCancel(true);
+
             var manager = NotificationManager.FromContext(context);
             var id = Interlocked.Increment(ref lastId);
             this.cancel = () => manager.Cancel(id);

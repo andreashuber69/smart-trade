@@ -22,11 +22,8 @@ namespace SmartTrade
 
             private static void ShowNotification(Context context, int messageId)
             {
-                var notificationBuilder = new Notification.Builder(context)
-                    .SetSmallIcon(Resource.Drawable.ic_stat_name)
-                    .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
-                    .SetContentText(context.Resources.GetString(messageId));
-                var popup = new NotificationPopup(context, notificationBuilder);
+                var popup = new NotificationPopup(
+                    context, new Notification.Builder(context).SetContentText(context.Resources.GetString(messageId)));
             }
         }
     }
