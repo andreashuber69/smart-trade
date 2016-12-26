@@ -29,7 +29,7 @@
         {
             Settings.IsRunning = !Settings.IsRunning;
             this.UpdateGui();
-            this.SendBroadcast(new Intent(Application.Context, typeof(SetAlarmReceiver)));
+            this.SendBroadcast(new Intent(Application.Context, typeof(TradeService.SetAlarmReceiver)));
         }
 
         private void UpdateGui() => this.startServiceButton.Text = Resources.GetString(
