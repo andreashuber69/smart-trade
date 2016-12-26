@@ -10,6 +10,20 @@
     [Service]
     internal sealed partial class TradeService : IntentService
     {
+        internal static bool IsEnabled
+        {
+            get
+            {
+                return Settings.IsEnabled;
+            }
+
+            set
+            {
+                Settings.IsEnabled = value;
+                Application.Context.SendBroadcast(new Intent(Application.Context, typeof(SetAlarmReceiver)));
+            }
+        }
+
         protected sealed override async void OnHandleIntent(Intent intent)
         {
             var notificationBuilder = new Notification.Builder(this)

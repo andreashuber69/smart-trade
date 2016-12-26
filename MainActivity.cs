@@ -27,12 +27,11 @@
 
         private void OnStartServiceButtonClicked(object sender, EventArgs e)
         {
-            Settings.IsRunning = !Settings.IsRunning;
+            TradeService.IsEnabled = !TradeService.IsEnabled;
             this.UpdateGui();
-            this.SendBroadcast(new Intent(Application.Context, typeof(TradeService.SetAlarmReceiver)));
         }
 
         private void UpdateGui() => this.startServiceButton.Text = Resources.GetString(
-            Settings.IsRunning ? Resource.String.disable_service : Resource.String.enable_service);
+            TradeService.IsEnabled ? Resource.String.disable_service : Resource.String.enable_service);
     }
 }

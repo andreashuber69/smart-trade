@@ -11,7 +11,7 @@ namespace SmartTrade
         /// is currently enabled.</summary>
         [BroadcastReceiver(Permission = "RECEIVE_BOOT_COMPLETED")]
         [IntentFilter(new string[] { Intent.ActionBootCompleted })]
-        internal sealed class SetAlarmReceiver : BroadcastReceiver
+        private sealed class SetAlarmReceiver : BroadcastReceiver
         {
             public sealed override void OnReceive(Context context, Intent intent)
             {
@@ -21,7 +21,7 @@ namespace SmartTrade
                 var earliestNextTradeTime = Java.Lang.JavaSystem.CurrentTimeMillis() + 10 * 1000;
                 var nextTradeTime = Math.Max(earliestNextTradeTime, Settings.NextTradeTime);
 
-                if (Settings.IsRunning)
+                if (Settings.IsEnabled)
                 {
                     manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
                     this.ShowNotification(context, Resource.String.service_enabled);

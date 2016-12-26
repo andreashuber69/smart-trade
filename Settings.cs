@@ -8,7 +8,7 @@ namespace SmartTrade
 
     internal static class Settings
     {
-        internal static bool IsRunning
+        internal static bool IsEnabled
         {
             get { return GetBoolean(); }
             set { SetBoolean(value); }
