@@ -8,18 +8,16 @@ namespace SmartTrade
 
     internal static class Settings
     {
-        internal static bool IsEnabled
-        {
-            get { return GetBoolean(); }
-            set { SetBoolean(value); }
-        }
-
+        /// <summary>Gets or sets the next trade time.</summary>
+        /// <value>The unix time of the next trade if the service is enabled; or, 0 if the trade service is disabled.
+        /// </value>
         internal static long NextTradeTime
         {
             get { return GetLong(); }
             set { SetLong(value); }
         }
 
+        /// <summary>Gets or sets a value whether the service is currently selling or not.</summary>
         internal static bool Sell
         {
             get { return GetBoolean(); }
