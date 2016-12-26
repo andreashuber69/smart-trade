@@ -2,6 +2,7 @@ namespace SmartTrade
 {
     using System;
     using System.Runtime.CompilerServices;
+
     using Android.App;
     using Android.Content;
     using Android.Preferences;
