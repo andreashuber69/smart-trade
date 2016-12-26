@@ -14,6 +14,18 @@ namespace SmartTrade
             set { SetBoolean(value); }
         }
 
+        internal static long NextTradeTime
+        {
+            get { return GetLong(); }
+            set { SetLong(value); }
+        }
+
+        internal static bool Sell
+        {
+            get { return GetBoolean(); }
+            set { SetBoolean(value); }
+        }
+
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private static bool GetBoolean([CallerMemberName] string key = null) =>
@@ -21,6 +33,12 @@ namespace SmartTrade
 
         private static void SetBoolean(bool value, [CallerMemberName] string key = null) =>
             SetValue(p => p.PutBoolean(key, value));
+
+        private static long GetLong([CallerMemberName] string key = null) =>
+            GetValue(p => p.GetLong(key, 0));
+
+        private static void SetLong(long value, [CallerMemberName] string key = null) =>
+            SetValue(p => p.PutLong(key, value));
 
         private static void SetValue(Action<ISharedPreferencesEditor> setValue)
         {

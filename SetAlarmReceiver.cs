@@ -1,5 +1,7 @@
 namespace SmartTrade
 {
+    using System;
+
     using Android.App;
     using Android.Content;
 
@@ -14,10 +16,12 @@ namespace SmartTrade
             var alarmIntent = PendingIntent.GetService(
                 context, 0, new Intent(context, typeof(BuySellService)), PendingIntentFlags.UpdateCurrent);
             var manager = AlarmManager.FromContext(context);
+            var earliestNextTradeTime = Java.Lang.JavaSystem.CurrentTimeMillis() + 10 * 1000;
+            var nextTradeTime = Math.Max(earliestNextTradeTime, Settings.NextTradeTime);
 
             if (Settings.IsRunning)
             {
-                manager.Set(AlarmType.RtcWakeup, Java.Lang.JavaSystem.CurrentTimeMillis() + 10000, alarmIntent);
+                manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
                 this.ShowNotification(context, Resource.String.service_enabled);
             }
             else
