@@ -52,22 +52,11 @@
                 var earliestNextTradeTime = Java.Lang.JavaSystem.CurrentTimeMillis() + 10 * 1000;
                 var nextTradeTime = Math.Max(earliestNextTradeTime, Settings.NextTradeTime);
                 manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
-                ShowNotification(context, Resource.String.service_enabled);
             }
             else
             {
                 manager.Cancel(alarmIntent);
-                ShowNotification(context, Resource.String.service_disabled);
             }
-        }
-
-        private static void ShowNotification(Context context, int messageId)
-        {
-            var notificationBuilder = new Notification.Builder(context)
-                .SetSmallIcon(Resource.Drawable.ic_stat_name)
-                .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
-                .SetContentText(context.Resources.GetString(messageId));
-            var popup = new NotificationPopup(context, notificationBuilder);
         }
     }
 }

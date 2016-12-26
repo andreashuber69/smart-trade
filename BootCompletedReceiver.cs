@@ -11,7 +11,23 @@ namespace SmartTrade
         [IntentFilter(new string[] { Intent.ActionBootCompleted })]
         private sealed class BootCompletedReceiver : BroadcastReceiver
         {
-            public sealed override void OnReceive(Context context, Intent intent) => ScheduleTrade();
+            public sealed override void OnReceive(Context context, Intent intent)
+            {
+                ScheduleTrade();
+                var id = TradeService.IsEnabled ? Resource.String.service_enabled : Resource.String.service_disabled;
+                ShowNotification(context, id);
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            private static void ShowNotification(Context context, int messageId)
+            {
+                var notificationBuilder = new Notification.Builder(context)
+                    .SetSmallIcon(Resource.Drawable.ic_stat_name)
+                    .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
+                    .SetContentText(context.Resources.GetString(messageId));
+                var popup = new NotificationPopup(context, notificationBuilder);
+            }
         }
     }
 }
