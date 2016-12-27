@@ -7,11 +7,11 @@
 namespace SmartTrade
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
     using Android.App;
     using Android.Content;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>Buys or sells according to the configured schedule.</summary>
     /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
@@ -29,7 +29,7 @@ namespace SmartTrade
         protected sealed override async void OnHandleIntent(Intent intent)
         {
             var notificationBuilder =
-                new Notification.Builder(this).SetContentText(Resources.GetString(Resource.String.service_buying));
+                new Notification.Builder(this).SetContentText(this.Resources.GetString(Resource.String.service_buying));
 
             using (new NotificationPopup(this, notificationBuilder))
             {
@@ -55,7 +55,7 @@ namespace SmartTrade
 
             if (Settings.NextTradeTime > 0)
             {
-                var earliestNextTradeTime = Java.Lang.JavaSystem.CurrentTimeMillis() + 10 * 1000;
+                var earliestNextTradeTime = Java.Lang.JavaSystem.CurrentTimeMillis() + (10 * 1000);
                 var nextTradeTime = Math.Max(earliestNextTradeTime, Settings.NextTradeTime);
                 manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
             }
