@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// <copyright>Copyright 2016-2017 Andreas Huber Dönni.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)</copyright>
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace SmartTrade
 {
     using System;
@@ -5,6 +11,7 @@ namespace SmartTrade
 
     using Android.App;
     using Android.Content;
+    using System.Diagnostics.CodeAnalysis;
 
     internal sealed class NotificationPopup : IDisposable
     {
@@ -17,6 +24,7 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The disposable is passed to an API method, TODO.")]
         internal NotificationPopup(Context context, Notification.Builder builder)
         {
             builder

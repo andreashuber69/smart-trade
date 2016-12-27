@@ -1,3 +1,9 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// <copyright>Copyright 2016-2017 Andreas Huber Dönni.
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)</copyright>
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace SmartTrade
 {
     using System;
@@ -6,6 +12,7 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
     using Android.Preferences;
+    using System.Diagnostics.CodeAnalysis;
 
     internal static class Settings
     {
@@ -19,6 +26,7 @@ namespace SmartTrade
         }
 
         /// <summary>Gets or sets a value whether the service is currently selling or not.</summary>
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Temporary, TODO.")]
         internal static bool Sell
         {
             get { return GetBoolean(); }
@@ -27,9 +35,11 @@ namespace SmartTrade
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Temporary, TODO.")]
         private static bool GetBoolean([CallerMemberName] string key = null) =>
             GetValue(p => p.GetBoolean(key, false));
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Temporary, TODO.")]
         private static void SetBoolean(bool value, [CallerMemberName] string key = null) =>
             SetValue(p => p.PutBoolean(key, value));
 

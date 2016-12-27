@@ -1,0 +1,20 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "orderingRules": {
+      "elementOrder": [
+        "accessibility",
+        "constant",
+        "static",
+        "readonly",
+        "kind"
+      ]
+    },
+    "documentationRules": {
+      "fileNamingConvention": "metadata",
+      "copyrightText": "Copyright 2016-2017 Andreas Huber Dönni.\r\nDistributed under the Boost Software License, Version 1.0.\r\n(See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)",
+      "documentInterfaces": false,
+      "documentInternalElements": false
+    }
+  }
+}

@@ -182,6 +182,7 @@ BundleArtifacts/
 # Others
 ClientBin/
 [Ss]tyle[Cc]op.*
+!stylecop.json
 ~$*
 *~
 *.dbmdl
