@@ -47,16 +47,37 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Json" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Balance.cs" />
+    <Compile Include="BitstampClient.cs" />
+    <Compile Include="BitstampException.cs" />
+    <Compile Include="BtcEurExchange.cs" />
+    <Compile Include="CurrencyExchange.cs" />
+    <Compile Include="DateTimeHelper.cs" />
+    <Compile Include="Failure.cs" />
     <Compile Include="FakeActivity.cs" />
+    <Compile Include="IBalance.cs" />
+    <Compile Include="ICurrencyExchange.cs" />
+    <Compile Include="ITransaction.cs" />
+    <Compile Include="Order.cs" />
+    <Compile Include="OrderBook.cs" />
+    <Compile Include="OrderCollection.cs" />
+    <Compile Include="OrderSurrogate.cs" />
+    <Compile Include="OrderType.cs" />
+    <Compile Include="PrivateOrder.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transaction.cs" />
+    <Compile Include="TransactionCollection.cs" />
+    <Compile Include="TransactionType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
