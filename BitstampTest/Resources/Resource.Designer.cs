@@ -26,6 +26,8 @@ namespace BitstampTest
 		
 		public static void UpdateIdValues()
 		{
+			global::Bitstamp.Resource.String.ApplicationName = global::BitstampTest.Resource.String.ApplicationName;
+			global::Bitstamp.Resource.String.Hello = global::BitstampTest.Resource.String.Hello;
 			global::Xamarin.Android.NUnitLite.Resource.Id.OptionHostName = global::BitstampTest.Resource.Id.OptionHostName;
 			global::Xamarin.Android.NUnitLite.Resource.Id.OptionPort = global::BitstampTest.Resource.Id.OptionPort;
 			global::Xamarin.Android.NUnitLite.Resource.Id.OptionRemoteServer = global::BitstampTest.Resource.Id.OptionRemoteServer;
