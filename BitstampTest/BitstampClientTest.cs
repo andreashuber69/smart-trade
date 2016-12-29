@@ -6,17 +6,17 @@
 
 namespace BitstampTest
 {
-    using System;
-
+    using System.Diagnostics.CodeAnalysis;
     using NUnit.Framework;
 
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
     [TestFixture]
     internal sealed class BitstampClientTest
     {
+        [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Test method cannot be static.")]
         [Test]
         public void MainTest()
         {
-            Console.WriteLine("test1");
             Assert.True(true);
         }
     }

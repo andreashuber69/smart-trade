@@ -6,20 +6,21 @@
 
 namespace BitstampTest
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
 
     using Android.App;
     using Android.OS;
     using Xamarin.Android.NUnitLite;
 
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
     [Activity(Label = "BitstampTest", MainLauncher = true, Icon = "@drawable/icon")]
     internal sealed class MainActivity : TestSuiteActivity
     {
         protected sealed override void OnCreate(Bundle bundle)
         {
-            AddTest(Assembly.GetExecutingAssembly());
+            this.AddTest(Assembly.GetExecutingAssembly());
             base.OnCreate(bundle);
         }
     }
 }
-
