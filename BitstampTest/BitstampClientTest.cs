@@ -6,20 +6,18 @@
 
 namespace BitstampTest
 {
-    using System.Reflection;
+    using System;
 
-    using Android.App;
-    using Android.OS;
-    using Xamarin.Android.NUnitLite;
+    using NUnit.Framework;
 
-    [Activity(Label = "BitstampTest", MainLauncher = true, Icon = "@drawable/icon")]
-    internal sealed class MainActivity : TestSuiteActivity
+    [TestFixture]
+    internal sealed class BitstampClientTest
     {
-        protected sealed override void OnCreate(Bundle bundle)
+        [Test]
+        public void MainTest()
         {
-            AddTest(Assembly.GetExecutingAssembly());
-            base.OnCreate(bundle);
+            Console.WriteLine("test1");
+            Assert.True(true);
         }
     }
 }
-
