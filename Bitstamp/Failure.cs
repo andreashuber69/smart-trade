@@ -17,6 +17,6 @@ namespace Bitstamp
         public string Status { get; set; }
 
         [DataMember(Name = "reason")]
-        public object Reason { get; set; } // Apparently reason can not only be a string but also a json object
+        public string Reason { get; set; }
     }
 }

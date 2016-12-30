@@ -11,7 +11,6 @@ namespace Bitstamp
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
-    using System.Json;
     using System.Linq;
     using System.Net.Http;
     using System.Runtime.Serialization.Json;
@@ -140,11 +139,11 @@ namespace Bitstamp
             {
                 await response.Content.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
-                var json = JsonValue.Load(memoryStream) as JsonObject;
+                var failure = DeserializeJson<Failure>(memoryStream);
 
-                if ((json != null) && json.ContainsKey("Status") && (json["Status"] == "error"))
+                if (failure.Status == "error")
                 {
-                    throw new BitstampException(json["Reason"].ToString());
+                    throw new BitstampException(failure.Reason);
                 }
 
                 response.EnsureSuccessStatusCode();
