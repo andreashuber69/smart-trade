@@ -23,7 +23,7 @@ namespace BitstampTest
     {
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Test method cannot be static.")]
         [Test]
-        public async Task MainTest()
+        public async void MainTest()
         {
             using (var client = new BitstampClient())
             {

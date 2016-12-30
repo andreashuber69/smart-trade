@@ -139,9 +139,10 @@ namespace Bitstamp
             using (var memoryStream = new MemoryStream())
             {
                 await response.Content.CopyToAsync(memoryStream);
-                var json = JsonValue.Load(memoryStream);
+                memoryStream.Position = 0;
+                var json = JsonValue.Load(memoryStream) as JsonObject;
 
-                if (json["Status"] == "error")
+                if ((json != null) && json.ContainsKey("Status") && (json["Status"] == "error"))
                 {
                     throw new BitstampException(json["Reason"].ToString());
                 }
