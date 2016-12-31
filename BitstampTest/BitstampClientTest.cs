@@ -21,6 +21,7 @@ namespace BitstampTest
     [TestFixture]
     internal sealed class BitstampClientTest
     {
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
         [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "Test method cannot be static.")]
         [Test]
         public async void MainTest()
@@ -42,21 +43,16 @@ namespace BitstampTest
                 var balance = await exchange.GetBalanceAsync();
                 var secondBalance = balance.SecondCurrency;
                 var secondBalanceAtDeposit = secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
-                var elapsedTime = DateTime.UtcNow - deposit.DateTime;
-                var timeSpan = TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
-                var secondBalanceTarget = (1M - ((decimal)elapsedTime.Ticks / timeSpan.Ticks)) * secondBalanceAtDeposit;
+                var duration = TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
+                var trader = new UnitCostAveragingTrader(deposit.DateTime, secondBalanceAtDeposit, duration, 5, balance.Fee);
                 var orderBook = await exchange.GetOrderBookAsync();
                 var ask = orderBook.Asks[0];
-                var secondAmountTarget =
-                    Min(secondBalance - secondBalanceTarget, Min(ask.Amount * ask.Price, secondBalance));
-                var secondAmountToBuy =
-                    Floor(secondAmountTarget * balance.Fee) / balance.Fee * (1 - (balance.Fee / 100));
+                var secondAmountToBuy = trader.GetAmount(secondBalance, ask.Amount * ask.Price);
+                var time = trader.GetNextTime(secondBalance);
 
-                // Bitstamp minimum order size
-                if (secondAmountToBuy >= 5)
+                if (secondAmountToBuy > 0)
                 {
-                    var price = Round(ask.Price, 2);
-                    var firstAmountToBuy = Round(secondAmountToBuy / price, 8);
+                    var firstAmountToBuy = Round(secondAmountToBuy / ask.Price, 8);
                     var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
                 }
             }
