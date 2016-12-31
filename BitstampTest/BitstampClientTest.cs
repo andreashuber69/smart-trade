@@ -57,7 +57,7 @@ namespace BitstampTest
                 {
                     var price = Round(ask.Price, 2);
                     var firstAmountToBuy = Round(secondAmountToBuy / price, 8);
-                    var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy, price);
+                    var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
                 }
             }
         }

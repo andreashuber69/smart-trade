@@ -121,6 +121,12 @@ namespace Bitstamp
             return this.ExecutePostAsync<PrivateOrder>(Invariant($"/api/v2/buy/{tickerSymbol}/"), args);
         }
 
+        internal Task<PrivateOrder> CreateBuyOrderAsync(string tickerSymbol, decimal amount)
+        {
+            var args = new Dictionary<string, string>() { { "amount", ToString(amount) } };
+            return this.ExecutePostAsync<PrivateOrder>(Invariant($"/api/v2/buy/market/{tickerSymbol}/"), args);
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private const string BaseUri = "https://www.bitstamp.net";

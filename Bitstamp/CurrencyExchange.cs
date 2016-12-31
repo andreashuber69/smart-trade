@@ -24,6 +24,9 @@ namespace Bitstamp
 
             public Task<OrderBook> GetOrderBookAsync() => this.client.GetOrderBookAsync(this.tickerSymbol);
 
+            public Task<PrivateOrder> CreateBuyOrderAsync(decimal amount) =>
+                this.client.CreateBuyOrderAsync(this.tickerSymbol, amount);
+
             public Task<PrivateOrder> CreateBuyOrderAsync(decimal amount, decimal price) =>
                 this.client.CreateBuyOrderAsync(this.tickerSymbol, amount, price);
 

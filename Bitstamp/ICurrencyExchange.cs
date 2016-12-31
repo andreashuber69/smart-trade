@@ -48,6 +48,16 @@ namespace Bitstamp
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Expensive method.")]
         Task<OrderBook> GetOrderBookAsync();
 
+        /// <summary>Creates a market buy order.</summary>
+        /// <param name="amount">The amount to buy denominated in the first currency.</param>
+        /// <exception cref="BitstampException">The Bitstamp server reported an error.</exception>
+        /// <exception cref="HttpRequestException">The Bitstamp server could either not be reached or reported an
+        /// unexpected error.</exception>
+        /// <exception cref="InvalidOperationException">The private API cannot be accessed with this instance.
+        /// </exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IDisposable.Dispose"/> has been called.</exception>
+        Task<PrivateOrder> CreateBuyOrderAsync(decimal amount);
+
         /// <summary>Creates a buy order.</summary>
         /// <param name="amount">The amount to buy denominated in the first currency.</param>
         /// <param name="price">The price denominated in the second currency.</param>
