@@ -22,7 +22,7 @@ namespace SmartTrade
         internal NotificationPopup(Context context, string contentText)
         {
             this.manager = NotificationManager.FromContext(context);
-            this.id = Interlocked.Increment(ref lastId);
+            this.id = (int)(Java.Lang.JavaSystem.CurrentTimeMillis() & int.MaxValue);
             this.Update(context, contentText);
         }
 
@@ -43,7 +43,6 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private static int lastId = 0;
         private readonly NotificationManager manager;
         private readonly int id;
     }
