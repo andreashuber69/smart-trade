@@ -15,28 +15,32 @@ namespace SmartTrade
 
     internal sealed class NotificationPopup : IDisposable
     {
-        public void Dispose() => this.cancel();
+        public void Dispose() => this.manager.Cancel(this.id);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The disposable is passed to an API method, TODO.")]
         internal NotificationPopup(Context context, Notification.Builder builder)
         {
+            this.manager = NotificationManager.FromContext(context);
+            this.id = Interlocked.Increment(ref lastId);
+            this.Update(context, builder);
+        }
+
+        internal void Update(Context context, Notification.Builder builder)
+        {
             builder
                 .SetSmallIcon(Resource.Drawable.ic_stat_name)
                 .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
                 .SetContentIntent(PendingIntent.GetActivity(context, 0, new Intent(context, typeof(MainActivity)), 0))
                 .SetAutoCancel(true);
-
-            var manager = NotificationManager.FromContext(context);
-            var id = Interlocked.Increment(ref lastId);
-            this.cancel = () => manager.Cancel(id);
-            manager.Notify(id, builder.Build());
+            this.manager.Notify(this.id, builder.Build());
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private static int lastId = 0;
-        private readonly Action cancel;
+        private readonly NotificationManager manager;
+        private readonly int id;
     }
 }
