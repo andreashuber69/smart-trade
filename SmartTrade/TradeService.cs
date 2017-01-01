@@ -10,6 +10,7 @@ namespace SmartTrade
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Net.Http;
     using System.Threading.Tasks;
 
     using Android.App;
@@ -17,6 +18,7 @@ namespace SmartTrade
     using Bitstamp;
     using Java.Lang;
 
+    using static System.FormattableString;
     using static System.Math;
 
     /// <summary>Buys or sells according to the configured schedule.</summary>
@@ -34,13 +36,13 @@ namespace SmartTrade
 
         protected sealed override async void OnHandleIntent(Intent intent)
         {
-            var notificationBuilder =
-                new Notification.Builder(this).SetContentText(this.Resources.GetString(Resource.String.service_buying));
+            var popup = new NotificationPopup(this, this.Resources.GetString(Resource.String.service_buying));
 
-            using (new NotificationPopup(this, notificationBuilder))
             using (var client = new BitstampClient())
             {
-                await BuyAndRescheduleAsync(client.BtcEur);
+                var waitTicks = (await this.BuyAsync(client.BtcEur, popup)).GetValueOrDefault().Ticks;
+                var waitTime = new TimeSpan(Max(TimeSpan.FromHours(1).Ticks, waitTicks));
+                ScheduleTrade(JavaSystem.CurrentTimeMillis() + (long)waitTime.TotalMilliseconds);
             }
         }
 
@@ -74,55 +76,69 @@ namespace SmartTrade
             }
         }
 
-        private static async Task BuyAndRescheduleAsync(ICurrencyExchange exchange)
-        {
-            var waitTicks = (await BuyAsync(exchange)).GetValueOrDefault().Ticks;
-            var waitTime = new TimeSpan(Max(TimeSpan.FromHours(1).Ticks, waitTicks));
-            ScheduleTrade(JavaSystem.CurrentTimeMillis() + (long)waitTime.TotalMilliseconds);
-        }
-
-        /// <summary>Buys on the exchange.</summary>
-        /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found or if
-        /// the balance is insufficient.</returns>
-        private static async Task<TimeSpan?> BuyAsync(ICurrencyExchange exchange)
-        {
-            var balance = await exchange.GetBalanceAsync();
-
-            if (balance.SecondCurrency >= UnitCostAveragingTrader.GetMinSpendableAmount(MinAmount, balance.Fee))
-            {
-                var transactions = (await exchange.GetTransactionsAsync()).ToList();
-                var lastDepositIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.Deposit);
-
-                if (lastDepositIndex >= 0)
-                {
-                    var secondBalance = balance.SecondCurrency;
-                    var deposit = transactions[lastDepositIndex];
-                    var secondBalanceAtDeposit = secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
-                    var duration = TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
-                    var trader =
-                        new UnitCostAveragingTrader(deposit.DateTime, secondBalanceAtDeposit, duration, 5, balance.Fee);
-                    var orderBook = await exchange.GetOrderBookAsync();
-                    var ask = orderBook.Asks[0];
-                    var price = Round(ask.Price, 2); // Sometimes the price is not yet rounded to two decimals
-                    var secondAmountToSpend = trader.GetAmount(secondBalance, ask.Amount * price);
-
-                    if (secondAmountToSpend > 0)
-                    {
-                        var firstAmountToBuy = Round(trader.SubtractFee(secondAmountToSpend) / price, 8);
-                        var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
-                    }
-
-                    return trader.GetNextTime(secondBalance - secondAmountToSpend) - DateTime.UtcNow;
-                }
-            }
-
-            return null;
-        }
-
         private static decimal GetBalanceDifference(IEnumerable<ITransaction> transactions) =>
             transactions.Aggregate(0M, (s, t) => s += GetAmountWithFee(t.SecondAmount, t.Fee));
 
         private static decimal GetAmountWithFee(decimal amount, decimal fee) =>
             amount < 0 ? amount - fee : amount + fee;
+
+        /// <summary>Buys on the exchange.</summary>
+        /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found or if
+        /// the balance is insufficient.</returns>
+        private async Task<TimeSpan?> BuyAsync(ICurrencyExchange exchange, NotificationPopup popup)
+        {
+            try
+            {
+                var balance = await exchange.GetBalanceAsync();
+
+                if (balance.SecondCurrency >= UnitCostAveragingTrader.GetMinSpendableAmount(MinAmount, balance.Fee))
+                {
+                    var transactions = (await exchange.GetTransactionsAsync()).ToList();
+                    var lastDepositIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.Deposit);
+
+                    if (lastDepositIndex >= 0)
+                    {
+                        var secondBalance = balance.SecondCurrency;
+                        var deposit = transactions[lastDepositIndex];
+                        var secondBalanceAtDeposit = secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
+                        var duration = TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
+                        var trader =
+                            new UnitCostAveragingTrader(deposit.DateTime, secondBalanceAtDeposit, duration, 5, balance.Fee);
+                        var orderBook = await exchange.GetOrderBookAsync();
+                        var ask = orderBook.Asks[0];
+                        var price = Round(ask.Price, 2); // Sometimes the price is not yet rounded to two decimals
+                        var secondAmountToSpend = trader.GetAmount(secondBalance, ask.Amount * price);
+
+                        if (secondAmountToSpend > 0)
+                        {
+                            var firstAmountToBuy = Round(trader.SubtractFee(secondAmountToSpend) / price, 8);
+                            var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
+                            popup.Update(this, Invariant($"Bought {result.Amount * result.Price}."));
+                        }
+                        else
+                        {
+                            popup.Update(this, "Amount to spend is zero.");
+                        }
+
+                        // popup.Dispose();
+                        return trader.GetNextTime(secondBalance - secondAmountToSpend) - DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        popup.Update(this, "No deposit found.");
+                    }
+                }
+                else
+                {
+                    popup.Update(this, "Insufficient balance.");
+                }
+            }
+            catch (System.Exception ex) when (ex is BitstampException || ex is HttpRequestException)
+            {
+                popup.Update(this, ex.Message);
+            }
+
+            return null;
+        }
     }
 }

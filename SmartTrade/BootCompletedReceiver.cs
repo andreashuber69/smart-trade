@@ -20,21 +20,13 @@ namespace SmartTrade
         [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
         private sealed class BootCompletedReceiver : BroadcastReceiver
         {
+            [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", Justification = "Method is not externally visible, CA bug?")]
+            [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intentional, we want the popup to remain")]
             public sealed override void OnReceive(Context context, Intent intent)
             {
                 ScheduleTrade();
                 var id = TradeService.IsEnabled ? Resource.String.service_enabled : Resource.String.service_disabled;
-                ShowNotification(context, id);
-            }
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "We want the notification to stay up.")]
-            private static void ShowNotification(Context context, int messageId)
-            {
-                new NotificationPopup(
-                    context,
-                    new Notification.Builder(context).SetContentText(context.Resources.GetString(messageId))).ToString();
+                new NotificationPopup(context, context.Resources.GetString(id)).ToString();
             }
         }
     }

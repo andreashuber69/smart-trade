@@ -19,22 +19,26 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The disposable is passed to an API method, TODO.")]
-        internal NotificationPopup(Context context, Notification.Builder builder)
+        internal NotificationPopup(Context context, string contentText)
         {
             this.manager = NotificationManager.FromContext(context);
             this.id = Interlocked.Increment(ref lastId);
-            this.Update(context, builder);
+            this.Update(context, contentText);
         }
 
-        internal void Update(Context context, Notification.Builder builder)
+        internal void Update(Context context, string contentText)
         {
-            builder
-                .SetSmallIcon(Resource.Drawable.ic_stat_name)
-                .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
-                .SetContentIntent(PendingIntent.GetActivity(context, 0, new Intent(context, typeof(MainActivity)), 0))
-                .SetAutoCancel(true);
-            this.manager.Notify(this.id, builder.Build());
+            using (var builder = new Notification.Builder(context))
+            using (var intent = new Intent(context, typeof(MainActivity)))
+            {
+                builder
+                    .SetSmallIcon(Resource.Drawable.ic_stat_name)
+                    .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
+                    .SetContentText(contentText)
+                    .SetContentIntent(PendingIntent.GetActivity(context, 0, intent, 0))
+                    .SetAutoCancel(true);
+                this.manager.Notify(this.id, builder.Build());
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
