@@ -10,6 +10,7 @@ namespace SmartTrade
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
 
@@ -133,9 +134,15 @@ namespace SmartTrade
                     popup.Update(this, "Insufficient balance.");
                 }
             }
-            catch (System.Exception ex) when (ex is BitstampException || ex is HttpRequestException)
+            catch (System.Exception ex) when (ex is BitstampException || ex is HttpRequestException || ex is WebException)
             {
                 popup.Update(this, ex.Message);
+            }
+            catch (System.Exception ex)
+            {
+                popup.Update(this, Invariant($"Unexpected error: {ex.Message}\r\nService disabled."));
+                IsEnabled = false;
+                throw;
             }
 
             return null;
