@@ -10,10 +10,10 @@ namespace Bitstamp
 
     using Android.App;
 
-    /// <summary>Fake main activity to work around https://bugzilla.xamarin.com/show_bug.cgi?id=43553.</summary>
+    /// <summary>Dummy activity to work around https://bugzilla.xamarin.com/show_bug.cgi?id=43553.</summary>
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
-    [Activity(MainLauncher = true)]
-    internal sealed class FakeActivity : Activity
+    [Activity(MainLauncher = false)]
+    internal sealed class DummyActivity : Activity
     {
     }
 }

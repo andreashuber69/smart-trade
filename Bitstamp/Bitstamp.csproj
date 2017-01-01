@@ -62,7 +62,7 @@
     <Compile Include="BtcEurExchange.cs" />
     <Compile Include="CurrencyExchange.cs" />
     <Compile Include="DateTimeHelper.cs" />
-    <Compile Include="FakeActivity.cs" />
+    <Compile Include="DummyActivity.cs" />
     <Compile Include="IBalance.cs" />
     <Compile Include="ICurrencyExchange.cs" />
     <Compile Include="ITransaction.cs" />
