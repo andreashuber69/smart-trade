@@ -78,7 +78,7 @@ namespace SmartTrade
         {
             var waitTicks = (await BuyAsync(exchange)).GetValueOrDefault().Ticks;
             var waitTime = new TimeSpan(Max(TimeSpan.FromHours(1).Ticks, waitTicks));
-            ScheduleTrade(JavaSystem.CurrentTimeMillis() + waitTime.Milliseconds);
+            ScheduleTrade(JavaSystem.CurrentTimeMillis() + (long)waitTime.TotalMilliseconds);
         }
 
         /// <summary>Buys on the exchange.</summary>
