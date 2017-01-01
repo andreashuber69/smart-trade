@@ -103,11 +103,12 @@ namespace SmartTrade
                         new UnitCostAveragingTrader(deposit.DateTime, secondBalanceAtDeposit, duration, 5, balance.Fee);
                     var orderBook = await exchange.GetOrderBookAsync();
                     var ask = orderBook.Asks[0];
-                    var secondAmountToSpend = trader.GetAmount(secondBalance, ask.Amount * ask.Price);
+                    var price = Round(ask.Price, 2); // Sometimes the price is not yet rounded to two decimals
+                    var secondAmountToSpend = trader.GetAmount(secondBalance, ask.Amount * price);
 
                     if (secondAmountToSpend > 0)
                     {
-                        var firstAmountToBuy = Round(trader.SubtractFee(secondAmountToSpend) / ask.Price, 8);
+                        var firstAmountToBuy = Round(trader.SubtractFee(secondAmountToSpend) / price, 8);
                         var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
                     }
 

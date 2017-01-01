@@ -47,6 +47,7 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Json" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
@@ -61,7 +62,6 @@
     <Compile Include="BtcEurExchange.cs" />
     <Compile Include="CurrencyExchange.cs" />
     <Compile Include="DateTimeHelper.cs" />
-    <Compile Include="Failure.cs" />
     <Compile Include="FakeActivity.cs" />
     <Compile Include="IBalance.cs" />
     <Compile Include="ICurrencyExchange.cs" />

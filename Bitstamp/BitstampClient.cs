@@ -11,6 +11,7 @@ namespace Bitstamp
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
+    using System.Json;
     using System.Linq;
     using System.Net.Http;
     using System.Runtime.Serialization.Json;
@@ -145,11 +146,16 @@ namespace Bitstamp
             {
                 await response.Content.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
-                var failure = DeserializeJson<Failure>(memoryStream);
 
-                if (failure.Status == "error")
+                // In the case of a failure, the "reason" property in the JSON sometimes is a string and sometimes an
+                // object. It is not easy to predict the type of said property and DataContractJsonSerializer cannot be
+                // used to deserialize JSON with unknown structure. This is why we're deserializing with JsonValue here.
+                var failure = JsonValue.Load(memoryStream) as JsonObject;
+                const string StatusName = "status";
+
+                if ((failure != null) && failure.ContainsKey(StatusName) && (failure[StatusName] == "error"))
                 {
-                    throw new BitstampException(failure.Reason);
+                    throw new BitstampException(failure["reason"].ToString());
                 }
 
                 response.EnsureSuccessStatusCode();

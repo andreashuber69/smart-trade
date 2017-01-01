@@ -92,7 +92,7 @@ namespace Bitstamp
         }
 
         /// <summary>Gets the amount with the fee subtracted.</summary>
-        public decimal SubtractFee(decimal amount) => amount * (1M - (this.feePercent / 100));
+        public decimal SubtractFee(decimal amount) => amount - (Ceiling(amount * this.feePercent) / 100);
 
         /// <summary>Gets the UTC time at which <see cref="GetAmount"/> can return a non-zero number.</summary>
         /// <param name="currentBalance">The current balance.</param>
