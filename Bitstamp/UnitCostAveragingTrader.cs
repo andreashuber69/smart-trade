@@ -15,6 +15,12 @@ namespace Bitstamp
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Temporary, TODO.")]
     public sealed class UnitCostAveragingTrader
     {
+        /// <summary>Gets the minimal spendable amount.</summary>
+        /// <returns>The smallest value greater than or equal to <paramref name="minAmount"/> such that the fee amounts
+        /// to whole cents.</returns>
+        public static decimal GetMinSpendableAmount(decimal minAmount, decimal feePercent) =>
+            Ceiling(minAmount * feePercent) / feePercent;
+
         /// <summary>Initializes a new instance of the <see cref="UnitCostAveragingTrader"/> class.</summary>
         /// <param name="initialBalanceTime">The UTC point in time of the initial balance.</param>
         /// <param name="initialBalance">The initial balance.</param>
@@ -68,10 +74,25 @@ namespace Bitstamp
             var elapsed = DateTime.UtcNow - this.initialBalanceTime;
             var balanceTarget = (1M - ((decimal)elapsed.Ticks / this.duration.Ticks)) * this.initialBalance;
             var amountTarget = Min(currentBalance - balanceTarget, Min(maxAmount, currentBalance));
-            var amountToSpend =
-                Floor(amountTarget * this.feePercent) / this.feePercent * (1M - (this.feePercent / 100));
-            return amountToSpend >= this.minAmount ? amountToSpend : 0;
+            var amountToSpend = Floor(amountTarget * this.feePercent) / this.feePercent;
+
+            if (amountToSpend < this.MinSpendableAmount)
+            {
+                amountToSpend = 0;
+            }
+            else
+            {
+                if ((currentBalance - amountToSpend) < this.MinSpendableAmount)
+                {
+                    amountToSpend = currentBalance;
+                }
+            }
+
+            return amountToSpend;
         }
+
+        /// <summary>Gets the amount with the fee subtracted.</summary>
+        public decimal SubtractFee(decimal amount) => amount * (1M - (this.feePercent / 100));
 
         /// <summary>Gets the UTC time at which <see cref="GetAmount"/> can return a non-zero number.</summary>
         /// <param name="currentBalance">The current balance.</param>
@@ -79,13 +100,11 @@ namespace Bitstamp
         /// point exists (e.g. if the current balance is already below the minimal amount).</returns>
         public DateTime? GetNextTime(decimal currentBalance)
         {
-            var minAmountToSpend = Ceiling(this.minAmount * this.feePercent) / this.feePercent;
-
-            if (currentBalance >= minAmountToSpend)
+            if (currentBalance >= this.MinSpendableAmount)
             {
-                var maxBalanceTarget = currentBalance - minAmountToSpend;
+                var balanceTarget = currentBalance - this.MinSpendableAmount;
                 var durationTarget =
-                    new TimeSpan((long)((1M - (maxBalanceTarget / this.initialBalance)) * this.duration.Ticks));
+                    new TimeSpan((long)((1M - (balanceTarget / this.initialBalance)) * this.duration.Ticks));
                 return this.initialBalanceTime + durationTarget;
             }
 
@@ -99,5 +118,7 @@ namespace Bitstamp
         private readonly TimeSpan duration;
         private readonly decimal minAmount;
         private readonly decimal feePercent;
+
+        private decimal MinSpendableAmount => GetMinSpendableAmount(this.minAmount, this.feePercent);
     }
 }

@@ -26,6 +26,8 @@ namespace SmartTrade
 		
 		public static void UpdateIdValues()
 		{
+			global::Bitstamp.Resource.String.ApplicationName = global::SmartTrade.Resource.String.ApplicationName;
+			global::Bitstamp.Resource.String.Hello = global::SmartTrade.Resource.String.Hello;
 		}
 		
 		public partial class Attribute
@@ -44,14 +46,14 @@ namespace SmartTrade
 		public partial class Dimension
 		{
 			
-			// aapt resource value: 0x7f050000
-			public const int left_padding = 2131034112;
+			// aapt resource value: 0x7f060000
+			public const int left_padding = 2131099648;
 			
-			// aapt resource value: 0x7f050001
-			public const int right_padding = 2131034113;
+			// aapt resource value: 0x7f060001
+			public const int right_padding = 2131099649;
 			
-			// aapt resource value: 0x7f050002
-			public const int top_margin = 2131034114;
+			// aapt resource value: 0x7f060002
+			public const int top_margin = 2131099650;
 			
 			static Dimension()
 			{
@@ -130,26 +132,32 @@ namespace SmartTrade
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f060001
-			public const int app_description = 2131099649;
+			// aapt resource value: 0x7f050001
+			public const int ApplicationName = 2131034113;
 			
-			// aapt resource value: 0x7f060000
-			public const int app_name = 2131099648;
+			// aapt resource value: 0x7f050000
+			public const int Hello = 2131034112;
 			
-			// aapt resource value: 0x7f060003
-			public const int disable_service = 2131099651;
+			// aapt resource value: 0x7f050003
+			public const int app_description = 2131034115;
 			
-			// aapt resource value: 0x7f060002
-			public const int enable_service = 2131099650;
+			// aapt resource value: 0x7f050002
+			public const int app_name = 2131034114;
 			
-			// aapt resource value: 0x7f060006
-			public const int service_buying = 2131099654;
+			// aapt resource value: 0x7f050005
+			public const int disable_service = 2131034117;
 			
-			// aapt resource value: 0x7f060004
-			public const int service_disabled = 2131099652;
+			// aapt resource value: 0x7f050004
+			public const int enable_service = 2131034116;
 			
-			// aapt resource value: 0x7f060005
-			public const int service_enabled = 2131099653;
+			// aapt resource value: 0x7f050008
+			public const int service_buying = 2131034120;
+			
+			// aapt resource value: 0x7f050006
+			public const int service_disabled = 2131034118;
+			
+			// aapt resource value: 0x7f050007
+			public const int service_enabled = 2131034119;
 			
 			static String()
 			{
