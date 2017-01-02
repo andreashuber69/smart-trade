@@ -87,7 +87,7 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
     <AndroidResource Include="Resources\mipmap\Icon.png" />
     <AndroidResource Include="Resources\values\dimen.xml" />
-    <AndroidResource Include="Resources\drawable\ic_stat_name.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi-v11\ic_stat_name.png" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
