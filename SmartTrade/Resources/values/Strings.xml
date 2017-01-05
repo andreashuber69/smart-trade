@@ -4,7 +4,11 @@
   <string name="app_description">Buys or sells Bitcoin on Bitstamp with a unit cost averaging strategy.</string>
   <string name="enable_service">Enable</string>
   <string name="disable_service">Disable</string>
-  <string name="service_disabled">Smart Trade is disabled.</string>
-  <string name="service_enabled">Smart Trade is enabled.</string>
-  <string name="service_buying">Smart Trade is buying.</string>
+  <string name="service_disabled">Service is disabled. No automatic trading will occur.</string>
+  <string name="service_enabled">Service is enabled. Automatic trading will continue according to schedule.</string>
+  <string name="service_checking">Checking balance...</string>
+  <string name="service_bought">Bought {0} {1:F5} worth of {2}.</string>
+  <string name="service_no_deposit">No deposit found.</string>
+  <string name="service_insufficient_balance">Insufficient balance.</string>
+  <string name="service_unexpected_error">Unexpected error: {0}, {1}\r\nService disabled.</string>
 </resources>

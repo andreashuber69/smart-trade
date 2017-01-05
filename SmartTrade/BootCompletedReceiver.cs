@@ -26,7 +26,7 @@ namespace SmartTrade
             {
                 ScheduleTrade();
                 var id = TradeService.IsEnabled ? Resource.String.service_enabled : Resource.String.service_disabled;
-                new NotificationPopup(context, context.Resources.GetString(id)).ToString();
+                new NotificationPopup(context, id).ToString();
             }
         }
     }

@@ -37,7 +37,7 @@ namespace SmartTrade
 
         protected sealed override async void OnHandleIntent(Intent intent)
         {
-            var popup = new NotificationPopup(this, this.Resources.GetString(Resource.String.service_buying));
+            var popup = new NotificationPopup(this, Resource.String.service_checking);
 
             using (var client = new BitstampClient())
             {
@@ -101,46 +101,50 @@ namespace SmartTrade
                     {
                         var secondBalance = balance.SecondCurrency;
                         var deposit = transactions[lastDepositIndex];
-                        var secondBalanceAtDeposit = secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
-                        var duration = TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
-                        var trader =
-                            new UnitCostAveragingTrader(deposit.DateTime, secondBalanceAtDeposit, duration, 5, balance.Fee);
+                        var secondBalanceAtDeposit =
+                            secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
+                        var duration =
+                            TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
+                        var trader = new UnitCostAveragingTrader(
+                            deposit.DateTime, secondBalanceAtDeposit, duration, 5, balance.Fee);
                         var orderBook = await exchange.GetOrderBookAsync();
                         var ask = orderBook.Asks[0];
-                        var price = Round(ask.Price, 2); // Sometimes the price is not yet rounded to two decimals
-                        var secondAmountToSpend = trader.GetAmount(secondBalance, ask.Amount * price);
+                        var secondAmountToSpend = trader.GetAmount(secondBalance, ask.Amount * ask.Price);
 
                         if (secondAmountToSpend > 0)
                         {
-                            var firstAmountToBuy = Round(trader.SubtractFee(secondAmountToSpend) / price, 8);
+                            var firstAmountToBuy = Round(trader.SubtractFee(secondAmountToSpend) / ask.Price, 8);
                             var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
-                            popup.Update(this, Invariant($"Bought {result.Amount * result.Price}."));
+                            var secondSymbol = exchange.TickerSymbol.Substring(3);
+                            var boughtAmount = result.Amount * result.Price;
+                            var firstSymbol = exchange.TickerSymbol.Substring(0, 3);
+                            popup.Update(this, Resource.String.service_bought, secondSymbol, boughtAmount, firstSymbol);
                         }
                         else
                         {
-                            popup.Update(this, "Amount to spend is zero.");
+                            popup.Dispose();
                         }
 
-                        // popup.Dispose();
                         return trader.GetNextTime(secondBalance - secondAmountToSpend) - DateTime.UtcNow;
                     }
                     else
                     {
-                        popup.Update(this, "No deposit found.");
+                        popup.Update(this, Resource.String.service_no_deposit);
                     }
                 }
                 else
                 {
-                    popup.Update(this, "Insufficient balance.");
+                    popup.Update(this, Resource.String.service_insufficient_balance);
                 }
             }
-            catch (System.Exception ex) when (ex is BitstampException || ex is HttpRequestException || ex is WebException)
+            catch (System.Exception ex) when (ex is BitstampException ||
+                ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
             {
                 popup.Update(this, ex.Message);
             }
             catch (System.Exception ex)
             {
-                popup.Update(this, Invariant($"Unexpected error: {ex.Message}\r\nService disabled."));
+                popup.Update(this, Resource.String.service_unexpected_error, ex.GetType().Name, ex.Message);
                 IsEnabled = false;
                 throw;
             }

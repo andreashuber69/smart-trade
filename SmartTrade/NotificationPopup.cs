@@ -7,11 +7,10 @@
 namespace SmartTrade
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Threading;
-
     using Android.App;
     using Android.Content;
+
+    using static System.Globalization.CultureInfo;
 
     internal sealed class NotificationPopup : IDisposable
     {
@@ -19,23 +18,31 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        internal NotificationPopup(Context context, string contentText)
+        internal NotificationPopup(Context context, int contentFormatId, params object[] args)
         {
             this.manager = NotificationManager.FromContext(context);
             this.id = (int)(Java.Lang.JavaSystem.CurrentTimeMillis() & int.MaxValue);
-            this.Update(context, contentText);
+            this.Update(context, contentFormatId, args);
         }
 
-        internal void Update(Context context, string contentText)
+        internal void Update(Context context, int contentFormatId, params object[] args) =>
+            this.Update(context, context.Resources.GetString(contentFormatId), args);
+
+        internal void Update(Context context, string contentFormat, params object[] args)
         {
+            // Sometimes exception messages contain curly braces, which confuses string.Format
+            var contentText = args.Length > 0 ? string.Format(CurrentCulture, contentFormat, args) : contentFormat;
+
             using (var builder = new Notification.Builder(context))
             using (var intent = new Intent(context, typeof(MainActivity)))
+            using (var style = new Notification.BigTextStyle())
             {
                 builder
                     .SetSmallIcon(Resource.Drawable.ic_stat_name)
                     .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
                     .SetContentText(contentText)
                     .SetContentIntent(PendingIntent.GetActivity(context, 0, intent, 0))
+                    .SetStyle(style.BigText(contentText))
                     .SetAutoCancel(true);
                 this.manager.Notify(this.id, builder.Build());
             }
