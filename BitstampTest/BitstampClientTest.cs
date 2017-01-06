@@ -36,19 +36,22 @@ namespace BitstampTest
         {
             var transactions = (await exchange.GetTransactionsAsync()).ToList();
             var lastDepositIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.Deposit);
+            var lastTradeIndex = transactions.FindIndex(t => t.TransactionType != TransactionType.Withdrawal);
 
-            if (lastDepositIndex >= 0)
+            if ((lastDepositIndex >= 0) && (lastTradeIndex >= 0))
             {
                 var deposit = transactions[lastDepositIndex];
                 var balance = await exchange.GetBalanceAsync();
                 var secondBalance = balance.SecondCurrency;
                 var secondBalanceAtDeposit = secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
                 var duration = TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
-                var trader = new UnitCostAveragingTrader(deposit.DateTime, secondBalanceAtDeposit, duration, 5, balance.Fee);
+                var trader = new UnitCostAveragingTrader(deposit.DateTime + duration, 5, balance.Fee);
                 var orderBook = await exchange.GetOrderBookAsync();
                 var ask = orderBook.Asks[0];
-                var secondAmountToBuy = trader.GetAmount(secondBalance, ask.Amount * ask.Price);
-                var time = trader.GetNextTime(secondBalance);
+
+                var lastTradeTime = transactions[lastTradeIndex].DateTime;
+                var secondAmountToBuy = trader.GetAmount(lastTradeTime, secondBalance, ask.Amount * ask.Price);
+                var time = trader.GetNextTime(lastTradeTime, secondBalance);
 
                 if (secondAmountToBuy > 0)
                 {

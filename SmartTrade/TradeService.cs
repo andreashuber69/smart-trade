@@ -19,7 +19,6 @@ namespace SmartTrade
     using Bitstamp;
     using Java.Lang;
 
-    using static System.FormattableString;
     using static System.Math;
 
     /// <summary>Buys or sells according to the configured schedule.</summary>
@@ -96,8 +95,9 @@ namespace SmartTrade
                 {
                     var transactions = (await exchange.GetTransactionsAsync()).ToList();
                     var lastDepositIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.Deposit);
+                    var lastTradeIndex = transactions.FindIndex(t => t.TransactionType != TransactionType.Withdrawal);
 
-                    if (lastDepositIndex >= 0)
+                    if ((lastDepositIndex >= 0) && (lastTradeIndex >= 0))
                     {
                         var secondBalance = balance.SecondCurrency;
                         var deposit = transactions[lastDepositIndex];
@@ -105,11 +105,12 @@ namespace SmartTrade
                             secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
                         var duration =
                             TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
-                        var trader = new UnitCostAveragingTrader(
-                            deposit.DateTime, secondBalanceAtDeposit, duration, 5, balance.Fee);
+                        var trader = new UnitCostAveragingTrader(deposit.DateTime + duration, 5, balance.Fee);
                         var orderBook = await exchange.GetOrderBookAsync();
                         var ask = orderBook.Asks[0];
-                        var secondAmountToSpend = trader.GetAmount(secondBalance, ask.Amount * ask.Price);
+                        var lastTradeTime = transactions[lastTradeIndex].DateTime;
+                        var secondAmountToSpend = trader.GetAmount(
+                            lastTradeTime, secondBalance, ask.Amount * ask.Price);
 
                         if (secondAmountToSpend > 0)
                         {
@@ -125,7 +126,7 @@ namespace SmartTrade
                             popup.Dispose();
                         }
 
-                        return trader.GetNextTime(secondBalance - secondAmountToSpend) - DateTime.UtcNow;
+                        return trader.GetNextTime(lastTradeTime, secondBalance - secondAmountToSpend) - DateTime.UtcNow;
                     }
                     else
                     {
