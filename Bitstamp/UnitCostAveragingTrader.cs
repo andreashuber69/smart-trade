@@ -79,8 +79,8 @@ namespace Bitstamp
             return amountToSpend;
         }
 
-        /// <summary>Gets the amount with the fee subtracted.</summary>
-        public decimal SubtractFee(decimal amount) => amount - (Ceiling(amount * this.feePercent) / 100);
+        /// <summary>Gets the trading fee for <paramref name="amount"/>.</summary>
+        public decimal GetFee(decimal amount) => Ceiling(amount * this.feePercent) / 100;
 
         /// <summary>Gets the UTC time at which <see cref="GetAmount"/> can return a non-zero number.</summary>
         /// <param name="lastTradeTime">The UTC point in time of the last trade.</param>

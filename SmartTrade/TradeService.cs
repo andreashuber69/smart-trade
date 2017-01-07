@@ -109,24 +109,25 @@ namespace SmartTrade
                         var orderBook = await exchange.GetOrderBookAsync();
                         var ask = orderBook.Asks[0];
                         var lastTradeTime = transactions[lastTradeIndex].DateTime;
-                        var secondAmountToSpend = trader.GetAmount(
-                            lastTradeTime, secondBalance, ask.Amount * ask.Price);
+                        var secondAmount = trader.GetAmount(lastTradeTime, secondBalance, ask.Amount * ask.Price);
 
-                        if (secondAmountToSpend > 0)
+                        if (secondAmount > 0)
                         {
-                            var firstAmountToBuy = Round(trader.SubtractFee(secondAmountToSpend) / ask.Price, 8);
+                            var firstAmountToBuy = Round((secondAmount - trader.GetFee(secondAmount)) / ask.Price, 8);
                             var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
                             var secondSymbol = exchange.TickerSymbol.Substring(3);
-                            var boughtAmount = result.Amount * result.Price;
+                            var secondAmountBought = result.Amount * result.Price;
                             var firstSymbol = exchange.TickerSymbol.Substring(0, 3);
-                            popup.Update(this, Resource.String.service_bought, secondSymbol, boughtAmount, firstSymbol);
+                            popup.Update(
+                                this, Resource.String.service_bought, secondSymbol, secondAmountBought, firstSymbol);
+                            secondAmount = secondAmountBought + trader.GetFee(secondAmountBought);
                         }
                         else
                         {
                             popup.Dispose();
                         }
 
-                        return trader.GetNextTime(lastTradeTime, secondBalance - secondAmountToSpend) - DateTime.UtcNow;
+                        return trader.GetNextTime(lastTradeTime, secondBalance - secondAmount) - DateTime.UtcNow;
                     }
                     else
                     {
