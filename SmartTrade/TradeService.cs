@@ -99,7 +99,7 @@ namespace SmartTrade
             {
                 var balance = await exchange.GetBalanceAsync();
 
-                if (balance.SecondCurrency >= UnitCostAveragingTrader.GetMinSpendableAmount(MinAmount, balance.Fee))
+                if (balance.SecondCurrency >= UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, balance.Fee))
                 {
                     var transactions = (await exchange.GetTransactionsAsync()).ToList();
                     var lastDepositIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.Deposit);
@@ -113,22 +113,23 @@ namespace SmartTrade
                             secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
                         var duration =
                             TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
-                        var trader = new UnitCostAveragingTrader(deposit.DateTime + duration, 5, balance.Fee);
+                        var calculator = new UnitCostAveragingCalculator(deposit.DateTime + duration, 5, balance.Fee);
                         var orderBook = await exchange.GetOrderBookAsync();
                         var ask = orderBook.Asks[0];
                         var lastTradeTime = transactions[lastTradeIndex].DateTime;
-                        var secondAmount = trader.GetAmount(lastTradeTime, secondBalance, ask.Amount * ask.Price);
+                        var secondAmount = calculator.GetAmount(lastTradeTime, secondBalance, ask.Amount * ask.Price);
 
                         if (secondAmount > 0)
                         {
-                            var firstAmountToBuy = Round((secondAmount - trader.GetFee(secondAmount)) / ask.Price, 8);
+                            var firstAmountToBuy =
+                                Round((secondAmount - calculator.GetFee(secondAmount)) / ask.Price, 8);
                             var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
                             var secondSymbol = exchange.TickerSymbol.Substring(3);
                             var secondAmountBought = result.Amount * result.Price;
                             var firstSymbol = exchange.TickerSymbol.Substring(0, 3);
                             popup.Update(
                                 this, Resource.String.service_bought, secondSymbol, secondAmountBought, firstSymbol);
-                            secondAmount = secondAmountBought + trader.GetFee(secondAmountBought);
+                            secondAmount = secondAmountBought + calculator.GetFee(secondAmountBought);
                         }
                         else
                         {
@@ -136,7 +137,7 @@ namespace SmartTrade
                         }
 
                         Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
-                        return trader.GetNextTime(lastTradeTime, secondBalance - secondAmount) - DateTime.UtcNow;
+                        return calculator.GetNextTime(lastTradeTime, secondBalance - secondAmount) - DateTime.UtcNow;
                     }
                     else
                     {

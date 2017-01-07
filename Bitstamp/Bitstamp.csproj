@@ -77,7 +77,7 @@
     <Compile Include="Transaction.cs" />
     <Compile Include="TransactionCollection.cs" />
     <Compile Include="TransactionType.cs" />
-    <Compile Include="UnitCostAveragingTrader.cs" />
+    <Compile Include="UnitCostAveragingCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

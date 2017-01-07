@@ -11,9 +11,9 @@ namespace Bitstamp
 
     using static System.Math;
 
-    /// <summary>Represents a trader that spends a given balance uniformly over a defined amount of time.</summary>
-    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Temporary, TODO.")]
-    public sealed class UnitCostAveragingTrader
+    /// <summary>Provides methods to calculate how much an when to trade such that a given balance will be spent
+    /// uniformly over a given period of time.</summary>
+    public sealed class UnitCostAveragingCalculator
     {
         /// <summary>Gets the minimal spendable amount.</summary>
         /// <returns>The smallest value greater than or equal to <paramref name="minAmount"/> such that the fee amounts
@@ -21,13 +21,13 @@ namespace Bitstamp
         public static decimal GetMinSpendableAmount(decimal minAmount, decimal feePercent) =>
             Ceiling(minAmount * feePercent) / feePercent;
 
-        /// <summary>Initializes a new instance of the <see cref="UnitCostAveragingTrader"/> class.</summary>
-        /// <param name="endTime">The UTC point in time when the balance should reach zero.</param>
+        /// <summary>Initializes a new instance of the <see cref="UnitCostAveragingCalculator"/> class.</summary>
+        /// <param name="periodEnd">The UTC point in time when the balance should reach zero.</param>
         /// <param name="minAmount">The minimal amount that can be spent.</param>
         /// <param name="feePercent">The fee that will be added to the spent amount in percent.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="minAmount"/> and/or
         /// <paramref name="feePercent"/> are outside of the allowed range.</exception>
-        public UnitCostAveragingTrader(DateTime endTime, decimal minAmount, decimal feePercent)
+        public UnitCostAveragingCalculator(DateTime periodEnd, decimal minAmount, decimal feePercent)
         {
             if (minAmount < 0)
             {
@@ -39,7 +39,7 @@ namespace Bitstamp
                 throw new ArgumentOutOfRangeException(nameof(feePercent), "Must not be negative.");
             }
 
-            this.endTime = endTime;
+            this.periodEnd = periodEnd;
             this.minAmount = minAmount;
             this.feePercent = feePercent;
         }
@@ -59,7 +59,7 @@ namespace Bitstamp
                 throw new ArgumentOutOfRangeException(nameof(lastTradeTime), "Time must be in the past.");
             }
 
-            var duration = this.endTime - lastTradeTime;
+            var duration = this.periodEnd - lastTradeTime;
             var balanceTarget = (1M - ((decimal)elapsed.Ticks / duration.Ticks)) * currentBalance;
             var amountTarget = Min(currentBalance - balanceTarget, Min(maxAmount, currentBalance));
             var amountToSpend = Floor(amountTarget * this.feePercent) / this.feePercent;
@@ -92,7 +92,7 @@ namespace Bitstamp
             if (currentBalance >= this.MinSpendableAmount)
             {
                 var balanceTarget = currentBalance - this.MinSpendableAmount;
-                var duration = this.endTime - lastTradeTime;
+                var duration = this.periodEnd - lastTradeTime;
                 var durationTarget = new TimeSpan((long)((1M - (balanceTarget / currentBalance)) * duration.Ticks));
                 return lastTradeTime + durationTarget;
             }
@@ -102,7 +102,7 @@ namespace Bitstamp
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private readonly DateTime endTime;
+        private readonly DateTime periodEnd;
         private readonly decimal minAmount;
         private readonly decimal feePercent;
 

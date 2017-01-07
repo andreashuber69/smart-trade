@@ -45,13 +45,13 @@ namespace BitstampTest
                 var secondBalance = balance.SecondCurrency;
                 var secondBalanceAtDeposit = secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
                 var duration = TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
-                var trader = new UnitCostAveragingTrader(deposit.DateTime + duration, 5, balance.Fee);
+                var calculator = new UnitCostAveragingCalculator(deposit.DateTime + duration, 5, balance.Fee);
                 var orderBook = await exchange.GetOrderBookAsync();
                 var ask = orderBook.Asks[0];
 
                 var lastTradeTime = transactions[lastTradeIndex].DateTime;
-                var secondAmountToBuy = trader.GetAmount(lastTradeTime, secondBalance, ask.Amount * ask.Price);
-                var time = trader.GetNextTime(lastTradeTime, secondBalance);
+                var secondAmountToBuy = calculator.GetAmount(lastTradeTime, secondBalance, ask.Amount * ask.Price);
+                var time = calculator.GetNextTime(lastTradeTime, secondBalance);
 
                 if (secondAmountToBuy > 0)
                 {
