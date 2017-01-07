@@ -8,7 +8,6 @@ namespace SmartTrade
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
@@ -36,18 +35,26 @@ namespace SmartTrade
 
         protected sealed override async void OnHandleIntent(Intent intent)
         {
+            Settings.RetryIntervalMilliseconds = Max(
+                MinRetryIntervalMilliseconds, Min(MaxRetryIntervalMilliseconds, Settings.RetryIntervalMilliseconds));
+
+            // Schedule a new trade first so that we retry even if the user kills the app or the runtime crashes.
+            ScheduleTrade(JavaSystem.CurrentTimeMillis() + Settings.RetryIntervalMilliseconds);
             var popup = new NotificationPopup(this, Resource.String.service_checking);
 
-            using (var client = new BitstampClient())
+            using (var client = new BitstampClient(816864, "3615VRMm2frx495FXbnaIaosDxIl6KX0", "Mq5C2cngBsTrXnOH3rUTfVySLXJ8PSL5"))
             {
-                var waitTicks = (await this.BuyAsync(client.BtcEur, popup)).GetValueOrDefault().Ticks;
-                var waitTime = new TimeSpan(Max(TimeSpan.FromHours(1).Ticks, waitTicks));
-                ScheduleTrade(JavaSystem.CurrentTimeMillis() + (long)waitTime.TotalMilliseconds);
+                var intervalMilliseconds =
+                    (long)(await this.BuyAsync(client.BtcEur, popup)).GetValueOrDefault().TotalMilliseconds;
+                ScheduleTrade(
+                    JavaSystem.CurrentTimeMillis() + Max(Settings.RetryIntervalMilliseconds, intervalMilliseconds));
             }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        private const long MinRetryIntervalMilliseconds = 2 * 60 * 1000;
+        private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
         private static readonly decimal MinAmount = 5;
 
         private static void ScheduleTrade(long time)
@@ -56,23 +63,24 @@ namespace SmartTrade
             ScheduleTrade();
         }
 
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "The disposables are passed to API methods, TODO.")]
         private static void ScheduleTrade()
         {
             var context = Application.Context;
             var manager = AlarmManager.FromContext(context);
-            var alarmIntent = PendingIntent.GetService(
-                context, 0, new Intent(context, typeof(TradeService)), PendingIntentFlags.UpdateCurrent);
 
-            if (Settings.NextTradeTime > 0)
+            using (var intent = new Intent(context, typeof(TradeService)))
+            using (var alarmIntent = PendingIntent.GetService(context, 0, intent, PendingIntentFlags.UpdateCurrent))
             {
-                var earliestNextTradeTime = JavaSystem.CurrentTimeMillis() + (10 * 1000);
-                var nextTradeTime = Max(earliestNextTradeTime, Settings.NextTradeTime);
-                manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
-            }
-            else
-            {
-                manager.Cancel(alarmIntent);
+                if (Settings.NextTradeTime > 0)
+                {
+                    var earliestNextTradeTime = JavaSystem.CurrentTimeMillis() + 5000;
+                    var nextTradeTime = Max(earliestNextTradeTime, Settings.NextTradeTime);
+                    manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
+                }
+                else
+                {
+                    manager.Cancel(alarmIntent);
+                }
             }
         }
 
@@ -83,8 +91,8 @@ namespace SmartTrade
             amount < 0 ? amount - fee : amount + fee;
 
         /// <summary>Buys on the exchange.</summary>
-        /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found or if
-        /// the balance is insufficient.</returns>
+        /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found, the
+        /// balance is insufficient or if there was a temporary error.</returns>
         private async Task<TimeSpan?> BuyAsync(ICurrencyExchange exchange, NotificationPopup popup)
         {
             try
@@ -127,26 +135,31 @@ namespace SmartTrade
                             popup.Dispose();
                         }
 
+                        Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
                         return trader.GetNextTime(lastTradeTime, secondBalance - secondAmount) - DateTime.UtcNow;
                     }
                     else
                     {
+                        Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
                         popup.Update(this, Resource.String.service_no_deposit);
                     }
                 }
                 else
                 {
+                    Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
                     popup.Update(this, Resource.String.service_insufficient_balance);
                 }
             }
             catch (System.Exception ex) when (ex is BitstampException ||
                 ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
             {
+                Settings.RetryIntervalMilliseconds = Settings.RetryIntervalMilliseconds * 2;
                 popup.Update(this, ex.Message);
             }
             catch (System.Exception ex)
             {
                 popup.Update(this, Resource.String.service_unexpected_error, ex.GetType().Name, ex.Message);
+                Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
                 IsEnabled = false;
                 throw;
             }

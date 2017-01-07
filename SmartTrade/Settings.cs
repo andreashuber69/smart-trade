@@ -16,6 +16,13 @@ namespace SmartTrade
 
     internal static class Settings
     {
+        /// <summary>Gets or sets the interval between retries.</summary>
+        internal static long RetryIntervalMilliseconds
+        {
+            get { return GetLong(); }
+            set { SetLong(value); }
+        }
+
         /// <summary>Gets or sets the next trade time.</summary>
         /// <value>The unix time of the next trade if the service is enabled; or, 0 if the trade service is disabled.
         /// </value>
@@ -36,15 +43,13 @@ namespace SmartTrade
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Temporary, TODO.")]
-        private static bool GetBoolean([CallerMemberName] string key = null) =>
-            GetValue(p => p.GetBoolean(key, false));
+        private static bool GetBoolean([CallerMemberName] string key = null) => GetValue(p => p.GetBoolean(key, false));
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Temporary, TODO.")]
         private static void SetBoolean(bool value, [CallerMemberName] string key = null) =>
             SetValue(p => p.PutBoolean(key, value));
 
-        private static long GetLong([CallerMemberName] string key = null) =>
-            GetValue(p => p.GetLong(key, 0));
+        private static long GetLong([CallerMemberName] string key = null) => GetValue(p => p.GetLong(key, 0));
 
         private static void SetLong(long value, [CallerMemberName] string key = null) =>
             SetValue(p => p.PutLong(key, value));
