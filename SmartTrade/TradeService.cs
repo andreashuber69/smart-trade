@@ -42,7 +42,7 @@ namespace SmartTrade
             ScheduleTrade(JavaSystem.CurrentTimeMillis() + Settings.RetryIntervalMilliseconds);
             var popup = new NotificationPopup(this, Resource.String.service_checking);
 
-            using (var client = new BitstampClient(816864, "3615VRMm2frx495FXbnaIaosDxIl6KX0", "Mq5C2cngBsTrXnOH3rUTfVySLXJ8PSL5"))
+            using (var client = new BitstampClient())
             {
                 var intervalMilliseconds =
                     (long)(await this.BuyAsync(client.BtcEur, popup)).GetValueOrDefault().TotalMilliseconds;
