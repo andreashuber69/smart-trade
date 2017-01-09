@@ -34,7 +34,7 @@ namespace BitstampTest
 
         private static async Task MainTestImpl(ICurrencyExchange exchange)
         {
-            var transactions = (await exchange.GetTransactionsAsync()).ToList();
+            var transactions = (await exchange.GetTransactionsAsync(0, 100)).ToList();
             var lastDepositIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.Deposit);
             var lastTradeIndex = transactions.FindIndex(t => t.TransactionType != TransactionType.Withdrawal);
 

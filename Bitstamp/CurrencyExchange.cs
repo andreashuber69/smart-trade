@@ -19,8 +19,11 @@ namespace Bitstamp
 
             public async Task<IBalance> GetBalanceAsync() => this.CreateBalance(await this.client.GetBalanceAsync());
 
-            public async Task<IEnumerable<ITransaction>> GetTransactionsAsync() =>
-                (await this.client.GetTransactionsAsync()).Select(t => this.CreateTransaction(t)).Where(t => t != null);
+            public async Task<IEnumerable<ITransaction>> GetTransactionsAsync(int offset, int limit)
+            {
+                var transactions = await this.client.GetTransactionsAsync(offset, limit);
+                return transactions.Select(t => this.CreateTransaction(t)).Where(t => t != null);
+            }
 
             public Task<OrderBook> GetOrderBookAsync() => this.client.GetOrderBookAsync(this.tickerSymbol);
 

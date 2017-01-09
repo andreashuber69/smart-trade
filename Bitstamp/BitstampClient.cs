@@ -85,19 +85,10 @@ namespace Bitstamp
         internal Task<Balance> GetBalanceAsync() =>
             this.ExecutePostAsync<Balance>("/api/v2/balance/", Enumerable.Empty<KeyValuePair<string, string>>());
 
-        internal Task<IReadOnlyList<Transaction>> GetTransactionsAsync() => this.GetTransactionsAsync(0);
-
-        internal Task<IReadOnlyList<Transaction>> GetTransactionsAsync(int offset) => this.GetTransactionsAsync(offset, 100);
-
         internal async Task<IReadOnlyList<Transaction>> GetTransactionsAsync(int offset, int limit)
         {
             var args =
-                new Dictionary<string, string>()
-                {
-                    { "offset", ToString(offset) },
-                    { "limit", ToString(limit) }
-                };
-
+                new Dictionary<string, string>() { { "offset", ToString(offset) }, { "limit", ToString(limit) } };
             return await this.ExecutePostAsync<TransactionCollection>("/api/v2/user_transactions/", args);
         }
 

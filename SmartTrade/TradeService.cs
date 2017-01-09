@@ -118,7 +118,7 @@ namespace SmartTrade
 
                 if (balance.SecondCurrency >= UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, balance.Fee))
                 {
-                    var transactions = (await exchange.GetTransactionsAsync()).ToList();
+                    var transactions = (await exchange.GetTransactionsAsync(0, 100)).ToList();
                     var lastDepositIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.Deposit);
                     var lastTradeIndex = transactions.FindIndex(t => t.TransactionType != TransactionType.Withdrawal);
 

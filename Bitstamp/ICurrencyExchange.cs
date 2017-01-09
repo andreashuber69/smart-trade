@@ -28,7 +28,9 @@ namespace Bitstamp
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Expensive method.")]
         Task<IBalance> GetBalanceAsync();
 
-        /// <summary>Gets all transactions in descending order.</summary>
+        /// <summary>Gets transactions in descending order.</summary>
+        /// <param name="offset">The number of transactions to skip.</param>
+        /// <param name="limit">The maximum number of transactions to return.</param>
         /// <exception cref="BitstampException">The Bitstamp server reported an error.</exception>
         /// <exception cref="HttpRequestException">The Bitstamp server could either not be reached or reported an
         /// unexpected error.</exception>
@@ -36,7 +38,7 @@ namespace Bitstamp
         /// </exception>
         /// <exception cref="ObjectDisposedException"><see cref="IDisposable.Dispose"/> has been called.</exception>
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Expensive method.")]
-        Task<IEnumerable<ITransaction>> GetTransactionsAsync();
+        Task<IEnumerable<ITransaction>> GetTransactionsAsync(int offset, int limit);
 
         /// <summary>Gets the order book.</summary>
         /// <exception cref="BitstampException">The Bitstamp server reported an error.</exception>
