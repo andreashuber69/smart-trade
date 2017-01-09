@@ -17,6 +17,7 @@ namespace SmartTrade
     using Android.Content;
     using Bitstamp;
     using Java.Lang;
+    using Java.Util;
 
     using static System.Math;
 
@@ -35,11 +36,27 @@ namespace SmartTrade
 
         protected sealed override async void OnHandleIntent(Intent intent)
         {
+            var calendar = Calendar.GetInstance(Java.Util.TimeZone.GetTimeZone("UTC"));
+
+            // Schedule a new trade first so that we retry even if the user kills the app, the runtime crashes or the
+            // current system time is wrong (see below). It is expected that this scheduled trade will virtually never
+            // be exected, so it's fine to apply the maximum interval. The shortest interval is not suitable because
+            // this would lead to a race condition with the trade that we're executing next. This is due to the fact
+            // that the default timeout for HTTP requests is 100 seconds. Since we're typically executing 3 requests, we
+            // could very well still be executing a trade when the min interval ends.
+            ScheduleTrade(calendar.TimeInMillis + MaxRetryIntervalMilliseconds);
+
+            if (calendar.Get(CalendarField.Year) < 2017)
+            {
+                // Sometimes (e.g. after booting a phone), the system time is not yet set to the current date. This will
+                // confuse the trading algorithm, which is why we return here. The trade scheduled above will execute as
+                // soon as the clock is set to the correct time.
+                return;
+            }
+
             Settings.RetryIntervalMilliseconds = Max(
                 MinRetryIntervalMilliseconds, Min(MaxRetryIntervalMilliseconds, Settings.RetryIntervalMilliseconds));
 
-            // Schedule a new trade first so that we retry even if the user kills the app or the runtime crashes.
-            ScheduleTrade(JavaSystem.CurrentTimeMillis() + Settings.RetryIntervalMilliseconds);
             var popup = new NotificationPopup(this, Resource.String.service_checking);
 
             using (var client = new BitstampClient())
