@@ -16,6 +16,15 @@ namespace SmartTrade
 
     internal static class Settings
     {
+        /// <summary>Gets or sets the timestamp of the last transaction.</summary>
+        /// <value>The timestamp of the last known transaction in <see cref="DateTime"/> ticks; or, 0 if no transaction
+        /// has ever been seen.</value>
+        internal static long LastTransactionTimestampTicks
+        {
+            get { return GetLong(); }
+            set { SetLong(value); }
+        }
+
         /// <summary>Gets or sets the interval between retries.</summary>
         internal static long RetryIntervalMilliseconds
         {

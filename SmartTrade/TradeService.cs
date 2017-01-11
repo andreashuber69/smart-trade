@@ -101,11 +101,29 @@ namespace SmartTrade
             }
         }
 
-        private static decimal GetBalanceDifference(IEnumerable<ITransaction> transactions) =>
-            transactions.Aggregate(0M, (s, t) => s += GetAmountWithFee(t.SecondAmount, t.Fee));
+        private static async Task<List<ITransaction>> GetTransactions(ICurrencyExchange exchange)
+        {
+            var lastTimestamp = new DateTime(Settings.LastTransactionTimestampTicks, DateTimeKind.Utc);
+            var result = new List<ITransaction>();
 
-        private static decimal GetAmountWithFee(decimal amount, decimal fee) =>
-            amount < 0 ? amount - fee : amount + fee;
+            for (int oldCount = -1, lastLimit = 0, limit = 10;
+                (oldCount < result.Count) && (limit <= 1000) && GetMore(lastTimestamp, result);
+                lastLimit = limit, limit *= 10)
+            {
+                oldCount = result.Count;
+                result.AddRange(await exchange.GetTransactionsAsync(lastLimit, limit - lastLimit));
+            }
+
+            if (result.Count > 0)
+            {
+                Settings.LastTransactionTimestampTicks = result[0].DateTime.Ticks;
+            }
+
+            return result;
+        }
+
+        private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
+            (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
 
         /// <summary>Buys on the exchange.</summary>
         /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found, the
@@ -118,7 +136,7 @@ namespace SmartTrade
 
                 if (balance.SecondCurrency >= UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, balance.Fee))
                 {
-                    var transactions = (await exchange.GetTransactionsAsync(0, 100)).ToList();
+                    var transactions = await GetTransactions(exchange);
                     var lastDepositIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.Deposit);
                     var lastTradeIndex = transactions.FindIndex(t => t.TransactionType != TransactionType.Withdrawal);
 
@@ -126,8 +144,6 @@ namespace SmartTrade
                     {
                         var secondBalance = balance.SecondCurrency;
                         var deposit = transactions[lastDepositIndex];
-                        var secondBalanceAtDeposit =
-                            secondBalance - GetBalanceDifference(transactions.Take(lastDepositIndex));
                         var duration =
                             TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
                         var calculator = new UnitCostAveragingCalculator(deposit.DateTime + duration, 5, balance.Fee);
