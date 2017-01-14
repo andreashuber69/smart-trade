@@ -41,22 +41,7 @@ namespace SmartTrade
             set { SetLong(value); }
         }
 
-        /// <summary>Gets or sets a value indicating whether the service is currently selling or not.</summary>
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Temporary, TODO.")]
-        internal static bool Sell
-        {
-            get { return GetBoolean(); }
-            set { SetBoolean(value); }
-        }
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Temporary, TODO.")]
-        private static bool GetBoolean([CallerMemberName] string key = null) => GetValue(p => p.GetBoolean(key, false));
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Temporary, TODO.")]
-        private static void SetBoolean(bool value, [CallerMemberName] string key = null) =>
-            SetValue(p => p.PutBoolean(key, value));
 
         private static long GetLong([CallerMemberName] string key = null) => GetValue(p => p.GetLong(key, 0));
 
