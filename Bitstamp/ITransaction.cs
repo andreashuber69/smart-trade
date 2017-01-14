@@ -8,7 +8,7 @@ namespace Bitstamp
 {
     using System;
 
-    /// <summary>Represents the balance for a currency pair.</summary>
+    /// <summary>Represents a transaction for a currency pair.</summary>
     public interface ITransaction
     {
         /// <summary>Gets the transaction ID.</summary>
@@ -20,10 +20,10 @@ namespace Bitstamp
         /// <summary>Gets the type of the transaction.</summary>
         TransactionType TransactionType { get; }
 
-        /// <summary>Gets the traded amount in the first currency.</summary>
+        /// <summary>Gets the amount in the first currency.</summary>
         decimal FirstAmount { get; }
 
-        /// <summary>Gets the traded amount in the second currency.</summary>
+        /// <summary>Gets the amount in the second currency.</summary>
         decimal SecondAmount { get; }
 
         /// <summary>Gets the price denominated in the second currency.</summary>

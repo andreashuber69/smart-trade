@@ -7,7 +7,6 @@
 namespace SmartTrade
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.CompilerServices;
 
     using Android.App;
@@ -16,13 +15,29 @@ namespace SmartTrade
 
     internal static class Settings
     {
-        /// <summary>Gets or sets the timestamp of the last transaction.</summary>
-        /// <value>The timestamp of the last known transaction in <see cref="DateTime"/> ticks; or, 0 if no transaction
-        /// has ever been seen.</value>
-        internal static long LastTransactionTimestampTicks
+        /// <summary>Gets or sets the start of the current period.</summary>
+        /// <value>The start of the current period; or <c>null</c> if no period has been set yet.</value>
+        internal static DateTime? PeriodStart
         {
-            get { return GetLong(); }
-            set { SetLong(value); }
+            get { return GetDateTime(); }
+            set { SetDateTime(value); }
+        }
+
+        /// <summary>Gets or sets the end of the current period.</summary>
+        /// <value>The end of the current period; or <c>null</c> if no period has been set yet.</value>
+        internal static DateTime? PeriodEnd
+        {
+            get { return GetDateTime(); }
+            set { SetDateTime(value); }
+        }
+
+        /// <summary>Gets or sets the timestamp of the last transaction.</summary>
+        /// <value>The timestamp of the last known transaction; or, <see cref="DateTime.MinValue"/> if no transaction
+        /// has ever been seen.</value>
+        internal static DateTime LastTransactionTimestamp
+        {
+            get { return GetDateTime() ?? DateTime.MinValue; }
+            set { SetDateTime(value); }
         }
 
         /// <summary>Gets or sets the interval between retries.</summary>
@@ -42,6 +57,22 @@ namespace SmartTrade
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        private static DateTime? GetDateTime([CallerMemberName] string key = null)
+        {
+            var ticks = GetLong(key);
+            return ticks == 0 ? (DateTime?)null : new DateTime(ticks, DateTimeKind.Utc);
+        }
+
+        private static void SetDateTime(DateTime? value, [CallerMemberName] string key = null)
+        {
+            if (value.HasValue && (value.Value.Kind != DateTimeKind.Utc))
+            {
+                throw new ArgumentException("UTC kind expected.", nameof(value));
+            }
+
+            SetLong(value?.Ticks ?? 0, key);
+        }
 
         private static long GetLong([CallerMemberName] string key = null) => GetValue(p => p.GetLong(key, 0));
 

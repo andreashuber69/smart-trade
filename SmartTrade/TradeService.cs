@@ -8,7 +8,6 @@ namespace SmartTrade
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -28,8 +27,20 @@ namespace SmartTrade
     {
         internal static bool IsEnabled
         {
-            get { return Settings.NextTradeTime > 0; }
-            set { ScheduleTrade(value ? JavaSystem.CurrentTimeMillis() : 0); }
+            get
+            {
+                return Settings.NextTradeTime > 0;
+            }
+
+            set
+            {
+                if ((Settings.NextTradeTime == 0) && value && Settings.PeriodEnd.HasValue)
+                {
+                    Settings.PeriodStart = DateTime.UtcNow;
+                }
+
+                ScheduleTrade(value ? JavaSystem.CurrentTimeMillis() : 0);
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,20 +114,20 @@ namespace SmartTrade
 
         private static async Task<List<ITransaction>> GetTransactions(ICurrencyExchange exchange)
         {
-            var lastTimestamp = new DateTime(Settings.LastTransactionTimestampTicks, DateTimeKind.Utc);
+            var lastTradeTime = Settings.LastTransactionTimestamp;
             var result = new List<ITransaction>();
 
-            for (int oldCount = -1, lastLimit = 0, limit = 10;
-                (oldCount < result.Count) && (limit <= 1000) && GetMore(lastTimestamp, result);
+            for (int lastCount = -1, lastLimit = 0, limit = 10;
+                (lastCount < result.Count) && (limit <= 1000) && GetMore(lastTradeTime, result);
                 lastLimit = limit, limit *= 10)
             {
-                oldCount = result.Count;
+                lastCount = result.Count;
                 result.AddRange(await exchange.GetTransactionsAsync(lastLimit, limit - lastLimit));
             }
 
             if (result.Count > 0)
             {
-                Settings.LastTransactionTimestampTicks = result[0].DateTime.Ticks;
+                Settings.LastTransactionTimestamp = result[0].DateTime;
             }
 
             return result;
@@ -124,6 +135,41 @@ namespace SmartTrade
 
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
+
+        private static void SetPeriod(List<ITransaction> transactions)
+        {
+            var lastDepositIndex = transactions.FindIndex(
+                t => (t.TransactionType == TransactionType.Deposit) && (t.SecondAmount != 0));
+
+            if (lastDepositIndex >= 0)
+            {
+                var lastDepositTime = transactions[lastDepositIndex].DateTime;
+
+                if (!Settings.PeriodStart.HasValue || (lastDepositTime > Settings.PeriodStart))
+                {
+                    Settings.PeriodStart = lastDepositTime;
+                    var duration =
+                        TimeSpan.FromDays(DateTime.DaysInMonth(lastDepositTime.Year, lastDepositTime.Month));
+                    Settings.PeriodEnd = lastDepositTime + duration;
+                }
+            }
+        }
+
+        private static DateTime GetSegmentStart(List<ITransaction> transactions)
+        {
+            var lastTradeIndex = transactions.FindIndex(
+                t => (t.TransactionType == TransactionType.MarketTrade) || (t.SecondAmount != 0));
+
+            if (lastTradeIndex >= 0)
+            {
+                var lastTradeTime = transactions[lastTradeIndex].DateTime;
+                return Settings.PeriodStart > lastTradeTime ? Settings.PeriodStart.Value : lastTradeTime;
+            }
+            else
+            {
+                return Settings.PeriodStart.Value;
+            }
+        }
 
         /// <summary>Buys on the exchange.</summary>
         /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found, the
@@ -137,20 +183,15 @@ namespace SmartTrade
                 if (balance.SecondCurrency >= UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, balance.Fee))
                 {
                     var transactions = await GetTransactions(exchange);
-                    var lastDepositIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.Deposit);
-                    var lastTradeIndex = transactions.FindIndex(t => t.TransactionType != TransactionType.Withdrawal);
+                    SetPeriod(transactions);
 
-                    if ((lastDepositIndex >= 0) && (lastTradeIndex >= 0))
+                    if (Settings.PeriodEnd.HasValue)
                     {
+                        var calculator = new UnitCostAveragingCalculator(Settings.PeriodEnd.Value, 5, balance.Fee);
+                        var segmentStart = GetSegmentStart(transactions);
                         var secondBalance = balance.SecondCurrency;
-                        var deposit = transactions[lastDepositIndex];
-                        var duration =
-                            TimeSpan.FromDays(DateTime.DaysInMonth(deposit.DateTime.Year, deposit.DateTime.Month));
-                        var calculator = new UnitCostAveragingCalculator(deposit.DateTime + duration, 5, balance.Fee);
-                        var orderBook = await exchange.GetOrderBookAsync();
-                        var ask = orderBook.Asks[0];
-                        var lastTradeTime = transactions[lastTradeIndex].DateTime;
-                        var secondAmount = calculator.GetAmount(lastTradeTime, secondBalance, ask.Amount * ask.Price);
+                        var ask = (await exchange.GetOrderBookAsync()).Asks[0];
+                        var secondAmount = calculator.GetAmount(segmentStart, secondBalance, ask.Amount * ask.Price);
 
                         if (secondAmount > 0)
                         {
@@ -170,7 +211,7 @@ namespace SmartTrade
                         }
 
                         Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
-                        return calculator.GetNextTime(lastTradeTime, secondBalance - secondAmount) - DateTime.UtcNow;
+                        return calculator.GetNextTime(segmentStart, secondBalance - secondAmount) - DateTime.UtcNow;
                     }
                     else
                     {

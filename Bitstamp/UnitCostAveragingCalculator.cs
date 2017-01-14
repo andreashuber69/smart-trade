@@ -45,21 +45,21 @@ namespace Bitstamp
         }
 
         /// <summary>Gets the amount to spend right now.</summary>
-        /// <param name="lastTradeTime">The UTC point in time of the last trade.</param>
+        /// <param name="segmentStartTime">The UTC time of the start of the segment.</param>
         /// <param name="currentBalance">The current balance.</param>
         /// <param name="maxAmount">The maximum amount to spend.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="lastTradeTime"/> is greater than the current
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="segmentStartTime"/> is greater than the current
         /// time.</exception>
-        public decimal GetAmount(DateTime lastTradeTime, decimal currentBalance, decimal maxAmount)
+        public decimal GetAmount(DateTime segmentStartTime, decimal currentBalance, decimal maxAmount)
         {
-            var elapsed = DateTime.UtcNow - lastTradeTime;
+            var elapsed = DateTime.UtcNow - segmentStartTime;
 
             if (elapsed < TimeSpan.Zero)
             {
-                throw new ArgumentOutOfRangeException(nameof(lastTradeTime), "Time must be in the past.");
+                throw new ArgumentOutOfRangeException(nameof(segmentStartTime), "Time must be in the past.");
             }
 
-            var duration = this.periodEnd - lastTradeTime;
+            var duration = this.periodEnd - segmentStartTime;
             var balanceTarget = (1M - ((decimal)elapsed.Ticks / duration.Ticks)) * currentBalance;
             var amountTarget = Min(currentBalance - balanceTarget, Min(maxAmount, currentBalance));
             var amountToSpend = Floor(amountTarget * this.feePercent) / this.feePercent;
