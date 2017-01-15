@@ -15,10 +15,6 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
     using Bitstamp;
-    using Java.Lang;
-    using Java.Util;
-
-    using static System.Math;
 
     /// <summary>Buys or sells according to the configured schedule.</summary>
     /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
@@ -39,7 +35,7 @@ namespace SmartTrade
                     Settings.PeriodStart = DateTime.UtcNow;
                 }
 
-                ScheduleTrade(value ? JavaSystem.CurrentTimeMillis() : 0);
+                ScheduleTrade(value ? Java.Lang.JavaSystem.CurrentTimeMillis() : 0);
             }
         }
 
@@ -47,7 +43,7 @@ namespace SmartTrade
 
         protected sealed override async void OnHandleIntent(Intent intent)
         {
-            var calendar = Calendar.GetInstance(Java.Util.TimeZone.GetTimeZone("UTC"));
+            var calendar = Java.Util.Calendar.GetInstance(Java.Util.TimeZone.GetTimeZone("UTC"));
 
             // Schedule a new trade first so that we retry even if the user kills the app, the runtime crashes or the
             // current system time is wrong (see below). It is expected that this scheduled trade will virtually never
@@ -57,7 +53,7 @@ namespace SmartTrade
             // could very well still be executing a trade when the min interval ends.
             ScheduleTrade(calendar.TimeInMillis + MaxRetryIntervalMilliseconds);
 
-            if (calendar.Get(CalendarField.Year) < 2017)
+            if (calendar.Get(Java.Util.CalendarField.Year) < 2017)
             {
                 // Sometimes (e.g. after booting a phone), the system time is not yet set to the current date. This will
                 // confuse the trading algorithm, which is why we return here. The trade scheduled above will execute as
@@ -65,8 +61,9 @@ namespace SmartTrade
                 return;
             }
 
-            Settings.RetryIntervalMilliseconds = Max(
-                MinRetryIntervalMilliseconds, Min(MaxRetryIntervalMilliseconds, Settings.RetryIntervalMilliseconds));
+            Settings.RetryIntervalMilliseconds = Math.Max(
+                MinRetryIntervalMilliseconds,
+                Math.Min(MaxRetryIntervalMilliseconds, Settings.RetryIntervalMilliseconds));
 
             var popup = new NotificationPopup(this, Resource.String.service_checking);
 
@@ -74,8 +71,8 @@ namespace SmartTrade
             {
                 var intervalMilliseconds =
                     (long)(await this.BuyAsync(client.BtcEur, popup)).GetValueOrDefault().TotalMilliseconds;
-                ScheduleTrade(
-                    JavaSystem.CurrentTimeMillis() + Max(Settings.RetryIntervalMilliseconds, intervalMilliseconds));
+                ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
+                    Math.Max(Settings.RetryIntervalMilliseconds, intervalMilliseconds));
             }
         }
 
@@ -101,8 +98,8 @@ namespace SmartTrade
             {
                 if (Settings.NextTradeTime > 0)
                 {
-                    var earliestNextTradeTime = JavaSystem.CurrentTimeMillis() + 5000;
-                    var nextTradeTime = Max(earliestNextTradeTime, Settings.NextTradeTime);
+                    var earliestNextTradeTime = Java.Lang.JavaSystem.CurrentTimeMillis() + 5000;
+                    var nextTradeTime = Math.Max(earliestNextTradeTime, Settings.NextTradeTime);
                     manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
                 }
                 else
@@ -196,7 +193,7 @@ namespace SmartTrade
                         if (secondAmount > 0)
                         {
                             var firstAmountToBuy =
-                                Round((secondAmount - calculator.GetFee(secondAmount)) / ask.Price, 8);
+                                Math.Round((secondAmount - calculator.GetFee(secondAmount)) / ask.Price, 8);
                             var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
                             var secondSymbol = exchange.TickerSymbol.Substring(3);
                             var secondAmountBought = result.Amount * result.Price;
