@@ -13,8 +13,19 @@ namespace SmartTrade
     using Android.Content;
     using Android.Preferences;
 
+    using static Logger;
+
     internal static class Settings
     {
+        /// <summary>Gets or sets the next trade time.</summary>
+        /// <value>The unix time of the next trade if the service is enabled; or, 0 if the trade service is disabled.
+        /// </value>
+        internal static long NextTradeTime
+        {
+            get { return GetLong(); }
+            set { SetLong(value); }
+        }
+
         /// <summary>Gets or sets the start of the current period.</summary>
         /// <value>The start of the current period; or <c>null</c> if no period has been set yet.</value>
         internal static DateTime? PeriodStart
@@ -47,13 +58,13 @@ namespace SmartTrade
             set { SetLong(value); }
         }
 
-        /// <summary>Gets or sets the next trade time.</summary>
-        /// <value>The unix time of the next trade if the service is enabled; or, 0 if the trade service is disabled.
-        /// </value>
-        internal static long NextTradeTime
+        internal static void LogAll()
         {
-            get { return GetLong(); }
-            set { SetLong(value); }
+            Log(nameof(NextTradeTime), NextTradeTime);
+            Log(nameof(PeriodStart), PeriodStart);
+            Log(nameof(PeriodEnd), PeriodEnd);
+            Log(nameof(LastTransactionTimestamp), LastTransactionTimestamp);
+            Log(nameof(RetryIntervalMilliseconds), RetryIntervalMilliseconds);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,12 +83,16 @@ namespace SmartTrade
             }
 
             SetLong(value?.Ticks ?? 0, key);
+            Info("Set {0}.{1} = {2:o}.", nameof(Settings), key, value);
         }
 
         private static long GetLong([CallerMemberName] string key = null) => GetValue(p => p.GetLong(key, 0));
 
-        private static void SetLong(long value, [CallerMemberName] string key = null) =>
+        private static void SetLong(long value, [CallerMemberName] string key = null)
+        {
             SetValue(p => p.PutLong(key, value));
+            Info("Set {0}.{1} = {2}.", nameof(Settings), key, value);
+        }
 
         private static void SetValue(Action<ISharedPreferencesEditor> setValue)
         {
@@ -100,5 +115,11 @@ namespace SmartTrade
                 return getValue(preferences);
             }
         }
+
+        private static void Log(string propertyName, long value) =>
+            Info("Current Value {0}.{1} = {2}.", nameof(Settings), propertyName, value);
+
+        private static void Log(string propertyName, DateTime? value) =>
+            Info("Current Value {0}.{1} = {2:o}.", nameof(Settings), propertyName, value);
     }
 }

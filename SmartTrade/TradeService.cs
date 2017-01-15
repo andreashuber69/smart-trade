@@ -16,6 +16,8 @@ namespace SmartTrade
     using Android.Content;
     using Bitstamp;
 
+    using static Logger;
+
     /// <summary>Buys or sells according to the configured schedule.</summary>
     /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
     [Service]
@@ -33,9 +35,11 @@ namespace SmartTrade
                 if ((Settings.NextTradeTime == 0) && value && Settings.PeriodEnd.HasValue)
                 {
                     Settings.PeriodStart = DateTime.UtcNow;
+                    //// TODO: Log this also and rename PeriodStart to SectionStart
                 }
 
                 ScheduleTrade(value ? Java.Lang.JavaSystem.CurrentTimeMillis() : 0);
+                Info("Set {0}.{1} = {2}", nameof(TradeService), nameof(IsEnabled), IsEnabled);
             }
         }
 
@@ -52,6 +56,8 @@ namespace SmartTrade
             // that the default timeout for HTTP requests is 100 seconds. Since we're typically executing 3 requests, we
             // could very well still be executing a trade when the min interval ends.
             ScheduleTrade(calendar.TimeInMillis + MaxRetryIntervalMilliseconds);
+
+            Settings.LogAll();
 
             if (calendar.Get(Java.Util.CalendarField.Year) < 2017)
             {
@@ -98,13 +104,16 @@ namespace SmartTrade
             {
                 if (Settings.NextTradeTime > 0)
                 {
-                    var earliestNextTradeTime = Java.Lang.JavaSystem.CurrentTimeMillis() + 5000;
-                    var nextTradeTime = Math.Max(earliestNextTradeTime, Settings.NextTradeTime);
+                    var currentTime = Java.Lang.JavaSystem.CurrentTimeMillis();
+                    Info("Current UNIX time is {0}.", currentTime);
+                    var nextTradeTime = Math.Max(currentTime + 5000, Settings.NextTradeTime);
                     manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
+                    Info("Set alarm time to {0}.", nextTradeTime);
                 }
                 else
                 {
                     manager.Cancel(alarmIntent);
+                    Info("Cancelled alarm.");
                 }
             }
         }
@@ -119,7 +128,9 @@ namespace SmartTrade
                 lastLimit = limit, limit *= 10)
             {
                 lastCount = result.Count;
+                Info("Retrieving transactions with offset={0} and limit={1}...", lastLimit, limit - lastLimit);
                 result.AddRange(await exchange.GetTransactionsAsync(lastLimit, limit - lastLimit));
+                Info("Retrieved {0} relevant transactions.", result.Count - lastCount);
             }
 
             if (result.Count > 0)
@@ -176,6 +187,9 @@ namespace SmartTrade
             try
             {
                 var balance = await exchange.GetBalanceAsync();
+                var secondBalance = balance.SecondCurrency;
+                var secondCurrency = exchange.TickerSymbol.Substring(3);
+                Info("Current balance is {0} {1}.", secondCurrency, secondBalance);
 
                 if (balance.SecondCurrency >= UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, balance.Fee))
                 {
@@ -186,20 +200,21 @@ namespace SmartTrade
                     {
                         var calculator = new UnitCostAveragingCalculator(Settings.PeriodEnd.Value, 5, balance.Fee);
                         var segmentStart = GetSegmentStart(transactions);
-                        var secondBalance = balance.SecondCurrency;
+                        Info("Segment start is {0:o}.", segmentStart);
                         var ask = (await exchange.GetOrderBookAsync()).Asks[0];
+                        Info("Current time is {0:o}.", DateTime.UtcNow);
                         var secondAmount = calculator.GetAmount(segmentStart, secondBalance, ask.Amount * ask.Price);
+                        Info("Amount to spend is {0} {1}.", secondCurrency, secondAmount);
 
                         if (secondAmount > 0)
                         {
                             var firstAmountToBuy =
                                 Math.Round((secondAmount - calculator.GetFee(secondAmount)) / ask.Price, 8);
                             var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
-                            var secondSymbol = exchange.TickerSymbol.Substring(3);
                             var secondAmountBought = result.Amount * result.Price;
-                            var firstSymbol = exchange.TickerSymbol.Substring(0, 3);
+                            var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
                             popup.Update(
-                                this, Resource.String.service_bought, secondSymbol, secondAmountBought, firstSymbol);
+                                this, Resource.String.service_bought, secondCurrency, secondAmountBought, firstCurrency);
                             secondAmount = secondAmountBought + calculator.GetFee(secondAmountBought);
                         }
                         else
@@ -222,13 +237,13 @@ namespace SmartTrade
                     popup.Update(this, Resource.String.service_insufficient_balance);
                 }
             }
-            catch (System.Exception ex) when (ex is BitstampException ||
+            catch (Exception ex) when (ex is BitstampException ||
                 ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
             {
                 Settings.RetryIntervalMilliseconds = Settings.RetryIntervalMilliseconds * 2;
                 popup.Update(this, ex.Message);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 popup.Update(this, Resource.String.service_unexpected_error, ex.GetType().Name, ex.Message);
                 Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;

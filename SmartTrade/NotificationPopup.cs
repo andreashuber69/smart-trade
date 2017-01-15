@@ -10,6 +10,7 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
 
+    using static Logger;
     using static System.Globalization.CultureInfo;
 
     internal sealed class NotificationPopup : IDisposable
@@ -46,6 +47,8 @@ namespace SmartTrade
                     .SetAutoCancel(true);
                 this.manager.Notify(this.id, builder.Build());
             }
+
+            Info("Popup: {0}", contentText);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
