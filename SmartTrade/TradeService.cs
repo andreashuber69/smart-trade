@@ -34,8 +34,7 @@ namespace SmartTrade
             {
                 if ((Settings.NextTradeTime == 0) && value && Settings.PeriodEnd.HasValue)
                 {
-                    Settings.PeriodStart = DateTime.UtcNow;
-                    //// TODO: Log this also and rename PeriodStart to SectionStart
+                    Settings.SectionStart = DateTime.UtcNow;
                 }
 
                 ScheduleTrade(value ? Java.Lang.JavaSystem.CurrentTimeMillis() : 0);
@@ -153,9 +152,9 @@ namespace SmartTrade
             {
                 var lastDepositTime = transactions[lastDepositIndex].DateTime;
 
-                if (!Settings.PeriodStart.HasValue || (lastDepositTime > Settings.PeriodStart))
+                if (!Settings.SectionStart.HasValue || (lastDepositTime > Settings.SectionStart))
                 {
-                    Settings.PeriodStart = lastDepositTime;
+                    Settings.SectionStart = lastDepositTime;
                     var duration =
                         TimeSpan.FromDays(DateTime.DaysInMonth(lastDepositTime.Year, lastDepositTime.Month));
                     Settings.PeriodEnd = lastDepositTime + duration;
@@ -171,11 +170,11 @@ namespace SmartTrade
             if (lastTradeIndex >= 0)
             {
                 var lastTradeTime = transactions[lastTradeIndex].DateTime;
-                return Settings.PeriodStart > lastTradeTime ? Settings.PeriodStart.Value : lastTradeTime;
+                return Settings.SectionStart > lastTradeTime ? Settings.SectionStart.Value : lastTradeTime;
             }
             else
             {
-                return Settings.PeriodStart.Value;
+                return Settings.SectionStart.Value;
             }
         }
 

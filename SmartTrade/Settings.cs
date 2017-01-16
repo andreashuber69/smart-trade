@@ -26,16 +26,21 @@ namespace SmartTrade
             set { SetLong(value); }
         }
 
-        /// <summary>Gets or sets the start of the current period.</summary>
-        /// <value>The start of the current period; or <c>null</c> if no period has been set yet.</value>
-        internal static DateTime? PeriodStart
+        /// <summary>Gets or sets the start of the current section.</summary>
+        /// <value>The start of the current section; or <c>null</c> if no section has begun yet.</value>
+        /// <remarks>A section is a part of a period. The current section always runs from <see cref="SectionStart"/>
+        /// to <see cref="PeriodEnd"/>. A section ends and a new one begins at the point in time when either a new
+        /// deposit is detected or when the user enables the service.</remarks>
+        internal static DateTime? SectionStart
         {
             get { return GetDateTime(); }
             set { SetDateTime(value); }
         }
 
         /// <summary>Gets or sets the end of the current period.</summary>
-        /// <value>The end of the current period; or <c>null</c> if no period has been set yet.</value>
+        /// <value>The end of the current period; or <c>null</c> if no period has begun yet.</value>
+        /// <remarks>A period always spans the whole time between two deposits. It consists of one or more sections.
+        /// </remarks>
         internal static DateTime? PeriodEnd
         {
             get { return GetDateTime(); }
@@ -61,7 +66,7 @@ namespace SmartTrade
         internal static void LogAll()
         {
             Log(nameof(NextTradeTime), NextTradeTime);
-            Log(nameof(PeriodStart), PeriodStart);
+            Log(nameof(SectionStart), SectionStart);
             Log(nameof(PeriodEnd), PeriodEnd);
             Log(nameof(LastTransactionTimestamp), LastTransactionTimestamp);
             Log(nameof(RetryIntervalMilliseconds), RetryIntervalMilliseconds);
