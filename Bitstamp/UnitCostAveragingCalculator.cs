@@ -7,12 +7,13 @@
 namespace Bitstamp
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     using static System.Math;
 
     /// <summary>Provides methods to calculate how much an when to trade such that a given balance will be spent
     /// uniformly over a given period of time.</summary>
+    /// <remarks>A traded amount refers to the amount actually traded. A spent amount refers to the amount traded +
+    /// exchange fees.</remarks>
     public sealed class UnitCostAveragingCalculator
     {
         /// <summary>Gets the minimal spendable amount.</summary>
@@ -23,8 +24,8 @@ namespace Bitstamp
 
         /// <summary>Initializes a new instance of the <see cref="UnitCostAveragingCalculator"/> class.</summary>
         /// <param name="periodEnd">The UTC point in time when the balance should reach zero.</param>
-        /// <param name="minAmount">The minimal amount that can be spent.</param>
-        /// <param name="feePercent">The fee that will be added to the spent amount in percent.</param>
+        /// <param name="minAmount">The minimal amount that can be traded.</param>
+        /// <param name="feePercent">The fee that will be added to the traded amount in percent.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="minAmount"/> and/or
         /// <paramref name="feePercent"/> are outside of the allowed range.</exception>
         public UnitCostAveragingCalculator(DateTime periodEnd, decimal minAmount, decimal feePercent)
@@ -45,23 +46,24 @@ namespace Bitstamp
         }
 
         /// <summary>Gets the amount to spend right now.</summary>
-        /// <param name="segmentStartTime">The UTC time of the start of the segment.</param>
-        /// <param name="currentBalance">The current balance.</param>
+        /// <param name="startTime">The UTC time where unit cost averaging should start.</param>
+        /// <param name="startBalance">The balance at the point in time represented by <paramref name="startTime"/>.
+        /// </param>
         /// <param name="maxAmount">The maximum amount to spend.</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="segmentStartTime"/> is greater than the current
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="startTime"/> is greater than the current
         /// time.</exception>
-        public decimal GetAmount(DateTime segmentStartTime, decimal currentBalance, decimal maxAmount)
+        public decimal GetAmount(DateTime startTime, decimal startBalance, decimal maxAmount)
         {
-            var elapsed = DateTime.UtcNow - segmentStartTime;
+            var elapsed = DateTime.UtcNow - startTime;
 
             if (elapsed < TimeSpan.Zero)
             {
-                throw new ArgumentOutOfRangeException(nameof(segmentStartTime), "Time must be in the past.");
+                throw new ArgumentOutOfRangeException(nameof(startTime), "Time must be in the past.");
             }
 
-            var duration = this.periodEnd - segmentStartTime;
-            var balanceTarget = (1M - ((decimal)elapsed.Ticks / duration.Ticks)) * currentBalance;
-            var amountTarget = Min(currentBalance - balanceTarget, Min(maxAmount, currentBalance));
+            var duration = this.periodEnd - startTime;
+            var balanceTarget = (1M - ((decimal)elapsed.Ticks / duration.Ticks)) * startBalance;
+            var amountTarget = Min(startBalance - balanceTarget, Min(maxAmount, startBalance));
             var amountToSpend = Floor(amountTarget * this.feePercent) / this.feePercent;
 
             if (amountToSpend < this.MinSpendableAmount)
@@ -70,9 +72,9 @@ namespace Bitstamp
             }
             else
             {
-                if ((currentBalance - amountToSpend) < this.MinSpendableAmount)
+                if ((startBalance - amountToSpend) < this.MinSpendableAmount)
                 {
-                    amountToSpend = currentBalance;
+                    amountToSpend = startBalance;
                 }
             }
 

@@ -162,7 +162,7 @@ namespace SmartTrade
             }
         }
 
-        private static DateTime GetSegmentStart(List<ITransaction> transactions)
+        private static DateTime GetStart(List<ITransaction> transactions)
         {
             var lastTradeIndex = transactions.FindIndex(
                 t => (t.TransactionType == TransactionType.MarketTrade) || (t.SecondAmount != 0));
@@ -197,12 +197,12 @@ namespace SmartTrade
 
                     if (Settings.PeriodEnd.HasValue)
                     {
-                        var calculator = new UnitCostAveragingCalculator(Settings.PeriodEnd.Value, 5, balance.Fee);
-                        var segmentStart = GetSegmentStart(transactions);
-                        Info("Segment start is {0:o}.", segmentStart);
+                        var calculator = new UnitCostAveragingCalculator(Settings.PeriodEnd.Value, MinAmount, balance.Fee);
+                        var start = GetStart(transactions);
+                        Info("Start is {0:o}.", start);
                         var ask = (await exchange.GetOrderBookAsync()).Asks[0];
                         Info("Current time is {0:o}.", DateTime.UtcNow);
-                        var secondAmount = calculator.GetAmount(segmentStart, secondBalance, ask.Amount * ask.Price);
+                        var secondAmount = calculator.GetAmount(start, secondBalance, ask.Amount * ask.Price);
                         Info("Amount to spend is {0} {1}.", secondCurrency, secondAmount);
 
                         if (secondAmount > 0)
@@ -222,7 +222,7 @@ namespace SmartTrade
                         }
 
                         Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
-                        return calculator.GetNextTime(segmentStart, secondBalance - secondAmount) - DateTime.UtcNow;
+                        return calculator.GetNextTime(start, secondBalance - secondAmount) - DateTime.UtcNow;
                     }
                     else
                     {
