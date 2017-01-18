@@ -199,7 +199,7 @@ namespace SmartTrade
                     {
                         var calculator = new UnitCostAveragingCalculator(Settings.PeriodEnd.Value, MinAmount, balance.Fee);
                         var start = GetStart(transactions);
-                        Info("Start is {0:o}.", start);
+                        Info("Start is at {0:o}.", start);
                         var ask = (await exchange.GetOrderBookAsync()).Asks[0];
                         Info("Current time is {0:o}.", DateTime.UtcNow);
                         var secondAmount = calculator.GetAmount(start, secondBalance, ask.Amount * ask.Price);

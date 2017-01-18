@@ -10,5 +10,5 @@
   <string name="service_bought">Bought {0} {1:F5} worth of {2}.</string>
   <string name="service_no_deposit">No deposit found.</string>
   <string name="service_insufficient_balance">Insufficient balance.</string>
-  <string name="service_unexpected_error">Unexpected error: {0}, {1}\r\nService disabled.</string>
+  <string name="service_unexpected_error">Unexpected error: {0}, {1}. Service disabled.</string>
 </resources>
