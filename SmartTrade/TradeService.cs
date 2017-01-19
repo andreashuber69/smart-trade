@@ -214,6 +214,7 @@ namespace SmartTrade
                             var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
                             popup.Update(
                                 this, Resource.String.service_bought, secondCurrency, secondAmountBought, firstCurrency);
+                            start = result.DateTime;
                             secondAmount = secondAmountBought + calculator.GetFee(secondAmountBought);
                         }
                         else
