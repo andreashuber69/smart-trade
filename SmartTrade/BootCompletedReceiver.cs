@@ -11,7 +11,7 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
 
-    internal sealed partial class TradeService
+    internal partial class TradeService
     {
         /// <summary>Sets or cancels an alarm which calls the <see cref="TradeService"/> depending on whether trading
         /// is currently enabled.</summary>

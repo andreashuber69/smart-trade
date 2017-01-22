@@ -66,16 +66,15 @@ namespace SmartTrade
                 return;
             }
 
-            Settings.RetryIntervalMilliseconds = Math.Max(
-                MinRetryIntervalMilliseconds,
-                Math.Min(MaxRetryIntervalMilliseconds, Settings.RetryIntervalMilliseconds));
-
             var popup = new NotificationPopup(this, Resource.String.service_checking);
 
             using (var client = new BitstampClient())
             {
                 var intervalMilliseconds =
                     (long)(await this.BuyAsync(client.BtcEur, popup)).GetValueOrDefault().TotalMilliseconds;
+                Settings.RetryIntervalMilliseconds = Math.Max(
+                    MinRetryIntervalMilliseconds,
+                    Math.Min(MaxRetryIntervalMilliseconds, Settings.RetryIntervalMilliseconds));
                 ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
                     Math.Max(Settings.RetryIntervalMilliseconds, intervalMilliseconds));
             }
@@ -187,61 +186,59 @@ namespace SmartTrade
             {
                 var balance = await exchange.GetBalanceAsync();
                 var secondBalance = balance.SecondCurrency;
+                var fee = balance.Fee;
                 var secondCurrency = exchange.TickerSymbol.Substring(3);
                 Info("Current balance is {0} {1}.", secondCurrency, secondBalance);
 
-                if (balance.SecondCurrency >= UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, balance.Fee))
-                {
-                    var transactions = await GetTransactions(exchange);
-                    SetPeriod(transactions);
-
-                    if (Settings.PeriodEnd.HasValue)
-                    {
-                        var calculator = new UnitCostAveragingCalculator(Settings.PeriodEnd.Value, MinAmount, balance.Fee);
-                        var start = GetStart(transactions);
-                        Info("Start is at {0:o}.", start);
-                        var ask = (await exchange.GetOrderBookAsync()).Asks[0];
-                        Info("Current time is {0:o}.", DateTime.UtcNow);
-                        var secondAmount = calculator.GetAmount(start, secondBalance, ask.Amount * ask.Price);
-                        Info("Amount to spend is {0} {1}.", secondCurrency, secondAmount);
-
-                        if (secondAmount > 0)
-                        {
-                            var firstAmountToBuy =
-                                Math.Round((secondAmount - calculator.GetFee(secondAmount)) / ask.Price, 8);
-                            var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
-                            var secondAmountBought = result.Amount * result.Price;
-                            var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
-                            popup.Update(
-                                this, Resource.String.service_bought, secondCurrency, secondAmountBought, firstCurrency);
-                            start = result.DateTime;
-                            secondAmount = secondAmountBought + calculator.GetFee(secondAmountBought);
-                        }
-                        else
-                        {
-                            popup.Dispose();
-                        }
-
-                        Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
-                        return calculator.GetNextTime(start, secondBalance - secondAmount) - DateTime.UtcNow;
-                    }
-                    else
-                    {
-                        Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
-                        popup.Update(this, Resource.String.service_no_deposit);
-                    }
-                }
-                else
+                if (secondBalance < UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, fee))
                 {
                     Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
                     popup.Update(this, Resource.String.service_insufficient_balance);
+                    return null;
                 }
+
+                var transactions = await GetTransactions(exchange);
+                SetPeriod(transactions);
+
+                if (Settings.PeriodEnd.HasValue)
+                {
+                    Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
+                    popup.Update(this, Resource.String.service_no_deposit);
+                    return null;
+                }
+
+                var calculator = new UnitCostAveragingCalculator(Settings.PeriodEnd.Value, MinAmount, fee);
+                var start = GetStart(transactions);
+                Info("Start is at {0:o}.", start);
+                var ask = (await exchange.GetOrderBookAsync()).Asks[0];
+                Info("Current time is {0:o}.", DateTime.UtcNow);
+                var secondAmount = calculator.GetAmount(start, secondBalance, ask.Amount * ask.Price);
+                Info("Amount to spend is {0} {1}.", secondCurrency, secondAmount);
+
+                if (secondAmount > 0)
+                {
+                    var firstAmountToBuy = Math.Round((secondAmount - calculator.GetFee(secondAmount)) / ask.Price, 8);
+                    var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
+                    var bought = result.Amount * result.Price;
+                    var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
+                    popup.Update(this, Resource.String.service_bought, secondCurrency, bought, firstCurrency);
+                    start = result.DateTime;
+                    secondAmount = bought + calculator.GetFee(bought);
+                }
+                else
+                {
+                    popup.Dispose();
+                }
+
+                Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
+                return calculator.GetNextTime(start, secondBalance - secondAmount) - DateTime.UtcNow;
             }
             catch (Exception ex) when (ex is BitstampException ||
                 ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
             {
                 Settings.RetryIntervalMilliseconds = Settings.RetryIntervalMilliseconds * 2;
                 popup.Update(this, ex.Message);
+                return null;
             }
             catch (Exception ex)
             {
@@ -250,8 +247,6 @@ namespace SmartTrade
                 IsEnabled = false;
                 throw;
             }
-
-            return null;
         }
     }
 }
