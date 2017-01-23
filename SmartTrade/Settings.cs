@@ -15,61 +15,36 @@ namespace SmartTrade
 
     using static Logger;
 
-    internal static class Settings
+    internal sealed class Settings : ISettings
     {
-        /// <summary>Gets or sets the next trade time.</summary>
-        /// <value>The unix time of the next trade if the service is enabled; or, 0 if the trade service is disabled.
-        /// </value>
-        internal static long NextTradeTime
+        public long NextTradeTime
         {
             get { return GetLong(); }
             set { SetLong(value); }
         }
 
-        /// <summary>Gets or sets the start of the current section.</summary>
-        /// <value>The start of the current section; or <c>null</c> if no section has begun yet.</value>
-        /// <remarks>A section is a part of a period. The current section always runs from <see cref="SectionStart"/>
-        /// to <see cref="PeriodEnd"/>. A section ends and a new one begins at the point in time when either a new
-        /// deposit is detected or when the user enables the service.</remarks>
-        internal static DateTime? SectionStart
+        public DateTime? SectionStart
         {
             get { return GetDateTime(); }
             set { SetDateTime(value); }
         }
 
-        /// <summary>Gets or sets the end of the current period.</summary>
-        /// <value>The end of the current period; or <c>null</c> if no period has begun yet.</value>
-        /// <remarks>A period always spans the whole time between two deposits. It consists of one or more sections.
-        /// </remarks>
-        internal static DateTime? PeriodEnd
+        public DateTime? PeriodEnd
         {
             get { return GetDateTime(); }
             set { SetDateTime(value); }
         }
 
-        /// <summary>Gets or sets the timestamp of the last transaction.</summary>
-        /// <value>The timestamp of the last known transaction; or, <see cref="DateTime.MinValue"/> if no transaction
-        /// has ever been seen.</value>
-        internal static DateTime LastTransactionTimestamp
+        public DateTime LastTransactionTimestamp
         {
             get { return GetDateTime() ?? DateTime.MinValue; }
             set { SetDateTime(value); }
         }
 
-        /// <summary>Gets or sets the interval between retries.</summary>
-        internal static long RetryIntervalMilliseconds
+        public long RetryIntervalMilliseconds
         {
             get { return GetLong(); }
             set { SetLong(value); }
-        }
-
-        internal static void LogAll()
-        {
-            Log(nameof(NextTradeTime), NextTradeTime);
-            Log(nameof(SectionStart), SectionStart);
-            Log(nameof(PeriodEnd), PeriodEnd);
-            Log(nameof(LastTransactionTimestamp), LastTransactionTimestamp);
-            Log(nameof(RetryIntervalMilliseconds), RetryIntervalMilliseconds);
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,11 +95,5 @@ namespace SmartTrade
                 return getValue(preferences);
             }
         }
-
-        private static void Log(string propertyName, long value) =>
-            Info("Current Value {0}.{1} = {2}.", nameof(Settings), propertyName, value);
-
-        private static void Log(string propertyName, DateTime? value) =>
-            Info("Current Value {0}.{1} = {2:o}.", nameof(Settings), propertyName, value);
     }
 }

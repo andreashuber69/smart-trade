@@ -7,6 +7,7 @@
 namespace SmartTrade
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
 
@@ -25,6 +26,7 @@ namespace SmartTrade
         private const string LogTag = "SmartTrade";
         private static readonly TextWriter Writer = GetLogWriter();
 
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "There's no way to dispose this properly.")]
         private static TextWriter GetLogWriter() => new StreamWriter(GetLogFilePath(), true) { AutoFlush = true };
 
         private static string GetLogFilePath()
