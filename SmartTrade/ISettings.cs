@@ -36,5 +36,14 @@ namespace SmartTrade
 
         /// <summary>Gets or sets the interval between retries.</summary>
         long RetryIntervalMilliseconds { get; set; }
+
+        /// <summary>Gets or sets the Bitstamp customer id.</summary>
+        int CustomerId { get; set; }
+
+        /// <summary>Gets or sets the Bitstamp api key.</summary>
+        string ApiKey { get; set; }
+
+        /// <summary>Gets or sets the Bitstamp api secret.</summary>
+        string ApiSecret { get; set; }
     }
 }

@@ -6,10 +6,11 @@
 
 namespace SmartTrade
 {
-    using Android.App;
-
-    [Service]
-    internal sealed partial class TradeService : TradeServiceBase<BtcEurExchangeClient, Settings>
+    internal sealed class BtcEurExchangeClient : ExchangeClient
     {
+        public BtcEurExchangeClient()
+            : base(c => c.BtcEur)
+        {
+        }
     }
 }

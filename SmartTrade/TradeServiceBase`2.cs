@@ -19,9 +19,11 @@ namespace SmartTrade
     using static Logger;
 
     /// <summary>Buys or sells according to the configured schedule.</summary>
+    /// <typeparam name="TExchangeClient">The type of the exchange client.</typeparam>
     /// <typeparam name="TSettings">The type of the settings class.</typeparam>
     /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
-    internal abstract partial class TradeServiceBase<TSettings> : IntentService
+    internal abstract partial class TradeServiceBase<TExchangeClient, TSettings> : IntentService
+        where TExchangeClient : IExchangeClient, new()
         where TSettings : ISettings, new()
     {
         internal static bool IsEnabled
@@ -93,10 +95,10 @@ namespace SmartTrade
 
             var popup = new NotificationPopup(this, Resource.String.service_checking);
 
-            using (var client = new BitstampClient())
+            using (var client = new TExchangeClient())
             {
                 var intervalMilliseconds =
-                    (long)(await this.BuyAsync(client.BtcEur, popup)).GetValueOrDefault().TotalMilliseconds;
+                    (long)(await this.BuyAsync(client.CurrencyExchange, popup)).GetValueOrDefault().TotalMilliseconds;
                 Settings.RetryIntervalMilliseconds = Math.Max(
                     MinRetryIntervalMilliseconds,
                     Math.Min(MaxRetryIntervalMilliseconds, Settings.RetryIntervalMilliseconds));

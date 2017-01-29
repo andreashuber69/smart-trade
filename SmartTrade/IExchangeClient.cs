@@ -6,10 +6,11 @@
 
 namespace SmartTrade
 {
-    using Android.App;
+    using System;
+    using Bitstamp;
 
-    [Service]
-    internal sealed partial class TradeService : TradeServiceBase<BtcEurExchangeClient, Settings>
+    internal interface IExchangeClient : IDisposable
     {
+        ICurrencyExchange CurrencyExchange { get; }
     }
 }
