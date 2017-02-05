@@ -19,6 +19,7 @@ namespace SmartTrade
     using Java.Util;
     using Javax.Crypto;
     using Javax.Security.Auth.X500;
+
     using static Logger;
 
     internal sealed class Settings : ISettings
@@ -137,7 +138,7 @@ namespace SmartTrade
             {
                 var cal = Calendar.Instance;
                 var start = cal.Time;
-                cal.Add(CalendarField.Year, 1);
+                cal.Add(CalendarField.Year, 10);
                 var end = cal.Time;
 
                 var spec = builder
@@ -195,11 +196,13 @@ namespace SmartTrade
             if (!this.keyStore.ContainsAlias(KeyName))
             {
                 GenerateKey();
+
+                // If we generate a new key, old encrypted data is useless.
+                SetValue(p => p.PutString(nameof(this.ApiKey), string.Empty));
+                SetValue(p => p.PutString(nameof(this.ApiSecret), string.Empty));
             }
 
-            var keyStore = KeyStore.GetInstance(KeyStoreName);
-            keyStore.Load(null);
-            return (KeyStore.PrivateKeyEntry)keyStore.GetEntry(KeyName, null);
+            return (KeyStore.PrivateKeyEntry)this.keyStore.GetEntry(KeyName, null);
         }
     }
 }
