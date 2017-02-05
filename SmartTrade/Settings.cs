@@ -128,12 +128,14 @@ namespace SmartTrade
 
         private static IKey GenerateKey()
         {
-            using (var builder = new KeyGenParameterSpec.Builder(KeyName, KeyStorePurpose.Encrypt))
+            var keyGenerator = KeyPairGenerator.GetInstance(KeyProperties.KeyAlgorithmRsa, KeyStoreName);
+
+            using (var builder = new KeyGenParameterSpec.Builder(
+                KeyName, KeyStorePurpose.Encrypt))
             {
                 var spec = builder
-                    .SetBlockModes(KeyProperties.BlockModeCbc)
-                    .SetEncryptionPaddings(KeyProperties.EncryptionPaddingPkcs7).Build();
-                var keyGenerator = KeyGenerator.GetInstance(KeyProperties.KeyAlgorithmAes, KeyStoreName);
+                    .SetBlockModes(KeyProperties.BlockModeEcb)
+                    .SetEncryptionPaddings(KeyProperties.EncryptionPaddingRsaPkcs1).Build();
                 keyGenerator.Init(spec);
                 return keyGenerator.GenerateKey();
             }
@@ -158,8 +160,8 @@ namespace SmartTrade
 
         private byte[] Crypt(byte[] input, CipherMode mode)
         {
-            var transformation = KeyProperties.KeyAlgorithmAes + '/' +
-                KeyProperties.BlockModeCbc + '/' + KeyProperties.EncryptionPaddingPkcs7;
+            var transformation = KeyProperties.KeyAlgorithmRsa + '/' +
+                KeyProperties.BlockModeEcb + '/' + KeyProperties.EncryptionPaddingRsaPkcs1;
 
             using (var cipher = Cipher.GetInstance(transformation))
             {
