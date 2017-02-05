@@ -134,8 +134,13 @@ namespace SmartTrade
         {
             var keyGenerator = KeyPairGenerator.GetInstance(KeyProperties.KeyAlgorithmRsa, KeyStoreName);
 
+// KeyPairGeneratorSpec seems to offer the only way to generate RSA keys with the API level we're currently targeting
+// (level 18). Since this has been deprecated in API level 23 and later and we're always compiling against the latest
+// platform, we're bound to get CS0618 here.
+#pragma warning disable 0618
             using (var builder = new KeyPairGeneratorSpec.Builder(Application.Context))
             {
+#pragma warning restore
                 var cal = Calendar.Instance;
                 var start = cal.Time;
                 cal.Add(CalendarField.Year, 10);
