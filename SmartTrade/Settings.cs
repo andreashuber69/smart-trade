@@ -12,10 +12,13 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
     using Android.Preferences;
+    using Android.Security;
     using Android.Security.Keystore;
+    using Java.Math;
     using Java.Security;
+    using Java.Util;
     using Javax.Crypto;
-
+    using Javax.Security.Auth.X500;
     using static Logger;
 
     internal sealed class Settings : ISettings
@@ -126,18 +129,25 @@ namespace SmartTrade
             }
         }
 
-        private static IKey GenerateKey()
+        private static void GenerateKey()
         {
             var keyGenerator = KeyPairGenerator.GetInstance(KeyProperties.KeyAlgorithmRsa, KeyStoreName);
 
-            using (var builder = new KeyGenParameterSpec.Builder(
-                KeyName, KeyStorePurpose.Encrypt))
+            using (var builder = new KeyPairGeneratorSpec.Builder(Application.Context))
             {
+                var cal = Calendar.Instance;
+                var start = cal.Time;
+                cal.Add(CalendarField.Year, 1);
+                var end = cal.Time;
+
                 var spec = builder
-                    .SetBlockModes(KeyProperties.BlockModeEcb)
-                    .SetEncryptionPaddings(KeyProperties.EncryptionPaddingRsaPkcs1).Build();
-                keyGenerator.Init(spec);
-                return keyGenerator.GenerateKey();
+                    .SetAlias(KeyName)
+                    .SetStartDate(start)
+                    .SetEndDate(end)
+                    .SetSerialNumber(BigInteger.One)
+                    .SetSubject(new X500Principal("CN=" + KeyName)).Build();
+                keyGenerator.Initialize(spec);
+                var keyPair = keyGenerator.GenerateKeyPair();
             }
         }
 
@@ -165,12 +175,31 @@ namespace SmartTrade
 
             using (var cipher = Cipher.GetInstance(transformation))
             {
-                cipher.Init(mode, this.GetKey());
+                var key = this.GetKey();
+
+                if (mode == CipherMode.EncryptMode)
+                {
+                    cipher.Init(mode, key.Certificate);
+                }
+                else
+                {
+                    cipher.Init(mode, key.PrivateKey);
+                }
+
                 return cipher.DoFinal(input);
             }
         }
 
-        private IKey GetKey() =>
-            this.keyStore.ContainsAlias(KeyName) ? this.keyStore.GetKey(KeyName, null) : GenerateKey();
+        private KeyStore.PrivateKeyEntry GetKey()
+        {
+            if (!this.keyStore.ContainsAlias(KeyName))
+            {
+                GenerateKey();
+            }
+
+            var keyStore = KeyStore.GetInstance(KeyStoreName);
+            keyStore.Load(null);
+            return (KeyStore.PrivateKeyEntry)keyStore.GetEntry(KeyName, null);
+        }
     }
 }
