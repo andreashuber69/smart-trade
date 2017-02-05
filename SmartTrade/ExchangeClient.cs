@@ -7,7 +7,7 @@
 namespace SmartTrade
 {
     using System;
-
+    using System.Diagnostics.CodeAnalysis;
     using Bitstamp;
 
     internal abstract class ExchangeClient : IExchangeClient
@@ -18,6 +18,7 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Ctor *is* being called, CA bug?")]
         protected ExchangeClient(Func<BitstampClient, ICurrencyExchange> getCurrencyExchange)
         {
             var settings = new Settings();

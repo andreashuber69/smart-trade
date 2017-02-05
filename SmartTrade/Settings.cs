@@ -139,8 +139,9 @@ namespace SmartTrade
 // platform, we're bound to get CS0618 here.
 #pragma warning disable 0618
             using (var builder = new KeyPairGeneratorSpec.Builder(Application.Context))
-            {
 #pragma warning restore
+            using (var principal = new X500Principal("CN=" + KeyName))
+            {
                 var cal = Calendar.Instance;
                 var start = cal.Time;
                 cal.Add(CalendarField.Year, 10);
@@ -151,9 +152,9 @@ namespace SmartTrade
                     .SetStartDate(start)
                     .SetEndDate(end)
                     .SetSerialNumber(BigInteger.One)
-                    .SetSubject(new X500Principal("CN=" + KeyName)).Build();
+                    .SetSubject(principal).Build();
                 keyGenerator.Initialize(spec);
-                var keyPair = keyGenerator.GenerateKeyPair();
+                keyGenerator.GenerateKeyPair();
             }
         }
 
