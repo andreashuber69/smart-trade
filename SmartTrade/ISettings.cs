@@ -11,6 +11,28 @@ namespace SmartTrade
     /// <summary>Represents the settings that need to be made persistent.</summary>
     internal interface ISettings
     {
+        /// <summary>Gets or sets the Bitstamp customer id.</summary>
+        int CustomerId { get; set; }
+
+        /// <summary>Gets or sets the Bitstamp api key.</summary>
+        string ApiKey { get; set; }
+
+        /// <summary>Gets or sets the Bitstamp api secret.</summary>
+        string ApiSecret { get; set; }
+
+        /// <summary>Gets or sets the time of the last trade.</summary>
+        /// <value>The time of the last trade attempt; or <c>null</c> if no trade has been made yet.</value>
+        DateTime? LastTradeTime { get; set; }
+
+        /// <summary>Gets or sets the result of the last trade attempt.</summary>
+        string LastResult { get; set; }
+
+        /// <summary>Gets or sets the balance of the first currency after the last trade attempt.</summary>
+        float LastBalanceFirstCurrency { get; set; }
+
+        /// <summary>Gets or sets the balance of the second currency after the last trade attempt.</summary>
+        float LastBalanceSecondCurrency { get; set; }
+
         /// <summary>Gets or sets the next trade time.</summary>
         /// <value>The unix time of the next trade if the service is enabled; or, 0 if the trade service is disabled.
         /// </value>
@@ -36,14 +58,5 @@ namespace SmartTrade
 
         /// <summary>Gets or sets the interval between retries.</summary>
         long RetryIntervalMilliseconds { get; set; }
-
-        /// <summary>Gets or sets the Bitstamp customer id.</summary>
-        int CustomerId { get; set; }
-
-        /// <summary>Gets or sets the Bitstamp api key.</summary>
-        string ApiKey { get; set; }
-
-        /// <summary>Gets or sets the Bitstamp api secret.</summary>
-        string ApiSecret { get; set; }
     }
 }

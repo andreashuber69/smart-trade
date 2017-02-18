@@ -30,6 +30,48 @@ namespace SmartTrade
             this.keyStore.Load(null);
         }
 
+        public int CustomerId
+        {
+            get { return (int)GetLong(); }
+            set { SetLong(value); }
+        }
+
+        public string ApiKey
+        {
+            get { return this.GetPrivateString(); }
+            set { this.SetPrivateString(value); }
+        }
+
+        public string ApiSecret
+        {
+            get { return this.GetPrivateString(); }
+            set { this.SetPrivateString(value); }
+        }
+
+        public DateTime? LastTradeTime
+        {
+            get { return GetDateTime(); }
+            set { SetDateTime(value); }
+        }
+
+        public string LastResult
+        {
+            get { return GetString(); }
+            set { SetString(value); }
+        }
+
+        public float LastBalanceFirstCurrency
+        {
+            get { return GetFloat(); }
+            set { SetFloat(value); }
+        }
+
+        public float LastBalanceSecondCurrency
+        {
+            get { return GetFloat(); }
+            set { SetFloat(value); }
+        }
+
         public long NextTradeTime
         {
             get { return GetLong(); }
@@ -60,24 +102,6 @@ namespace SmartTrade
             set { SetLong(value); }
         }
 
-        public int CustomerId
-        {
-            get { return (int)GetLong(); }
-            set { SetLong(value); }
-        }
-
-        public string ApiKey
-        {
-            get { return this.GetPrivateString(); }
-            set { this.SetPrivateString(value); }
-        }
-
-        public string ApiSecret
-        {
-            get { return this.GetPrivateString(); }
-            set { this.SetPrivateString(value); }
-        }
-
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private const string KeyStoreName = "AndroidKeyStore";
@@ -102,24 +126,34 @@ namespace SmartTrade
 
         private static long GetLong([CallerMemberName] string key = null) => GetValue(p => p.GetLong(key, 0));
 
-        private static void SetLong(long value, [CallerMemberName] string key = null)
-        {
-            SetValue(p => p.PutLong(key, value));
-            Info("Set {0}.{1} = {2}.", nameof(Settings), key, value);
-        }
+        private static void SetLong(long value, [CallerMemberName] string key = null) =>
+            SetValue((p, k, v) => p.PutLong(k, v), key, value);
 
-        private static void SetValue(Action<ISharedPreferencesEditor> setValue)
+        private static float GetFloat([CallerMemberName] string key = null) => GetValue(p => p.GetFloat(key, 0.0f));
+
+        private static void SetFloat(float value, [CallerMemberName] string key = null) =>
+            SetValue((p, k, v) => p.PutFloat(k, v), key, value);
+
+        private static string GetString([CallerMemberName] string key = null) =>
+            GetValue(p => p.GetString(key, string.Empty));
+
+        private static void SetString(string value, [CallerMemberName] string key = null) =>
+            SetValue((p, k, v) => p.PutString(k, v), key, value);
+
+        private static void SetValue<T>(Action<ISharedPreferencesEditor, string, T> setValue, string key, T value)
         {
             GetValue(
                 p =>
                 {
                     using (var editor = p.Edit())
                     {
-                        setValue(editor);
+                        setValue(editor, key, value);
                         editor.Apply();
                         return false;
                     }
                 });
+
+            Info("Set {0}.{1} = {2}.", nameof(Settings), key, value);
         }
 
         private static T GetValue<T>(Func<ISharedPreferences, T> getValue)
@@ -163,11 +197,8 @@ namespace SmartTrade
         private string GetPrivateString([CallerMemberName] string key = null) =>
             this.Decrypt(GetValue(p => p.GetString(key, string.Empty)));
 
-        private void SetPrivateString(string value, [CallerMemberName] string key = null)
-        {
-            SetValue(p => p.PutString(key, this.Encrypt(value)));
-            Info("Set {0}.{1} = <private>.", nameof(Settings), key);
-        }
+        private void SetPrivateString(string value, [CallerMemberName] string key = null) =>
+            SetValue((p, k, v) => p.PutString(k, v), key, this.Encrypt(value));
 
         private string Decrypt(string encryptedValue) =>
             Encoding.UTF8.GetString(this.Crypt(Convert.FromBase64String(encryptedValue), CipherMode.DecryptMode));
@@ -204,8 +235,8 @@ namespace SmartTrade
                 GenerateKey();
 
                 // If we generate a new key, old encrypted data is useless.
-                SetValue(p => p.PutString(nameof(this.ApiKey), string.Empty));
-                SetValue(p => p.PutString(nameof(this.ApiSecret), string.Empty));
+                SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiKey), string.Empty);
+                SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiSecret), string.Empty);
             }
 
             return (KeyStore.PrivateKeyEntry)this.keyStore.GetEntry(KeyName, null);

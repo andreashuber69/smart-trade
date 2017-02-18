@@ -45,6 +45,8 @@ namespace SmartTrade
             }
         }
 
+        internal static ISettings Settings { get; } = new TSettings();
+
         internal static void ScheduleTrade()
         {
             var context = Application.Context;
@@ -99,6 +101,7 @@ namespace SmartTrade
             {
                 var intervalMilliseconds =
                     (long)(await this.BuyAsync(client.CurrencyExchange, popup)).GetValueOrDefault().TotalMilliseconds;
+                Settings.LastResult = popup.ContentText;
                 Settings.RetryIntervalMilliseconds = Math.Max(
                     MinRetryIntervalMilliseconds,
                     Math.Min(MaxRetryIntervalMilliseconds, Settings.RetryIntervalMilliseconds));
@@ -111,7 +114,6 @@ namespace SmartTrade
 
         private const long MinRetryIntervalMilliseconds = 2 * 60 * 1000;
         private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
-        private static readonly TSettings Settings = new TSettings();
         private static readonly decimal MinAmount = 5;
 
         private static void ScheduleTrade(long time)
@@ -203,8 +205,13 @@ namespace SmartTrade
         {
             try
             {
+                Settings.LastTradeTime = DateTime.UtcNow;
                 var balance = await exchange.GetBalanceAsync();
+                var firstBalance = balance.FirstCurrency;
                 var secondBalance = balance.SecondCurrency;
+                Settings.LastBalanceFirstCurrency = (float)firstBalance;
+                Settings.LastBalanceSecondCurrency = (float)secondBalance;
+
                 var fee = balance.Fee;
                 var secondCurrency = exchange.TickerSymbol.Substring(3);
                 Info("Current balance is {0} {1}.", secondCurrency, secondBalance);
@@ -238,19 +245,26 @@ namespace SmartTrade
                 {
                     var firstAmountToBuy = Math.Round((secondAmount - calculator.GetFee(secondAmount)) / ask.Price, 8);
                     var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
+                    Settings.LastTradeTime = result.DateTime;
+                    firstBalance += result.Amount;
                     var bought = result.Amount * result.Price;
                     var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
                     popup.Update(this, Resource.String.service_bought, secondCurrency, bought, firstCurrency);
+
                     start = result.DateTime;
                     secondAmount = bought + calculator.GetFee(bought);
+                    secondBalance -= secondAmount;
+                    Settings.LastBalanceFirstCurrency = (float)firstBalance;
+                    Settings.LastBalanceSecondCurrency = (float)secondBalance;
                 }
                 else
                 {
+                    popup.Update(this, Resource.String.service_nothing_to_buy);
                     popup.Dispose();
                 }
 
                 Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
-                return calculator.GetNextTime(start, secondBalance - secondAmount) - DateTime.UtcNow;
+                return calculator.GetNextTime(start, secondBalance) - DateTime.UtcNow;
             }
             catch (Exception ex) when (ex is BitstampException ||
                 ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
@@ -262,6 +276,7 @@ namespace SmartTrade
             catch (Exception ex)
             {
                 popup.Update(this, Resource.String.service_unexpected_error, ex.GetType().Name, ex.Message);
+                Settings.LastResult = popup.ContentText;
                 Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
                 IsEnabled = false;
                 throw;
