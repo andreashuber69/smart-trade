@@ -95,7 +95,7 @@ namespace SmartTrade
                 return;
             }
 
-            var popup = new NotificationPopup(this, Resource.String.service_checking);
+            var popup = new NotificationPopup(this, Resource.String.checking_popup);
 
             using (var client = new TExchangeClient())
             {
@@ -219,7 +219,7 @@ namespace SmartTrade
                 if (secondBalance < UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, fee))
                 {
                     Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
-                    popup.Update(this, Resource.String.service_insufficient_balance);
+                    popup.Update(this, Resource.String.insufficient_balance_popup);
                     return null;
                 }
 
@@ -229,7 +229,7 @@ namespace SmartTrade
                 if (!Settings.PeriodEnd.HasValue)
                 {
                     Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
-                    popup.Update(this, Resource.String.service_no_deposit);
+                    popup.Update(this, Resource.String.no_deposit_popup);
                     return null;
                 }
 
@@ -249,7 +249,7 @@ namespace SmartTrade
                     firstBalance += result.Amount;
                     var bought = result.Amount * result.Price;
                     var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
-                    popup.Update(this, Resource.String.service_bought, secondCurrency, bought, firstCurrency);
+                    popup.Update(this, Resource.String.bought_popup, secondCurrency, bought, firstCurrency);
 
                     start = result.DateTime;
                     secondAmount = bought + calculator.GetFee(bought);
@@ -259,7 +259,7 @@ namespace SmartTrade
                 }
                 else
                 {
-                    popup.Update(this, Resource.String.service_nothing_to_buy);
+                    popup.Update(this, Resource.String.nothing_to_buy_popup);
                     popup.Dispose();
                 }
 
@@ -275,7 +275,7 @@ namespace SmartTrade
             }
             catch (Exception ex)
             {
-                popup.Update(this, Resource.String.service_unexpected_error, ex.GetType().Name, ex.Message);
+                popup.Update(this, Resource.String.unexpected_error_popup, ex.GetType().Name, ex.Message);
                 Settings.LastTradeTime = DateTime.UtcNow;
                 Settings.LastResult = popup.ContentText;
                 Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;

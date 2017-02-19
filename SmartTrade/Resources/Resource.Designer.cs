@@ -150,8 +150,17 @@ namespace SmartTrade
 			// aapt resource value: 0x7f050002
 			public const int app_name = 2131034114;
 			
+			// aapt resource value: 0x7f05000f
+			public const int bought_popup = 2131034127;
+			
+			// aapt resource value: 0x7f05000d
+			public const int checking_popup = 2131034125;
+			
 			// aapt resource value: 0x7f050004
 			public const int customer_id = 2131034116;
+			
+			// aapt resource value: 0x7f050011
+			public const int insufficient_balance_popup = 2131034129;
 			
 			// aapt resource value: 0x7f05000a
 			public const int last_balance = 2131034122;
@@ -159,35 +168,26 @@ namespace SmartTrade
 			// aapt resource value: 0x7f050009
 			public const int last_trade = 2131034121;
 			
-			// aapt resource value: 0x7f05000f
-			public const int service_bought = 2131034127;
+			// aapt resource value: 0x7f050010
+			public const int no_deposit_popup = 2131034128;
 			
-			// aapt resource value: 0x7f05000d
-			public const int service_checking = 2131034125;
-			
-			// aapt resource value: 0x7f05000b
-			public const int service_disabled = 2131034123;
-			
-			// aapt resource value: 0x7f05000c
-			public const int service_enabled = 2131034124;
-			
-			// aapt resource value: 0x7f050011
-			public const int service_insufficient_balance = 2131034129;
+			// aapt resource value: 0x7f05000e
+			public const int nothing_to_buy_popup = 2131034126;
 			
 			// aapt resource value: 0x7f050007
 			public const int service_is_disabled = 2131034119;
 			
+			// aapt resource value: 0x7f05000b
+			public const int service_is_disabled_popup = 2131034123;
+			
 			// aapt resource value: 0x7f050008
 			public const int service_is_enabled = 2131034120;
 			
-			// aapt resource value: 0x7f050010
-			public const int service_no_deposit = 2131034128;
-			
-			// aapt resource value: 0x7f05000e
-			public const int service_nothing_to_buy = 2131034126;
+			// aapt resource value: 0x7f05000c
+			public const int service_is_enabled_popup = 2131034124;
 			
 			// aapt resource value: 0x7f050012
-			public const int service_unexpected_error = 2131034130;
+			public const int unexpected_error_popup = 2131034130;
 			
 			static String()
 			{
