@@ -11,9 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/top_margin" />
-    <Button
-        android:id="@+id/start_timestamp_service_button"
+    <ToggleButton
+        android:id="@+id/enable_disable_service_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:enabled="true" />
+        android:textOff="@string/service_is_disabled"
+        android:textOn="@string/service_is_enabled" />
 </LinearLayout>

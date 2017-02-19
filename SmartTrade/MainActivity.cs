@@ -6,8 +6,6 @@
 
 namespace SmartTrade
 {
-    using System;
-
     using Android.App;
     using Android.OS;
     using Android.Widget;
@@ -19,22 +17,15 @@ namespace SmartTrade
         {
             base.OnCreate(savedInstanceState);
             this.SetContentView(Resource.Layout.Main);
-            this.startServiceButton = this.FindViewById<Button>(Resource.Id.start_timestamp_service_button);
-            this.startServiceButton.Click += this.OnStartServiceButtonClicked;
-            this.UpdateGui();
+            this.enabledisableServiceButton =
+                this.FindViewById<ToggleButton>(Resource.Id.enable_disable_service_button);
+            this.enabledisableServiceButton.Checked = TradeService.IsEnabled;
+            this.enabledisableServiceButton.Click +=
+                (s, e) => TradeService.IsEnabled = this.enabledisableServiceButton.Checked;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private Button startServiceButton;
-
-        private void OnStartServiceButtonClicked(object sender, EventArgs e)
-        {
-            TradeService.IsEnabled = !TradeService.IsEnabled;
-            this.UpdateGui();
-        }
-
-        private void UpdateGui() => this.startServiceButton.Text = this.Resources.GetString(
-            TradeService.IsEnabled ? Resource.String.disable_service : Resource.String.enable_service);
+        private ToggleButton enabledisableServiceButton;
     }
 }

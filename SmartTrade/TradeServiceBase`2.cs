@@ -101,6 +101,7 @@ namespace SmartTrade
             {
                 var intervalMilliseconds =
                     (long)(await this.BuyAsync(client.CurrencyExchange, popup)).GetValueOrDefault().TotalMilliseconds;
+                Settings.LastTradeTime = DateTime.UtcNow;
                 Settings.LastResult = popup.ContentText;
                 Settings.RetryIntervalMilliseconds = Math.Max(
                     MinRetryIntervalMilliseconds,
@@ -205,7 +206,6 @@ namespace SmartTrade
         {
             try
             {
-                Settings.LastTradeTime = DateTime.UtcNow;
                 var balance = await exchange.GetBalanceAsync();
                 var firstBalance = balance.FirstCurrency;
                 var secondBalance = balance.SecondCurrency;
@@ -276,9 +276,11 @@ namespace SmartTrade
             catch (Exception ex)
             {
                 popup.Update(this, Resource.String.service_unexpected_error, ex.GetType().Name, ex.Message);
+                Settings.LastTradeTime = DateTime.UtcNow;
                 Settings.LastResult = popup.ContentText;
                 Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
                 IsEnabled = false;
+                Warn("The service has been disabled due to an unexpected error.");
                 throw;
             }
         }

@@ -85,7 +85,7 @@ namespace SmartTrade
 		{
 			
 			// aapt resource value: 0x7f070000
-			public const int start_timestamp_service_button = 2131165184;
+			public const int enable_disable_service_button = 2131165184;
 			
 			static Id()
 			{
@@ -138,41 +138,56 @@ namespace SmartTrade
 			// aapt resource value: 0x7f050000
 			public const int Hello = 2131034112;
 			
+			// aapt resource value: 0x7f050005
+			public const int api_key = 2131034117;
+			
+			// aapt resource value: 0x7f050006
+			public const int api_secret = 2131034118;
+			
 			// aapt resource value: 0x7f050003
 			public const int app_description = 2131034115;
 			
 			// aapt resource value: 0x7f050002
 			public const int app_name = 2131034114;
 			
-			// aapt resource value: 0x7f050005
-			public const int disable_service = 2131034117;
-			
 			// aapt resource value: 0x7f050004
-			public const int enable_service = 2131034116;
+			public const int customer_id = 2131034116;
 			
 			// aapt resource value: 0x7f05000a
-			public const int service_bought = 2131034122;
-			
-			// aapt resource value: 0x7f050008
-			public const int service_checking = 2131034120;
-			
-			// aapt resource value: 0x7f050006
-			public const int service_disabled = 2131034118;
-			
-			// aapt resource value: 0x7f050007
-			public const int service_enabled = 2131034119;
-			
-			// aapt resource value: 0x7f05000c
-			public const int service_insufficient_balance = 2131034124;
-			
-			// aapt resource value: 0x7f05000b
-			public const int service_no_deposit = 2131034123;
+			public const int last_balance = 2131034122;
 			
 			// aapt resource value: 0x7f050009
-			public const int service_nothing_to_buy = 2131034121;
+			public const int last_trade = 2131034121;
+			
+			// aapt resource value: 0x7f05000f
+			public const int service_bought = 2131034127;
 			
 			// aapt resource value: 0x7f05000d
-			public const int service_unexpected_error = 2131034125;
+			public const int service_checking = 2131034125;
+			
+			// aapt resource value: 0x7f05000b
+			public const int service_disabled = 2131034123;
+			
+			// aapt resource value: 0x7f05000c
+			public const int service_enabled = 2131034124;
+			
+			// aapt resource value: 0x7f050011
+			public const int service_insufficient_balance = 2131034129;
+			
+			// aapt resource value: 0x7f050007
+			public const int service_is_disabled = 2131034119;
+			
+			// aapt resource value: 0x7f050008
+			public const int service_is_enabled = 2131034120;
+			
+			// aapt resource value: 0x7f050010
+			public const int service_no_deposit = 2131034128;
+			
+			// aapt resource value: 0x7f05000e
+			public const int service_nothing_to_buy = 2131034126;
+			
+			// aapt resource value: 0x7f050012
+			public const int service_unexpected_error = 2131034130;
 			
 			static String()
 			{
