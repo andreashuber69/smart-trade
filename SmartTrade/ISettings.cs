@@ -7,9 +7,10 @@
 namespace SmartTrade
 {
     using System;
+    using System.ComponentModel;
 
     /// <summary>Represents the settings that need to be made persistent.</summary>
-    internal interface ISettings
+    internal interface ISettings : INotifyPropertyChanged
     {
         /// <summary>Gets or sets the Bitstamp customer id.</summary>
         int CustomerId { get; set; }

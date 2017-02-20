@@ -7,6 +7,7 @@
 namespace SmartTrade
 {
     using System;
+    using System.ComponentModel;
     using System.Runtime.CompilerServices;
     using System.Text;
     using Android.App;
@@ -30,10 +31,12 @@ namespace SmartTrade
             this.keyStore.Load(null);
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public int CustomerId
         {
             get { return (int)GetLong(); }
-            set { SetLong(value); }
+            set { this.SetLong(value); }
         }
 
         public string ApiKey
@@ -51,55 +54,55 @@ namespace SmartTrade
         public DateTime? LastTradeTime
         {
             get { return GetDateTime(); }
-            set { SetDateTime(value); }
+            set { this.SetDateTime(value); }
         }
 
         public string LastResult
         {
             get { return GetString(); }
-            set { SetString(value); }
+            set { this.SetString(value); }
         }
 
         public float LastBalanceFirstCurrency
         {
             get { return GetFloat(); }
-            set { SetFloat(value); }
+            set { this.SetFloat(value); }
         }
 
         public float LastBalanceSecondCurrency
         {
             get { return GetFloat(); }
-            set { SetFloat(value); }
+            set { this.SetFloat(value); }
         }
 
         public long NextTradeTime
         {
             get { return GetLong(); }
-            set { SetLong(value); }
+            set { this.SetLong(value); }
         }
 
         public DateTime? SectionStart
         {
             get { return GetDateTime(); }
-            set { SetDateTime(value); }
+            set { this.SetDateTime(value); }
         }
 
         public DateTime? PeriodEnd
         {
             get { return GetDateTime(); }
-            set { SetDateTime(value); }
+            set { this.SetDateTime(value); }
         }
 
         public DateTime LastTransactionTimestamp
         {
             get { return GetDateTime() ?? DateTime.MinValue; }
-            set { SetDateTime(value); }
+            set { this.SetDateTime(value); }
         }
 
         public long RetryIntervalMilliseconds
         {
             get { return GetLong(); }
-            set { SetLong(value); }
+            set { this.SetLong(value); }
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,48 +116,12 @@ namespace SmartTrade
             return ticks == 0 ? (DateTime?)null : new DateTime(ticks, DateTimeKind.Utc);
         }
 
-        private static void SetDateTime(DateTime? value, [CallerMemberName] string key = null)
-        {
-            if (value.HasValue && (value.Value.Kind != DateTimeKind.Utc))
-            {
-                throw new ArgumentException("UTC kind expected.", nameof(value));
-            }
-
-            SetLong(value?.Ticks ?? 0, key);
-            Info("Set {0}.{1} = {2:o}.", nameof(Settings), key, value);
-        }
-
         private static long GetLong([CallerMemberName] string key = null) => GetValue(p => p.GetLong(key, 0));
-
-        private static void SetLong(long value, [CallerMemberName] string key = null) =>
-            SetValue((p, k, v) => p.PutLong(k, v), key, value);
 
         private static float GetFloat([CallerMemberName] string key = null) => GetValue(p => p.GetFloat(key, 0.0f));
 
-        private static void SetFloat(float value, [CallerMemberName] string key = null) =>
-            SetValue((p, k, v) => p.PutFloat(k, v), key, value);
-
         private static string GetString([CallerMemberName] string key = null) =>
             GetValue(p => p.GetString(key, string.Empty));
-
-        private static void SetString(string value, [CallerMemberName] string key = null) =>
-            SetValue((p, k, v) => p.PutString(k, v), key, value);
-
-        private static void SetValue<T>(Action<ISharedPreferencesEditor, string, T> setValue, string key, T value)
-        {
-            GetValue(
-                p =>
-                {
-                    using (var editor = p.Edit())
-                    {
-                        setValue(editor, key, value);
-                        editor.Apply();
-                        return false;
-                    }
-                });
-
-            Info("Set {0}.{1} = {2}.", nameof(Settings), key, value);
-        }
 
         private static T GetValue<T>(Func<ISharedPreferences, T> getValue)
         {
@@ -194,11 +161,48 @@ namespace SmartTrade
 
         private readonly KeyStore keyStore;
 
+        private void SetDateTime(DateTime? value, [CallerMemberName] string key = null)
+        {
+            if (value.HasValue && (value.Value.Kind != DateTimeKind.Utc))
+            {
+                throw new ArgumentException("UTC kind expected.", nameof(value));
+            }
+
+            this.SetLong(value?.Ticks ?? 0, key);
+            Info("Set {0}.{1} = {2:o}.", nameof(Settings), key, value);
+        }
+
+        private void SetLong(long value, [CallerMemberName] string key = null) =>
+            this.SetValue((p, k, v) => p.PutLong(k, v), key, value);
+
+        private void SetFloat(float value, [CallerMemberName] string key = null) =>
+            this.SetValue((p, k, v) => p.PutFloat(k, v), key, value);
+
+        private void SetString(string value, [CallerMemberName] string key = null) =>
+            this.SetValue((p, k, v) => p.PutString(k, v), key, value);
+
+        private void SetValue<T>(Action<ISharedPreferencesEditor, string, T> setValue, string key, T value)
+        {
+            GetValue(
+                p =>
+                {
+                    using (var editor = p.Edit())
+                    {
+                        setValue(editor, key, value);
+                        editor.Apply();
+                        return false;
+                    }
+                });
+
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(key));
+            Info("Set {0}.{1} = {2}.", nameof(Settings), key, value);
+        }
+
         private string GetPrivateString([CallerMemberName] string key = null) =>
             this.Decrypt(GetValue(p => p.GetString(key, string.Empty)));
 
         private void SetPrivateString(string value, [CallerMemberName] string key = null) =>
-            SetValue((p, k, v) => p.PutString(k, v), key, this.Encrypt(value));
+            this.SetValue((p, k, v) => p.PutString(k, v), key, this.Encrypt(value));
 
         private string Decrypt(string encryptedValue) =>
             Encoding.UTF8.GetString(this.Crypt(Convert.FromBase64String(encryptedValue), CipherMode.DecryptMode));
@@ -235,8 +239,8 @@ namespace SmartTrade
                 GenerateKey();
 
                 // If we generate a new key, old encrypted data is useless.
-                SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiKey), string.Empty);
-                SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiSecret), string.Empty);
+                this.SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiKey), string.Empty);
+                this.SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiSecret), string.Empty);
             }
 
             return (KeyStore.PrivateKeyEntry)this.keyStore.GetEntry(KeyName, null);

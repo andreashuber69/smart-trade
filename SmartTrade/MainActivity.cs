@@ -6,6 +6,7 @@
 
 namespace SmartTrade
 {
+    using System.ComponentModel;
     using Android.App;
     using Android.OS;
     using Android.Widget;
@@ -16,11 +17,20 @@ namespace SmartTrade
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            TradeService.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
             this.SetContentView(Resource.Layout.Main);
-            this.enabledisableServiceButton = GetEnableDisableServiceButton(this);
+            this.enableDisableServiceButton = GetEnableDisableServiceButton(this);
             this.customerIdEditText = GetCustomerIdEditText(this);
             this.apiKeyEditText = GetApiKeyEditText(this);
             this.apiSecretEditText = GetApiSecretEditText(this);
+
+            this.EnableDisableCredentialInput();
+        }
+
+        protected sealed override void OnDestroy()
+        {
+            TradeService.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
+            base.OnDestroy();
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +78,20 @@ namespace SmartTrade
         private EditText customerIdEditText;
         private EditText apiKeyEditText;
         private EditText apiSecretEditText;
-        private ToggleButton enabledisableServiceButton;
+        private ToggleButton enableDisableServiceButton;
+
+        private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ISettings.NextTradeTime))
+            {
+                this.EnableDisableCredentialInput();
+            }
+        }
+
+        private void EnableDisableCredentialInput()
+        {
+            this.customerIdEditText.Enabled = this.apiKeyEditText.Enabled = this.apiSecretEditText.Enabled =
+                !TradeService.IsEnabled;
+        }
     }
 }
