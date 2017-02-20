@@ -6,11 +6,6 @@
     android:paddingStart="@dimen/left_padding"
     android:paddingEnd="@dimen/left_padding"
     android:paddingTop="@dimen/top_margin">
-    <TextView
-        android:text="@string/app_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/top_margin" />
     <ToggleButton
         android:id="@+id/enable_disable_service_button"
         android:layout_width="match_parent"
