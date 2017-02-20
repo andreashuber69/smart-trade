@@ -13,11 +13,13 @@
         android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/api_key"
+        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/api_secret"
         android:inputType="textPassword"
+        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <ToggleButton
