@@ -7,9 +7,12 @@
 namespace SmartTrade
 {
     using System.ComponentModel;
+    using System.Globalization;
     using Android.App;
     using Android.OS;
     using Android.Widget;
+
+    using static System.Globalization.CultureInfo;
 
     [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@mipmap/icon")]
     internal sealed class MainActivity : Activity
@@ -38,14 +41,15 @@ namespace SmartTrade
         private static EditText GetCustomerIdEditText(Activity activity)
         {
             var result = activity.FindViewById<EditText>(Resource.Id.customer_id);
-            result.Text =
-                TradeService.Settings.CustomerId == 0 ? string.Empty : TradeService.Settings.CustomerId.ToString();
+            result.Text = TradeService.Settings.CustomerId == 0 ?
+                string.Empty : TradeService.Settings.CustomerId.ToString(InvariantCulture);
 
             result.TextChanged +=
                 (s, e) =>
                 {
                     int customerId;
-                    TradeService.Settings.CustomerId = int.TryParse(result.Text, out customerId) ? customerId : 0;
+                    TradeService.Settings.CustomerId =
+                        int.TryParse(result.Text, NumberStyles.None, InvariantCulture, out customerId) ? customerId : 0;
                 };
 
             return result;
