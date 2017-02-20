@@ -84,8 +84,17 @@ namespace SmartTrade
 		public partial class Id
 		{
 			
+			// aapt resource value: 0x7f070001
+			public const int api_key = 2131165185;
+			
+			// aapt resource value: 0x7f070002
+			public const int api_secret = 2131165186;
+			
 			// aapt resource value: 0x7f070000
-			public const int enable_disable_service_button = 2131165184;
+			public const int customer_id = 2131165184;
+			
+			// aapt resource value: 0x7f070003
+			public const int enable_disable_service_button = 2131165187;
 			
 			static Id()
 			{

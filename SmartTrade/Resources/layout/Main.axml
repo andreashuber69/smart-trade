@@ -6,6 +6,20 @@
     android:paddingStart="@dimen/left_padding"
     android:paddingEnd="@dimen/left_padding"
     android:paddingTop="@dimen/top_margin">
+    <EditText
+        android:id="@+id/customer_id"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/api_key"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/api_secret"
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <ToggleButton
         android:id="@+id/enable_disable_service_button"
         android:layout_width="match_parent"
