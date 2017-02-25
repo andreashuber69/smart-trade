@@ -9,6 +9,7 @@
     <EditText
         android:id="@+id/customer_id"
         android:inputType="numberDecimal"
+        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText

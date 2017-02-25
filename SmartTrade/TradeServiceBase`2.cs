@@ -26,28 +26,28 @@ namespace SmartTrade
         where TExchangeClient : IExchangeClient, new()
         where TSettings : ISettings, new()
     {
-        internal static bool IsEnabled
+        internal bool IsEnabled
         {
             get
             {
-                return Settings.NextTradeTime > 0;
+                return this.Settings.NextTradeTime > 0;
             }
 
             set
             {
-                if ((Settings.NextTradeTime == 0) && value && Settings.PeriodEnd.HasValue)
+                if ((this.Settings.NextTradeTime == 0) && value && this.Settings.PeriodEnd.HasValue)
                 {
-                    Settings.SectionStart = DateTime.UtcNow;
+                    this.Settings.SectionStart = DateTime.UtcNow;
                 }
 
-                ScheduleTrade(value ? Java.Lang.JavaSystem.CurrentTimeMillis() : 0);
-                Info("Set {0}.{1} = {2}", nameof(TradeService), nameof(IsEnabled), IsEnabled);
+                this.ScheduleTrade(value ? Java.Lang.JavaSystem.CurrentTimeMillis() : 0);
+                Info("Set {0}.{1} = {2}", nameof(TradeService), nameof(this.IsEnabled), this.IsEnabled);
             }
         }
 
-        internal static ISettings Settings { get; } = new TSettings();
+        internal ISettings Settings { get; } = new TSettings();
 
-        internal static void ScheduleTrade()
+        internal void ScheduleTrade()
         {
             var context = Application.Context;
             var manager = AlarmManager.FromContext(context);
@@ -55,11 +55,11 @@ namespace SmartTrade
             using (var intent = new Intent(context, typeof(TradeService)))
             using (var alarmIntent = PendingIntent.GetService(context, 0, intent, PendingIntentFlags.UpdateCurrent))
             {
-                if (Settings.NextTradeTime > 0)
+                if (this.Settings.NextTradeTime > 0)
                 {
                     var currentTime = Java.Lang.JavaSystem.CurrentTimeMillis();
                     Info("Current UNIX time is {0}.", currentTime);
-                    var nextTradeTime = Math.Max(currentTime + 5000, Settings.NextTradeTime);
+                    var nextTradeTime = Math.Max(currentTime + 5000, this.Settings.NextTradeTime);
                     manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
                     Info("Set alarm time to {0}.", nextTradeTime);
                 }
@@ -83,9 +83,9 @@ namespace SmartTrade
             // this would lead to a race condition with the trade that we're executing next. This is due to the fact
             // that the default timeout for HTTP requests is 100 seconds. Since we're typically executing 3 requests, we
             // could very well still be executing a trade when the min interval ends.
-            ScheduleTrade(calendar.TimeInMillis + MaxRetryIntervalMilliseconds);
+            this.ScheduleTrade(calendar.TimeInMillis + MaxRetryIntervalMilliseconds);
 
-            LogAllSettings();
+            this.LogAllSettings();
 
             if (calendar.Get(Java.Util.CalendarField.Year) < 2017)
             {
@@ -101,13 +101,13 @@ namespace SmartTrade
             {
                 var intervalMilliseconds =
                     (long)(await this.BuyAsync(client.CurrencyExchange, popup)).GetValueOrDefault().TotalMilliseconds;
-                Settings.LastTradeTime = DateTime.UtcNow;
-                Settings.LastResult = popup.ContentText;
-                Settings.RetryIntervalMilliseconds = Math.Max(
+                this.Settings.LastTradeTime = DateTime.UtcNow;
+                this.Settings.LastResult = popup.ContentText;
+                this.Settings.RetryIntervalMilliseconds = Math.Max(
                     MinRetryIntervalMilliseconds,
-                    Math.Min(MaxRetryIntervalMilliseconds, Settings.RetryIntervalMilliseconds));
-                ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
-                    Math.Max(Settings.RetryIntervalMilliseconds, intervalMilliseconds));
+                    Math.Min(MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
+                this.ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
+                    Math.Max(this.Settings.RetryIntervalMilliseconds, intervalMilliseconds));
             }
         }
 
@@ -117,24 +117,33 @@ namespace SmartTrade
         private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
         private static readonly decimal MinAmount = 5;
 
-        private static void ScheduleTrade(long time)
+        private static void Log(string propertyName, long value) =>
+            Info("Current Value {0}.{1} = {2}.", nameof(Settings), propertyName, value);
+
+        private static void Log(string propertyName, DateTime? value) =>
+            Info("Current Value {0}.{1} = {2:o}.", nameof(Settings), propertyName, value);
+
+        private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
+            (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
+
+        private void ScheduleTrade(long time)
         {
-            Settings.NextTradeTime = time;
-            ScheduleTrade();
+            this.Settings.NextTradeTime = time;
+            this.ScheduleTrade();
         }
 
-        private static void LogAllSettings()
+        private void LogAllSettings()
         {
-            Log(nameof(Settings.NextTradeTime), Settings.NextTradeTime);
-            Log(nameof(Settings.SectionStart), Settings.SectionStart);
-            Log(nameof(Settings.PeriodEnd), Settings.PeriodEnd);
-            Log(nameof(Settings.LastTransactionTimestamp), Settings.LastTransactionTimestamp);
-            Log(nameof(Settings.RetryIntervalMilliseconds), Settings.RetryIntervalMilliseconds);
+            Log(nameof(this.Settings.NextTradeTime), this.Settings.NextTradeTime);
+            Log(nameof(this.Settings.SectionStart), this.Settings.SectionStart);
+            Log(nameof(this.Settings.PeriodEnd), this.Settings.PeriodEnd);
+            Log(nameof(this.Settings.LastTransactionTimestamp), this.Settings.LastTransactionTimestamp);
+            Log(nameof(this.Settings.RetryIntervalMilliseconds), this.Settings.RetryIntervalMilliseconds);
         }
 
-        private static async Task<List<ITransaction>> GetTransactions(ICurrencyExchange exchange)
+        private async Task<List<ITransaction>> GetTransactions(ICurrencyExchange exchange)
         {
-            var lastTradeTime = Settings.LastTransactionTimestamp;
+            var lastTradeTime = this.Settings.LastTransactionTimestamp;
             var result = new List<ITransaction>();
 
             for (int lastCount = -1, lastLimit = 0, limit = 10;
@@ -149,16 +158,13 @@ namespace SmartTrade
 
             if (result.Count > 0)
             {
-                Settings.LastTransactionTimestamp = result[0].DateTime;
+                this.Settings.LastTransactionTimestamp = result[0].DateTime;
             }
 
             return result;
         }
 
-        private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
-            (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
-
-        private static void SetPeriod(List<ITransaction> transactions)
+        private void SetPeriod(List<ITransaction> transactions)
         {
             var lastDepositIndex = transactions.FindIndex(
                 t => (t.TransactionType == TransactionType.Deposit) && (t.SecondAmount != 0));
@@ -167,17 +173,17 @@ namespace SmartTrade
             {
                 var lastDepositTime = transactions[lastDepositIndex].DateTime;
 
-                if (!Settings.SectionStart.HasValue || (lastDepositTime > Settings.SectionStart))
+                if (!this.Settings.SectionStart.HasValue || (lastDepositTime > this.Settings.SectionStart))
                 {
-                    Settings.SectionStart = lastDepositTime;
+                    this.Settings.SectionStart = lastDepositTime;
                     var duration =
                         TimeSpan.FromDays(DateTime.DaysInMonth(lastDepositTime.Year, lastDepositTime.Month));
-                    Settings.PeriodEnd = lastDepositTime + duration;
+                    this.Settings.PeriodEnd = lastDepositTime + duration;
                 }
             }
         }
 
-        private static DateTime GetStart(List<ITransaction> transactions)
+        private DateTime GetStart(List<ITransaction> transactions)
         {
             var lastTradeIndex = transactions.FindIndex(
                 t => (t.TransactionType == TransactionType.MarketTrade) || (t.SecondAmount != 0));
@@ -185,19 +191,13 @@ namespace SmartTrade
             if (lastTradeIndex >= 0)
             {
                 var lastTradeTime = transactions[lastTradeIndex].DateTime;
-                return Settings.SectionStart > lastTradeTime ? Settings.SectionStart.Value : lastTradeTime;
+                return this.Settings.SectionStart > lastTradeTime ? this.Settings.SectionStart.Value : lastTradeTime;
             }
             else
             {
-                return Settings.SectionStart.Value;
+                return this.Settings.SectionStart.Value;
             }
         }
-
-        private static void Log(string propertyName, long value) =>
-            Info("Current Value {0}.{1} = {2}.", nameof(Settings), propertyName, value);
-
-        private static void Log(string propertyName, DateTime? value) =>
-            Info("Current Value {0}.{1} = {2:o}.", nameof(Settings), propertyName, value);
 
         /// <summary>Buys on the exchange.</summary>
         /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found, the
@@ -209,8 +209,8 @@ namespace SmartTrade
                 var balance = await exchange.GetBalanceAsync();
                 var firstBalance = balance.FirstCurrency;
                 var secondBalance = balance.SecondCurrency;
-                Settings.LastBalanceFirstCurrency = (float)firstBalance;
-                Settings.LastBalanceSecondCurrency = (float)secondBalance;
+                this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
+                this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
 
                 var fee = balance.Fee;
                 var secondCurrency = exchange.TickerSymbol.Substring(3);
@@ -218,23 +218,23 @@ namespace SmartTrade
 
                 if (secondBalance < UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, fee))
                 {
-                    Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
+                    this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
                     popup.Update(this, Resource.String.insufficient_balance_popup);
                     return null;
                 }
 
-                var transactions = await GetTransactions(exchange);
-                SetPeriod(transactions);
+                var transactions = await this.GetTransactions(exchange);
+                this.SetPeriod(transactions);
 
-                if (!Settings.PeriodEnd.HasValue)
+                if (!this.Settings.PeriodEnd.HasValue)
                 {
-                    Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
+                    this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
                     popup.Update(this, Resource.String.no_deposit_popup);
                     return null;
                 }
 
-                var calculator = new UnitCostAveragingCalculator(Settings.PeriodEnd.Value, MinAmount, fee);
-                var start = GetStart(transactions);
+                var calculator = new UnitCostAveragingCalculator(this.Settings.PeriodEnd.Value, MinAmount, fee);
+                var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 var ask = (await exchange.GetOrderBookAsync()).Asks[0];
                 Info("Current time is {0:o}.", DateTime.UtcNow);
@@ -245,7 +245,7 @@ namespace SmartTrade
                 {
                     var firstAmountToBuy = Math.Round((secondAmount - calculator.GetFee(secondAmount)) / ask.Price, 8);
                     var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
-                    Settings.LastTradeTime = result.DateTime;
+                    this.Settings.LastTradeTime = result.DateTime;
                     firstBalance += result.Amount;
                     var bought = result.Amount * result.Price;
                     var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
@@ -254,8 +254,8 @@ namespace SmartTrade
                     start = result.DateTime;
                     secondAmount = bought + calculator.GetFee(bought);
                     secondBalance -= secondAmount;
-                    Settings.LastBalanceFirstCurrency = (float)firstBalance;
-                    Settings.LastBalanceSecondCurrency = (float)secondBalance;
+                    this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
+                    this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
                 }
                 else
                 {
@@ -263,23 +263,23 @@ namespace SmartTrade
                     popup.Dispose();
                 }
 
-                Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
+                this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
                 return calculator.GetNextTime(start, secondBalance) - DateTime.UtcNow;
             }
             catch (Exception ex) when (ex is BitstampException ||
                 ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
             {
-                Settings.RetryIntervalMilliseconds = Settings.RetryIntervalMilliseconds * 2;
+                this.Settings.RetryIntervalMilliseconds = this.Settings.RetryIntervalMilliseconds * 2;
                 popup.Update(this, ex.Message);
                 return null;
             }
             catch (Exception ex)
             {
                 popup.Update(this, Resource.String.unexpected_error_popup, ex.GetType().Name, ex.Message);
-                Settings.LastTradeTime = DateTime.UtcNow;
-                Settings.LastResult = popup.ContentText;
-                Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
-                IsEnabled = false;
+                this.Settings.LastTradeTime = DateTime.UtcNow;
+                this.Settings.LastResult = popup.ContentText;
+                this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
+                this.IsEnabled = false;
                 Warn("The service has been disabled due to an unexpected error.");
                 throw;
             }

@@ -24,9 +24,13 @@ namespace SmartTrade
             [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intentional, we want the popup to remain")]
             public sealed override void OnReceive(Context context, Intent intent)
             {
-                ScheduleTrade();
-                var id = TradeService.IsEnabled ? Resource.String.service_is_enabled_popup : Resource.String.service_is_disabled_popup;
-                new NotificationPopup(context, id).ToString();
+                using (var service = new TradeService())
+                {
+                    service.ScheduleTrade();
+                    var id = service.IsEnabled ?
+                        Resource.String.service_is_enabled_popup : Resource.String.service_is_disabled_popup;
+                    new NotificationPopup(context, id).ToString();
+                }
             }
         }
     }

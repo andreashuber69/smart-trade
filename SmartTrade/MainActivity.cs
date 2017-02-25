@@ -20,69 +20,75 @@ namespace SmartTrade
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            TradeService.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
+            this.service.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
             this.SetContentView(Resource.Layout.Main);
-            this.enableDisableServiceButton = GetEnableDisableServiceButton(this);
-            this.customerIdEditText = GetCustomerIdEditText(this);
-            this.apiKeyEditText = GetApiKeyEditText(this);
-            this.apiSecretEditText = GetApiSecretEditText(this);
+            this.enableDisableServiceButton = this.GetEnableDisableServiceButton(this);
+            this.customerIdEditText = this.GetCustomerIdEditText(this);
+            this.apiKeyEditText = this.GetApiKeyEditText(this);
+            this.apiSecretEditText = this.GetApiSecretEditText(this);
 
             this.EnableDisableCredentialInput();
         }
 
-        protected sealed override void OnDestroy()
+        protected sealed override void Dispose(bool disposing)
         {
-            TradeService.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
-            base.OnDestroy();
+            if (disposing)
+            {
+                this.service.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
+                this.service.Dispose();
+            }
+
+            base.Dispose(disposing);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private static EditText GetCustomerIdEditText(Activity activity)
+        private readonly TradeService service = new TradeService();
+        private EditText customerIdEditText;
+        private EditText apiKeyEditText;
+        private EditText apiSecretEditText;
+        private ToggleButton enableDisableServiceButton;
+
+        private EditText GetCustomerIdEditText(Activity activity)
         {
             var result = activity.FindViewById<EditText>(Resource.Id.customer_id);
-            result.Text = TradeService.Settings.CustomerId == 0 ?
-                string.Empty : TradeService.Settings.CustomerId.ToString(InvariantCulture);
+            result.Text = this.service.Settings.CustomerId == 0 ?
+                string.Empty : this.service.Settings.CustomerId.ToString(InvariantCulture);
 
             result.TextChanged +=
                 (s, e) =>
                 {
                     int customerId;
-                    TradeService.Settings.CustomerId =
+                    this.service.Settings.CustomerId =
                         int.TryParse(result.Text, NumberStyles.None, InvariantCulture, out customerId) ? customerId : 0;
                 };
 
             return result;
         }
 
-        private static EditText GetApiKeyEditText(Activity activity)
+        private EditText GetApiKeyEditText(Activity activity)
         {
             var result = activity.FindViewById<EditText>(Resource.Id.api_key);
-            result.Text = TradeService.Settings.ApiKey;
-            result.TextChanged += (s, e) => TradeService.Settings.ApiKey = result.Text;
+            result.Text = this.service.Settings.ApiKey;
+            result.TextChanged += (s, e) => this.service.Settings.ApiKey = result.Text;
             return result;
         }
 
-        private static EditText GetApiSecretEditText(Activity activity)
+        private EditText GetApiSecretEditText(Activity activity)
         {
             var result = activity.FindViewById<EditText>(Resource.Id.api_secret);
-            result.Text = TradeService.Settings.ApiSecret;
-            result.TextChanged += (s, e) => TradeService.Settings.ApiSecret = result.Text;
+            result.Text = this.service.Settings.ApiSecret;
+            result.TextChanged += (s, e) => this.service.Settings.ApiSecret = result.Text;
             return result;
         }
 
-        private static ToggleButton GetEnableDisableServiceButton(Activity activity)
+        private ToggleButton GetEnableDisableServiceButton(Activity activity)
         {
             var result = activity.FindViewById<ToggleButton>(Resource.Id.enable_disable_service_button);
-            result.Checked = TradeService.IsEnabled;
-            result.Click += (s, e) => TradeService.IsEnabled = result.Checked;
+            result.Checked = this.service.IsEnabled;
+            result.Click += (s, e) => this.service.IsEnabled = result.Checked;
             return result;
         }
-
-        private EditText customerIdEditText;
-        private EditText apiKeyEditText;
-        private EditText apiSecretEditText;
-        private ToggleButton enableDisableServiceButton;
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -95,7 +101,7 @@ namespace SmartTrade
         private void EnableDisableCredentialInput()
         {
             this.customerIdEditText.Enabled = this.apiKeyEditText.Enabled = this.apiSecretEditText.Enabled =
-                !TradeService.IsEnabled;
+                !this.service.IsEnabled;
         }
     }
 }
