@@ -41,7 +41,7 @@ namespace SmartTrade
                 }
 
                 this.ScheduleTrade(value ? Java.Lang.JavaSystem.CurrentTimeMillis() : 0);
-                Info("Set {0}.{1} = {2}", nameof(TradeService), nameof(this.IsEnabled), this.IsEnabled);
+                Info("Set {0}.{1} = {2}", this.mostDerivedType.Name, nameof(this.IsEnabled), this.IsEnabled);
             }
         }
 
@@ -52,7 +52,7 @@ namespace SmartTrade
             var context = Application.Context;
             var manager = AlarmManager.FromContext(context);
 
-            using (var intent = new Intent(context, typeof(TradeService)))
+            using (var intent = new Intent(context, this.mostDerivedType))
             using (var alarmIntent = PendingIntent.GetService(context, 0, intent, PendingIntentFlags.UpdateCurrent))
             {
                 if (this.Settings.NextTradeTime > 0)
@@ -72,6 +72,11 @@ namespace SmartTrade
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        protected TradeServiceBase(Type mostDerivedType)
+        {
+            this.mostDerivedType = mostDerivedType;
+        }
 
         protected sealed override async void OnHandleIntent(Intent intent)
         {
@@ -125,6 +130,8 @@ namespace SmartTrade
 
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
+
+        private readonly Type mostDerivedType;
 
         private void ScheduleTrade(long time)
         {

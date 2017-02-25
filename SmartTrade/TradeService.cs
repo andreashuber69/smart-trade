@@ -11,5 +11,9 @@ namespace SmartTrade
     [Service]
     internal sealed partial class TradeService : TradeServiceBase<BtcEurExchangeClient, Settings>
     {
+        public TradeService()
+            : base(typeof(TradeService))
+        {
+        }
     }
 }
