@@ -43,7 +43,7 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private readonly TradeService service = new TradeService();
+        private readonly BtcEurTradeService service = new BtcEurTradeService();
         private EditText customerIdEditText;
         private EditText apiKeyEditText;
         private EditText apiSecretEditText;

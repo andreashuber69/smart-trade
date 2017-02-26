@@ -11,9 +11,9 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
 
-    internal partial class TradeService
+    internal partial class BtcEurTradeService
     {
-        /// <summary>Sets or cancels an alarm which calls the <see cref="TradeService"/> depending on whether trading
+        /// <summary>Sets or cancels an alarm which calls the <see cref="BtcEurTradeService"/> depending on whether trading
         /// is currently enabled.</summary>
         [BroadcastReceiver(Permission = "RECEIVE_BOOT_COMPLETED")]
         [IntentFilter(new string[] { Intent.ActionBootCompleted })]
@@ -24,7 +24,7 @@ namespace SmartTrade
             [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intentional, we want the popup to remain")]
             public sealed override void OnReceive(Context context, Intent intent)
             {
-                using (var service = new TradeService())
+                using (var service = new BtcEurTradeService())
                 {
                     service.ScheduleTrade();
                     var id = service.IsEnabled ?
