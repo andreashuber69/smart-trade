@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="BootCompletedReceiver.cs" />
     <Compile Include="BtcEurExchangeClient.cs" />
+    <Compile Include="BtcEurSettings.cs" />
     <Compile Include="ExchangeClient.cs" />
     <Compile Include="IExchangeClient.cs" />
     <Compile Include="ISettings.cs" />

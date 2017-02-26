@@ -23,14 +23,8 @@ namespace SmartTrade
 
     using static Logger;
 
-    internal sealed class Settings : ISettings
+    internal abstract class Settings : ISettings
     {
-        public Settings()
-        {
-            this.keyStore = KeyStore.GetInstance(KeyStoreName);
-            this.keyStore.Load(null);
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public int CustomerId
@@ -105,7 +99,16 @@ namespace SmartTrade
             set { this.SetLong(value); }
         }
 
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        protected Settings(string groupName)
+        {
+            this.groupName = groupName;
+            this.keyStore = KeyStore.GetInstance(KeyStoreName);
+            this.keyStore.Load(null);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private const string KeyStoreName = "AndroidKeyStore";
         private const string KeyName = "BitstampApiCredentials";
@@ -159,6 +162,7 @@ namespace SmartTrade
             }
         }
 
+        private readonly string groupName;
         private readonly KeyStore keyStore;
 
         private void SetDateTime(DateTime? value, [CallerMemberName] string key = null)

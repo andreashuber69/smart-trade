@@ -6,10 +6,10 @@
 
 namespace SmartTrade
 {
-    internal sealed class BtcEurExchangeClient : ExchangeClient
+    internal sealed class BtcEurSettings : Settings
     {
-        public BtcEurExchangeClient()
-            : base(new BtcEurSettings(), c => c.BtcEur)
+        public BtcEurSettings()
+            : base("BtcEur")
         {
         }
     }

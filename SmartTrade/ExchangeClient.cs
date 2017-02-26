@@ -19,9 +19,8 @@ namespace SmartTrade
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Ctor *is* being called, CA bug?")]
-        protected ExchangeClient(Func<BitstampClient, ICurrencyExchange> getCurrencyExchange)
+        protected ExchangeClient(ISettings settings, Func<BitstampClient, ICurrencyExchange> getCurrencyExchange)
         {
-            var settings = new Settings();
             this.client = new BitstampClient(settings.CustomerId, settings.ApiKey, settings.ApiSecret);
             this.getCurrencyExchange = getCurrencyExchange;
         }
