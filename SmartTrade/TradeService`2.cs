@@ -22,7 +22,7 @@ namespace SmartTrade
     /// <typeparam name="TExchangeClient">The type of the exchange client.</typeparam>
     /// <typeparam name="TSettings">The type of the settings class.</typeparam>
     /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
-    internal abstract partial class TradeServiceBase<TExchangeClient, TSettings> : IntentService
+    internal abstract partial class TradeService<TExchangeClient, TSettings> : IntentService
         where TExchangeClient : IExchangeClient, new()
         where TSettings : ISettings, new()
     {
@@ -73,7 +73,7 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        protected TradeServiceBase(Type mostDerivedType)
+        protected TradeService(Type mostDerivedType)
         {
             this.mostDerivedType = mostDerivedType;
         }
