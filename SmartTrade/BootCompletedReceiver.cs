@@ -11,26 +11,23 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
 
-    internal partial class BtcEurTradeService
+    /// <summary>Sets or cancels an alarm which calls the <see cref="BtcEurTradeService"/> depending on whether
+    /// trading is currently enabled.</summary>
+    [BroadcastReceiver(Permission = "RECEIVE_BOOT_COMPLETED")]
+    [IntentFilter(new string[] { Intent.ActionBootCompleted })]
+    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
+    internal sealed class BootCompletedReceiver : BroadcastReceiver
     {
-        /// <summary>Sets or cancels an alarm which calls the <see cref="BtcEurTradeService"/> depending on whether trading
-        /// is currently enabled.</summary>
-        [BroadcastReceiver(Permission = "RECEIVE_BOOT_COMPLETED")]
-        [IntentFilter(new string[] { Intent.ActionBootCompleted })]
-        [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
-        private sealed class BootCompletedReceiver : BroadcastReceiver
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", Justification = "Method is not externally visible, CA bug?")]
+        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intentional, we want the popup to remain")]
+        public sealed override void OnReceive(Context context, Intent intent)
         {
-            [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", Justification = "Method is not externally visible, CA bug?")]
-            [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intentional, we want the popup to remain")]
-            public sealed override void OnReceive(Context context, Intent intent)
+            using (var service = new BtcEurTradeService())
             {
-                using (var service = new BtcEurTradeService())
-                {
-                    service.ScheduleTrade();
-                    var id = service.IsEnabled ?
-                        Resource.String.service_is_enabled_popup : Resource.String.service_is_disabled_popup;
-                    new NotificationPopup(context, id).ToString();
-                }
+                service.ScheduleTrade();
+                var id = service.IsEnabled ?
+                    Resource.String.service_is_enabled_popup : Resource.String.service_is_disabled_popup;
+                new NotificationPopup(context, id).ToString();
             }
         }
     }
