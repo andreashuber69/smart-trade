@@ -119,18 +119,19 @@ namespace SmartTrade
             return ticks == 0 ? (DateTime?)null : new DateTime(ticks, DateTimeKind.Utc);
         }
 
-        private static long GetLong([CallerMemberName] string key = null) => GetValue(p => p.GetLong(key, 0));
+        private static long GetLong([CallerMemberName] string key = null) => GetValue((p, k) => p.GetLong(k, 0), key);
 
-        private static float GetFloat([CallerMemberName] string key = null) => GetValue(p => p.GetFloat(key, 0.0f));
+        private static float GetFloat([CallerMemberName] string key = null) =>
+            GetValue((p, k) => p.GetFloat(k, 0.0f), key);
 
         private static string GetString([CallerMemberName] string key = null) =>
-            GetValue(p => p.GetString(key, string.Empty));
+            GetValue((p, k) => p.GetString(k, string.Empty), key);
 
-        private static T GetValue<T>(Func<ISharedPreferences, T> getValue)
+        private static T GetValue<T>(Func<ISharedPreferences, string, T> getValue, string key)
         {
             using (var preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context))
             {
-                return getValue(preferences);
+                return getValue(preferences, key);
             }
         }
 
@@ -187,23 +188,19 @@ namespace SmartTrade
 
         private void SetValue<T>(Action<ISharedPreferencesEditor, string, T> setValue, string key, T value)
         {
-            GetValue(
-                p =>
-                {
-                    using (var editor = p.Edit())
-                    {
-                        setValue(editor, key, value);
-                        editor.Apply();
-                        return false;
-                    }
-                });
+            using (var preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context))
+            using (var editor = preferences.Edit())
+            {
+                setValue(editor, key, value);
+                editor.Apply();
+            }
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(key));
             Info("Set {0}.{1} = {2}.", nameof(Settings), key, value);
         }
 
         private string GetPrivateString([CallerMemberName] string key = null) =>
-            this.Decrypt(GetValue(p => p.GetString(key, string.Empty)));
+            this.Decrypt(GetValue((p, k) => p.GetString(k, string.Empty), key));
 
         private void SetPrivateString(string value, [CallerMemberName] string key = null) =>
             this.SetValue((p, k, v) => p.PutString(k, v), key, this.Encrypt(value));
