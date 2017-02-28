@@ -20,7 +20,7 @@ namespace SmartTrade
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            this.service.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
+            this.service.PropertyChanged += this.OnServicePropertyChanged;
             this.SetContentView(Resource.Layout.Main);
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton(this);
             this.customerIdEditText = this.GetCustomerIdEditText(this);
@@ -34,7 +34,7 @@ namespace SmartTrade
         {
             if (disposing)
             {
-                this.service.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
+                this.service.PropertyChanged -= this.OnServicePropertyChanged;
                 this.service.Dispose();
             }
 
@@ -90,9 +90,9 @@ namespace SmartTrade
             return result;
         }
 
-        private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnServicePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISettings.NextTradeTime))
+            if (e.PropertyName == nameof(this.service.IsEnabled))
             {
                 this.EnableDisableCredentialInput();
             }

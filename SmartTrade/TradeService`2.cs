@@ -8,6 +8,7 @@ namespace SmartTrade
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -22,10 +23,14 @@ namespace SmartTrade
     /// <typeparam name="TExchangeClient">The type of the exchange client.</typeparam>
     /// <typeparam name="TSettings">The type of the settings class.</typeparam>
     /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
-    internal abstract partial class TradeService<TExchangeClient, TSettings> : IntentService
+    internal abstract partial class TradeService<TExchangeClient, TSettings> : IntentService, INotifyPropertyChanged
         where TExchangeClient : IExchangeClient, new()
         where TSettings : ISettings, new()
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         internal bool IsEnabled
         {
             get
@@ -71,10 +76,19 @@ namespace SmartTrade
             }
         }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         protected TradeService()
         {
+            this.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
+        }
+
+        protected sealed override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
+            }
+
+            base.Dispose(disposing);
         }
 
         protected sealed override async void OnHandleIntent(Intent intent)
@@ -129,6 +143,14 @@ namespace SmartTrade
 
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
+
+        private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ISettings.NextTradeTime))
+            {
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsEnabled)));
+            }
+        }
 
         private void ScheduleTrade(long time)
         {
