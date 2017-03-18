@@ -134,6 +134,12 @@ namespace SmartTrade
         private static void Log(string propertyName, long value) =>
             Info("Current Value {0}.{1} = {2}.", nameof(Settings), propertyName, value);
 
+        private static void Log(string propertyName, float value) =>
+            Info("Current Value {0}.{1} = {2:0.00}.", nameof(Settings), propertyName, value);
+
+        private static void Log(string propertyName, string value) =>
+            Info("Current Value {0}.{1} = {2}.", nameof(Settings), propertyName, value);
+
         private static void Log(string propertyName, DateTime? value) =>
             Info("Current Value {0}.{1} = {2:o}.", nameof(Settings), propertyName, value);
 
@@ -156,6 +162,13 @@ namespace SmartTrade
 
         private void LogAllSettings()
         {
+            Log(nameof(this.Settings.CustomerId), this.Settings.CustomerId);
+            Log(nameof(this.Settings.ApiKey), this.Settings.ApiKey);
+            Log(nameof(this.Settings.ApiSecret), this.Settings.ApiSecret);
+            Log(nameof(this.Settings.LastTradeTime), this.Settings.LastTradeTime);
+            Log(nameof(this.Settings.LastResult), this.Settings.LastResult);
+            Log(nameof(this.Settings.LastBalanceFirstCurrency), this.Settings.LastBalanceFirstCurrency);
+            Log(nameof(this.Settings.LastBalanceSecondCurrency), this.Settings.LastBalanceSecondCurrency);
             Log(nameof(this.Settings.NextTradeTime), this.Settings.NextTradeTime);
             Log(nameof(this.Settings.SectionStart), this.Settings.SectionStart);
             Log(nameof(this.Settings.PeriodEnd), this.Settings.PeriodEnd);
@@ -309,7 +322,7 @@ namespace SmartTrade
                 this.Settings.LastResult = popup.ContentText;
                 this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
                 this.IsEnabled = false;
-                Warn("The service has been disabled due to an unexpected error.");
+                Warn("The service has been disabled due to an unexpected error: {0}", ex);
                 throw;
             }
             finally
