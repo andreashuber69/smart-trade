@@ -164,7 +164,7 @@ namespace SmartTrade
         {
             Log(nameof(this.Settings.CustomerId), this.Settings.CustomerId);
             Log(nameof(this.Settings.ApiKey), this.Settings.ApiKey);
-            Log(nameof(this.Settings.ApiSecret), this.Settings.ApiSecret);
+            Log(nameof(this.Settings.ApiSecret), "<secret>");
             Log(nameof(this.Settings.LastTradeTime), this.Settings.LastTradeTime);
             Log(nameof(this.Settings.LastResult), this.Settings.LastResult);
             Log(nameof(this.Settings.LastBalanceFirstCurrency), this.Settings.LastBalanceFirstCurrency);

@@ -36,8 +36,8 @@ namespace SmartTrade
 
         public string ApiKey
         {
-            get { return this.GetPrivateString(); }
-            set { this.SetPrivateString(value); }
+            get { return this.GetString(); }
+            set { this.SetString(value); }
         }
 
         public string ApiSecret
