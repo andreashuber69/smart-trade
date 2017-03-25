@@ -102,8 +102,7 @@ namespace SmartTrade
             // that the default timeout for HTTP requests is 100 seconds. Since we're typically executing 3 requests, we
             // could very well still be executing a trade when the min interval ends.
             this.ScheduleTrade(calendar.TimeInMillis + MaxRetryIntervalMilliseconds);
-
-            this.LogAllSettings();
+            this.Settings.LogCurrentValues();
 
             if (calendar.Get(Java.Util.CalendarField.Year) < 2017)
             {
@@ -131,18 +130,6 @@ namespace SmartTrade
         private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
         private static readonly decimal MinAmount = 5;
 
-        private static void Log(string propertyName, long value) =>
-            Info("Current Value {0}.{1} = {2}.", nameof(Settings), propertyName, value);
-
-        private static void Log(string propertyName, float value) =>
-            Info("Current Value {0}.{1} = {2:0.00}.", nameof(Settings), propertyName, value);
-
-        private static void Log(string propertyName, string value) =>
-            Info("Current Value {0}.{1} = {2}.", nameof(Settings), propertyName, value);
-
-        private static void Log(string propertyName, DateTime? value) =>
-            Info("Current Value {0}.{1} = {2:o}.", nameof(Settings), propertyName, value);
-
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
 
@@ -158,22 +145,6 @@ namespace SmartTrade
         {
             this.Settings.NextTradeTime = time;
             this.ScheduleTrade();
-        }
-
-        private void LogAllSettings()
-        {
-            Log(nameof(this.Settings.CustomerId), this.Settings.CustomerId);
-            Log(nameof(this.Settings.ApiKey), this.Settings.ApiKey);
-            Log(nameof(this.Settings.ApiSecret), "<secret>");
-            Log(nameof(this.Settings.LastTradeTime), this.Settings.LastTradeTime);
-            Log(nameof(this.Settings.LastResult), this.Settings.LastResult);
-            Log(nameof(this.Settings.LastBalanceFirstCurrency), this.Settings.LastBalanceFirstCurrency);
-            Log(nameof(this.Settings.LastBalanceSecondCurrency), this.Settings.LastBalanceSecondCurrency);
-            Log(nameof(this.Settings.NextTradeTime), this.Settings.NextTradeTime);
-            Log(nameof(this.Settings.SectionStart), this.Settings.SectionStart);
-            Log(nameof(this.Settings.PeriodEnd), this.Settings.PeriodEnd);
-            Log(nameof(this.Settings.LastTransactionTimestamp), this.Settings.LastTransactionTimestamp);
-            Log(nameof(this.Settings.RetryIntervalMilliseconds), this.Settings.RetryIntervalMilliseconds);
         }
 
         private async Task<List<ITransaction>> GetTransactions(ICurrencyExchange exchange)

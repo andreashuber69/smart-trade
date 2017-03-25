@@ -100,6 +100,22 @@ namespace SmartTrade
             set { this.SetLong(value); }
         }
 
+        public void LogCurrentValues()
+        {
+            this.LogCurrentValue(nameof(this.CustomerId), this.CustomerId);
+            this.LogCurrentValue(nameof(this.ApiKey), this.ApiKey);
+            this.LogCurrentValue(nameof(this.ApiSecret), "<secret>");
+            this.LogCurrentValue(nameof(this.LastTradeTime), this.LastTradeTime, ":o");
+            this.LogCurrentValue(nameof(this.LastResult), this.LastResult);
+            this.LogCurrentValue(nameof(this.LastBalanceFirstCurrency), this.LastBalanceFirstCurrency, ":f8");
+            this.LogCurrentValue(nameof(this.LastBalanceSecondCurrency), this.LastBalanceSecondCurrency, ":f8");
+            this.LogCurrentValue(nameof(this.NextTradeTime), this.NextTradeTime);
+            this.LogCurrentValue(nameof(this.SectionStart), this.SectionStart, ":o");
+            this.LogCurrentValue(nameof(this.PeriodEnd), this.PeriodEnd, ":o");
+            this.LogCurrentValue(nameof(this.LastTransactionTimestamp), this.LastTransactionTimestamp, ":o");
+            this.LogCurrentValue(nameof(this.RetryIntervalMilliseconds), this.RetryIntervalMilliseconds);
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Ctor is being called, CA bug?")]
@@ -160,7 +176,7 @@ namespace SmartTrade
             }
 
             this.SetLong(value?.Ticks ?? 0, key);
-            Info("Set {0}.{1} = {2:o}.", nameof(Settings), key, value);
+            this.LogSetValue(key, value, ":o");
         }
 
         private long GetLong([CallerMemberName] string key = null) => this.GetValue((p, k) => p.GetLong(k, 0), key);
@@ -200,7 +216,7 @@ namespace SmartTrade
             }
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(key));
-            Info("Set {0}.{1} = {2}.", nameof(Settings), groupedKey, value);
+            this.LogSetValue(key, value);
         }
 
         private string GetPrivateString([CallerMemberName] string key = null) =>
@@ -244,11 +260,19 @@ namespace SmartTrade
                 GenerateKey();
 
                 // If we generate a new key, old encrypted data is useless.
-                this.SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiKey), string.Empty);
                 this.SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiSecret), string.Empty);
             }
 
             return (KeyStore.PrivateKeyEntry)this.keyStore.GetEntry(KeyName, null);
         }
+
+        private void LogSetValue<T>(string key, T value, string valueFormat = null) =>
+            this.LogValue("Set", key, value, valueFormat);
+
+        private void LogCurrentValue<T>(string key, T value, string valueFormat = null) =>
+            this.LogValue("Current Value", key, value, valueFormat);
+
+        private void LogValue<T>(string prefix, string key, T value, string valueFormat = null) =>
+            Info("{0} {1}.{2}{3} = {4" + valueFormat + "}.", prefix, nameof(Settings), this.groupName, key, value);
     }
 }
