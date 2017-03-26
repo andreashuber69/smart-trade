@@ -8,25 +8,85 @@
     android:paddingTop="@dimen/top_margin">
     <EditText
         android:id="@+id/customer_id"
-        android:inputType="numberDecimal"
-        android:textSize="15sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:textSize="15sp" />
     <EditText
         android:id="@+id/api_key"
-        android:textSize="15sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="15sp" />
     <EditText
         android:id="@+id/api_secret"
-        android:inputType="textPassword"
-        android:textSize="15sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:textSize="15sp" />
     <ToggleButton
         android:id="@+id/enable_disable_service_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textOff="@string/service_is_disabled"
         android:textOn="@string/service_is_enabled" />
+    <TextView
+        android:paddingTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Last Trade"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <GridLayout
+        android:paddingStart="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="25px"
+        android:minWidth="25px"
+        android:columnCount="2"
+        android:rowCount="4"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/left_padding"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Time:" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/left_padding"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Result:" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/left_padding"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Balance:" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/left_padding"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="13:02:00 hours ago" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Error sdkjhfkjshdfkjh sdfkjhskjdhf jksdhf skdjhfkjshdfkj sdkfjhskjdfh sdkjfhksjdhf " />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="EIR 10.1010" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="BTC 0.37292743" />
+    </GridLayout>
 </LinearLayout>
