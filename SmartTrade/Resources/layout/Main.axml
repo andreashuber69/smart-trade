@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingStart="@dimen/left_padding"
-    android:paddingEnd="@dimen/left_padding"
+    android:paddingEnd="@dimen/right_padding"
     android:paddingTop="@dimen/top_margin">
     <EditText
         android:id="@+id/customer_id"
@@ -30,42 +30,41 @@
         android:textOff="@string/service_is_disabled"
         android:textOn="@string/service_is_enabled" />
     <TextView
-        android:paddingTop="16dp"
+        android:paddingTop="@dimen/top_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Last Trade"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
     <GridLayout
-        android:paddingStart="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="25px"
-        android:minWidth="25px"
+        android:paddingTop="@dimen/top_padding"
+        android:paddingStart="@dimen/left_padding"
         android:columnCount="2"
         android:rowCount="4"
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/left_padding"
+            android:paddingEnd="@dimen/right_padding"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Time:" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/left_padding"
+            android:paddingEnd="@dimen/right_padding"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Result:" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/left_padding"
+            android:paddingEnd="@dimen/right_padding"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Balance:" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/left_padding"
+            android:paddingEnd="@dimen/right_padding"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="" />
         <TextView
@@ -76,17 +75,43 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Error sdkjhfkjshdfkjh sdfkjhskjdhf jksdhf skdjhfkjshdfkj sdkfjhskjdfh sdkjfhksjdhf " />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Error " />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="EIR 10.1010" />
+            android:text="EUR 10.1010" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="BTC 0.37292743" />
+    </GridLayout>
+    <TextView
+        android:paddingTop="@dimen/top_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Next Trade"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/top_padding"
+        android:paddingStart="@dimen/left_padding"
+        android:columnCount="2"
+        android:rowCount="1"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/right_padding"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Time:" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="13:02:00" />
     </GridLayout>
 </LinearLayout>

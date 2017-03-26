@@ -46,14 +46,17 @@ namespace SmartTrade
 		public partial class Dimension
 		{
 			
+			// aapt resource value: 0x7f060002
+			public const int left_padding = 2131099650;
+			
+			// aapt resource value: 0x7f060003
+			public const int right_padding = 2131099651;
+			
 			// aapt resource value: 0x7f060000
-			public const int left_padding = 2131099648;
+			public const int top_margin = 2131099648;
 			
 			// aapt resource value: 0x7f060001
-			public const int right_padding = 2131099649;
-			
-			// aapt resource value: 0x7f060002
-			public const int top_margin = 2131099650;
+			public const int top_padding = 2131099649;
 			
 			static Dimension()
 			{
