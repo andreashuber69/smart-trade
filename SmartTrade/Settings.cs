@@ -28,6 +28,10 @@ namespace SmartTrade
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public string FirstCurrency => this.groupName.Substring(0, 3).ToUpperInvariant();
+
+        public string SecondCurrency => this.groupName.Substring(3).ToUpperInvariant();
+
         public int CustomerId
         {
             get { return (int)this.GetLong(); }

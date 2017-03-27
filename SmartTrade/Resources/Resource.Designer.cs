@@ -99,6 +99,21 @@ namespace SmartTrade
 			// aapt resource value: 0x7f070003
 			public const int enable_disable_service_button = 2131165187;
 			
+			// aapt resource value: 0x7f070005
+			public const int last_trade_balance1_text_view = 2131165189;
+			
+			// aapt resource value: 0x7f070006
+			public const int last_trade_balance2_text_view = 2131165190;
+			
+			// aapt resource value: 0x7f070007
+			public const int last_trade_result_text_view = 2131165191;
+			
+			// aapt resource value: 0x7f070004
+			public const int last_trade_time_text_view = 2131165188;
+			
+			// aapt resource value: 0x7f070008
+			public const int next_trade_time_text_view = 2131165192;
+			
 			static Id()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();

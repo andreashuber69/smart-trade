@@ -113,15 +113,9 @@ namespace SmartTrade
             }
 
             var popup = new NotificationPopup(this, Resource.String.checking_popup);
-
-            using (var client = new TExchangeClient())
-            {
-                var intervalMilliseconds =
-                    (long)(await this.BuyAsync(client.CurrencyExchange, popup)).GetValueOrDefault().TotalMilliseconds;
-
-                this.ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
-                    Math.Max(this.Settings.RetryIntervalMilliseconds, intervalMilliseconds));
-            }
+            var intervalMilliseconds = (long)(await this.BuyAsync(popup)).GetValueOrDefault().TotalMilliseconds;
+            this.ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
+                Math.Max(this.Settings.RetryIntervalMilliseconds, intervalMilliseconds));
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -208,10 +202,14 @@ namespace SmartTrade
         /// <summary>Buys on the exchange.</summary>
         /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found, the
         /// balance is insufficient or if there was a temporary error.</returns>
-        private async Task<TimeSpan?> BuyAsync(ICurrencyExchange exchange, NotificationPopup popup)
+        private async Task<TimeSpan?> BuyAsync(NotificationPopup popup)
         {
+            var client = default(TExchangeClient);
+
             try
             {
+                client = new TExchangeClient();
+                var exchange = client.CurrencyExchange;
                 this.Settings.LastTradeTime = DateTime.UtcNow;
                 var balance = await exchange.GetBalanceAsync();
                 var firstBalance = balance.FirstCurrency;
@@ -302,6 +300,7 @@ namespace SmartTrade
                 this.Settings.RetryIntervalMilliseconds = Math.Max(
                     MinRetryIntervalMilliseconds,
                     Math.Min(MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
+                client?.Dispose();
             }
         }
     }

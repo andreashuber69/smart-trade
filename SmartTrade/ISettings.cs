@@ -12,6 +12,12 @@ namespace SmartTrade
     /// <summary>Represents the settings that need to be made persistent.</summary>
     internal interface ISettings : INotifyPropertyChanged
     {
+        /// <summary>Gets the first currency symbol.</summary>
+        string FirstCurrency { get; }
+
+        /// <summary>Gets the second currency symbol.</summary>
+        string SecondCurrency { get; }
+
         /// <summary>Gets or sets the Bitstamp customer id.</summary>
         int CustomerId { get; set; }
 
