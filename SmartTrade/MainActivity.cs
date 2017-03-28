@@ -146,8 +146,16 @@ namespace SmartTrade
                 Invariant($"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:F8}");
             this.lastTradeBalance2TextView.Text =
                 Invariant($"{settings.SecondCurrency} {settings.LastBalanceSecondCurrency:F8}");
-            this.nextTradeTimeTextView.Text = Format(DateTime.UtcNow +
-                TimeSpan.FromMilliseconds(settings.NextTradeTime - Java.Lang.JavaSystem.CurrentTimeMillis()));
+
+            if (settings.NextTradeTime == 0)
+            {
+                this.nextTradeTimeTextView.Text = Format(null);
+            }
+            else
+            {
+                this.nextTradeTimeTextView.Text = Format(DateTime.UtcNow +
+                    TimeSpan.FromMilliseconds(settings.NextTradeTime - Java.Lang.JavaSystem.CurrentTimeMillis()));
+            }
         }
     }
 }
