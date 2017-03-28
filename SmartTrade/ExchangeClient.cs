@@ -14,19 +14,25 @@ namespace SmartTrade
     {
         public ICurrencyExchange CurrencyExchange => this.getCurrencyExchange(this.client);
 
-        public void Dispose() => this.client.Dispose();
+        public void Dispose()
+        {
+            this.client.Dispose();
+            this.settings.Dispose();
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Ctor *is* being called, CA bug?")]
         protected ExchangeClient(ISettings settings, Func<BitstampClient, ICurrencyExchange> getCurrencyExchange)
         {
+            this.settings = settings;
             this.client = new BitstampClient(settings.CustomerId, settings.ApiKey, settings.ApiSecret);
             this.getCurrencyExchange = getCurrencyExchange;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        private readonly ISettings settings;
         private readonly BitstampClient client;
         private readonly Func<BitstampClient, ICurrencyExchange> getCurrencyExchange;
     }

@@ -86,6 +86,7 @@ namespace SmartTrade
             if (disposing)
             {
                 this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
+                this.Settings.Dispose();
             }
 
             base.Dispose(disposing);

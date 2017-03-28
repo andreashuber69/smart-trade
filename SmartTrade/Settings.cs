@@ -104,6 +104,8 @@ namespace SmartTrade
             set { this.SetLong(value); }
         }
 
+        public void Dispose() => this.preferences.Dispose();
+
         public void LogCurrentValues()
         {
             this.LogCurrentValue(nameof(this.CustomerId), this.CustomerId);
@@ -126,6 +128,7 @@ namespace SmartTrade
         protected Settings(string groupName)
         {
             this.groupName = groupName;
+            this.preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
             this.keyStore = KeyStore.GetInstance(KeyStoreName);
             this.keyStore.Load(null);
         }
@@ -164,6 +167,7 @@ namespace SmartTrade
         }
 
         private readonly string groupName;
+        private readonly ISharedPreferences preferences;
         private readonly KeyStore keyStore;
 
         private DateTime? GetDateTime([CallerMemberName] string key = null)
@@ -200,21 +204,15 @@ namespace SmartTrade
         private void SetString(string value, [CallerMemberName] string key = null) =>
             this.SetValue((p, k, v) => p.PutString(k, v), key, value);
 
-        private T GetValue<T>(Func<ISharedPreferences, string, T> getValue, string key)
-        {
-            using (var preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context))
-            {
-                return getValue(preferences, this.groupName + key);
-            }
-        }
+        private T GetValue<T>(Func<ISharedPreferences, string, T> getValue, string key) =>
+            getValue(this.preferences, this.groupName + key);
 
         private void SetValue<T>(
             Action<ISharedPreferencesEditor, string, T> setValue, string key, T value, string valueFormat = null)
         {
             var groupedKey = this.groupName + key;
 
-            using (var preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context))
-            using (var editor = preferences.Edit())
+            using (var editor = this.preferences.Edit())
             {
                 setValue(editor, groupedKey, value);
                 editor.Apply();

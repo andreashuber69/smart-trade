@@ -10,7 +10,7 @@ namespace SmartTrade
     using System.ComponentModel;
 
     /// <summary>Represents the settings that need to be made persistent.</summary>
-    internal interface ISettings : INotifyPropertyChanged
+    internal interface ISettings : INotifyPropertyChanged, IDisposable
     {
         /// <summary>Gets the first currency symbol.</summary>
         string FirstCurrency { get; }
