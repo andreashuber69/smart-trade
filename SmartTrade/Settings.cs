@@ -192,7 +192,7 @@ namespace SmartTrade
             this.GetValue((p, k) => p.GetFloat(k, 0.0f), key);
 
         private void SetFloat(float value, [CallerMemberName] string key = null) =>
-            this.SetValue((p, k, v) => p.PutFloat(k, v), key, value);
+            this.SetValue((p, k, v) => p.PutFloat(k, v), key, value, ":f8");
 
         private string GetString([CallerMemberName] string key = null) =>
             this.GetValue((p, k) => p.GetString(k, string.Empty), key);
@@ -208,7 +208,8 @@ namespace SmartTrade
             }
         }
 
-        private void SetValue<T>(Action<ISharedPreferencesEditor, string, T> setValue, string key, T value)
+        private void SetValue<T>(
+            Action<ISharedPreferencesEditor, string, T> setValue, string key, T value, string valueFormat = null)
         {
             var groupedKey = this.groupName + key;
 
@@ -220,7 +221,7 @@ namespace SmartTrade
             }
 
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(key));
-            this.LogSetValue(key, value);
+            this.LogSetValue(key, value, valueFormat);
         }
 
         private string GetPrivateString([CallerMemberName] string key = null) =>
