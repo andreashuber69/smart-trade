@@ -24,7 +24,10 @@ namespace SmartTrade
 
     using static Logger;
 
-    internal abstract class Settings : ISettings
+    /// <summary>The base of all settings classes.</summary>
+    /// <remarks>The object implementing <see cref="ISharedPreferencesOnSharedPreferenceChangeListener"/> apparently
+    /// needs to derive from <see cref="Java.Lang.Object"/>.</remarks>
+    internal abstract class Settings : Java.Lang.Object, ISettings, ISharedPreferencesOnSharedPreferenceChangeListener
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -104,8 +107,6 @@ namespace SmartTrade
             set { this.SetLong(value); }
         }
 
-        public void Dispose() => this.preferences.Dispose();
-
         public void LogCurrentValues()
         {
             this.LogCurrentValue(nameof(this.CustomerId), this.CustomerId);
@@ -122,6 +123,14 @@ namespace SmartTrade
             this.LogCurrentValue(nameof(this.RetryIntervalMilliseconds), this.RetryIntervalMilliseconds);
         }
 
+        public void OnSharedPreferenceChanged(ISharedPreferences sharedPreferences, string key)
+        {
+            if (key.StartsWith(this.groupName))
+            {
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(key.Substring(this.groupName.Length)));
+            }
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Ctor is being called, CA bug?")]
@@ -129,8 +138,16 @@ namespace SmartTrade
         {
             this.groupName = groupName;
             this.preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
+            this.preferences.RegisterOnSharedPreferenceChangeListener(this);
             this.keyStore = KeyStore.GetInstance(KeyStoreName);
             this.keyStore.Load(null);
+        }
+
+        protected sealed override void Dispose(bool disposing)
+        {
+            this.preferences.UnregisterOnSharedPreferenceChangeListener(this);
+            this.preferences.Dispose();
+            base.Dispose(disposing);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,7 +235,6 @@ namespace SmartTrade
                 editor.Apply();
             }
 
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(key));
             this.LogSetValue(key, value, valueFormat);
         }
 
