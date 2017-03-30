@@ -21,11 +21,9 @@ namespace SmartTrade
 
     /// <summary>Buys or sells according to the configured schedule.</summary>
     /// <typeparam name="TExchangeClient">The type of the exchange client.</typeparam>
-    /// <typeparam name="TSettings">The type of the settings class.</typeparam>
     /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
-    internal abstract partial class TradeService<TExchangeClient, TSettings> : IntentService, INotifyPropertyChanged
+    internal abstract partial class TradeService<TExchangeClient> : IntentService, INotifyPropertyChanged
         where TExchangeClient : IExchangeClient, new()
-        where TSettings : ISettings, new()
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -50,7 +48,7 @@ namespace SmartTrade
             }
         }
 
-        internal ISettings Settings { get; } = new TSettings();
+        internal ISettings Settings => this.client.Settings;
 
         internal void ScheduleTrade()
         {
@@ -86,7 +84,7 @@ namespace SmartTrade
             if (disposing)
             {
                 this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
-                this.Settings.Dispose();
+                this.client.Dispose();
             }
 
             base.Dispose(disposing);
@@ -127,6 +125,8 @@ namespace SmartTrade
 
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
+
+        private readonly TExchangeClient client = new TExchangeClient();
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -205,12 +205,9 @@ namespace SmartTrade
         /// balance is insufficient or if there was a temporary error.</returns>
         private async Task<TimeSpan?> BuyAsync(NotificationPopup popup)
         {
-            var client = default(TExchangeClient);
-
             try
             {
-                client = new TExchangeClient();
-                var exchange = client.CurrencyExchange;
+                var exchange = this.client.CurrencyExchange;
                 this.Settings.LastTradeTime = DateTime.UtcNow;
                 var balance = await exchange.GetBalanceAsync();
                 var firstBalance = balance.FirstCurrency;
@@ -301,7 +298,6 @@ namespace SmartTrade
                 this.Settings.RetryIntervalMilliseconds = Math.Max(
                     MinRetryIntervalMilliseconds,
                     Math.Min(MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
-                client?.Dispose();
             }
         }
     }

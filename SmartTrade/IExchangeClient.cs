@@ -12,5 +12,7 @@ namespace SmartTrade
     internal interface IExchangeClient : IDisposable
     {
         ICurrencyExchange CurrencyExchange { get; }
+
+        ISettings Settings { get; }
     }
 }
