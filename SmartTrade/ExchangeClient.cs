@@ -15,11 +15,11 @@ namespace SmartTrade
     {
         public ISettings Settings { get; }
 
-        public ICurrencyExchange CurrencyExchange => this.getCurrencyExchange(this.client);
+        public ICurrencyExchange CurrencyExchange => this.getCurrencyExchange(this.Client);
 
         public void Dispose()
         {
-            this.client.Dispose();
+            this.client?.Dispose();
             this.Settings.Dispose();
         }
 
@@ -29,13 +29,15 @@ namespace SmartTrade
         protected ExchangeClient(ISettings settings, Func<BitstampClient, ICurrencyExchange> getCurrencyExchange)
         {
             this.Settings = settings;
-            this.client = new BitstampClient(settings.CustomerId, settings.ApiKey, settings.ApiSecret);
             this.getCurrencyExchange = getCurrencyExchange;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private readonly BitstampClient client;
         private readonly Func<BitstampClient, ICurrencyExchange> getCurrencyExchange;
+        private BitstampClient client;
+
+        private BitstampClient Client => this.client ?? (this.client =
+            new BitstampClient(this.Settings.CustomerId, this.Settings.ApiKey, this.Settings.ApiSecret));
     }
 }
