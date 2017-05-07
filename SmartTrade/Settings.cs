@@ -79,8 +79,20 @@ namespace SmartTrade
 
         public long NextTradeTime
         {
-            get { return this.GetLong(); }
-            set { this.SetLong(value); }
+            get
+            {
+                return this.GetLong();
+            }
+
+            set
+            {
+                if ((this.GetLong() != 0) && (value == 0))
+                {
+                    this.ClearSettings();
+                }
+
+                this.SetLong(value);
+            }
         }
 
         public DateTime? SectionStart
@@ -123,9 +135,10 @@ namespace SmartTrade
             this.LogCurrentValue(nameof(this.RetryIntervalMilliseconds), this.RetryIntervalMilliseconds);
         }
 
+        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", Justification = "Method is not extrenally visible, CA bug?")]
         public void OnSharedPreferenceChanged(ISharedPreferences sharedPreferences, string key)
         {
-            if (key.StartsWith(this.groupName))
+            if (key.StartsWith(this.groupName, StringComparison.Ordinal))
             {
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(key.Substring(this.groupName.Length)));
             }
@@ -220,6 +233,18 @@ namespace SmartTrade
 
         private void SetString(string value, [CallerMemberName] string key = null) =>
             this.SetValue((p, k, v) => p.PutString(k, v), key, value);
+
+        private void ClearSettings()
+        {
+            this.SetLong(0, nameof(this.LastTradeTime));
+            this.SetString(string.Empty, nameof(this.LastResult));
+            this.SetFloat(0.0f, nameof(this.LastBalanceFirstCurrency));
+            this.SetFloat(0.0f, nameof(this.LastBalanceSecondCurrency));
+            this.SetLong(0, nameof(this.SectionStart));
+            this.SetLong(0, nameof(this.PeriodEnd));
+            this.SetLong(0, nameof(this.LastTransactionTimestamp));
+            this.SetLong(0, nameof(this.RetryIntervalMilliseconds));
+        }
 
         private T GetValue<T>(Func<ISharedPreferences, string, T> getValue, string key) =>
             getValue(this.preferences, this.groupName + key);

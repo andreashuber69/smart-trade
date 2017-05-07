@@ -102,22 +102,23 @@ namespace Bitstamp
         internal Task<PrivateOrder> CreateBuyOrderAsync(
             string tickerSymbol, decimal amount, decimal price, decimal? limitPrice)
         {
-            var args =
-                new Dictionary<string, string>()
-                {
-                    { "amount", ToString(amount) },
-                    { "price", ToString(price) },
-                    { "limit_price", ToString(limitPrice) }
-                };
-
-            return this.ExecutePostAsync<PrivateOrder>(Invariant($"/api/v2/buy/{tickerSymbol}/"), args);
+            return this.CreateOrderAsync("buy", tickerSymbol, amount, price, limitPrice);
         }
 
-        internal Task<PrivateOrder> CreateBuyOrderAsync(string tickerSymbol, decimal amount)
+        internal Task<PrivateOrder> CreateBuyOrderAsync(string tickerSymbol, decimal amount) =>
+            this.CreateOrderAsync("buy", tickerSymbol, amount);
+
+        internal Task<PrivateOrder> CreateSellOrderAsync(string currencyPair, decimal amount, decimal price) =>
+            this.CreateSellOrderAsync(currencyPair, amount, price, null);
+
+        internal Task<PrivateOrder> CreateSellOrderAsync(
+            string tickerSymbol, decimal amount, decimal price, decimal? limitPrice)
         {
-            var args = new Dictionary<string, string>() { { "amount", ToString(amount) } };
-            return this.ExecutePostAsync<PrivateOrder>(Invariant($"/api/v2/buy/market/{tickerSymbol}/"), args);
+            return this.CreateOrderAsync("sell", tickerSymbol, amount, price, limitPrice);
         }
+
+        internal Task<PrivateOrder> CreateSellOrderAsync(string tickerSymbol, decimal amount) =>
+            this.CreateOrderAsync("sell", tickerSymbol, amount);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -162,6 +163,26 @@ namespace Bitstamp
         private readonly int customerId;
         private readonly string apiKey;
         private readonly HMACSHA256 sha256;
+
+        private Task<PrivateOrder> CreateOrderAsync(
+            string command, string tickerSymbol, decimal amount, decimal price, decimal? limitPrice)
+        {
+            var args =
+                new Dictionary<string, string>()
+                {
+                    { "amount", ToString(amount) },
+                    { "price", ToString(price) },
+                    { "limit_price", ToString(limitPrice) }
+                };
+
+            return this.ExecutePostAsync<PrivateOrder>(Invariant($"/api/v2/{command}/{tickerSymbol}/"), args);
+        }
+
+        private Task<PrivateOrder> CreateOrderAsync(string command, string tickerSymbol, decimal amount)
+        {
+            var args = new Dictionary<string, string>() { { "amount", ToString(amount) } };
+            return this.ExecutePostAsync<PrivateOrder>(Invariant($"/api/v2/{command}/market/{tickerSymbol}/"), args);
+        }
 
         private async Task<T> ExecuteGetAsync<T>(string uri)
         {

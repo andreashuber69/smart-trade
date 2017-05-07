@@ -14,6 +14,7 @@
   <string name="checking_popup">Checking balance...</string>
   <string name="nothing_to_buy_popup">Nothing to buy yet.</string>
   <string name="bought_popup">Bought {0} {1:F5} worth of {2}.</string>
+  <string name="sold_popup">Sold {0} {1:F5} worth of {2}.</string>
   <string name="no_deposit_popup">No deposit found.</string>
   <string name="insufficient_balance_popup">Insufficient balance.</string>
   <string name="unexpected_error_popup">Unexpected error: {0}, {1}. Service is now disabled.</string>

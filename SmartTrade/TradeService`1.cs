@@ -165,14 +165,14 @@ namespace SmartTrade
             return result;
         }
 
-        private void SetPeriod(List<ITransaction> transactions)
+        private bool SetPeriod(List<ITransaction> transactions)
         {
-            var lastDepositIndex = transactions.FindIndex(
-                t => (t.TransactionType == TransactionType.Deposit) && (t.SecondAmount != 0));
+            var lastDepositIndex = transactions.FindIndex(t => (t.TransactionType == TransactionType.Deposit));
 
             if (lastDepositIndex >= 0)
             {
-                var lastDepositTime = transactions[lastDepositIndex].DateTime;
+                var deposit = transactions[lastDepositIndex];
+                var lastDepositTime = deposit.DateTime;
 
                 if (!this.Settings.SectionStart.HasValue || (lastDepositTime > this.Settings.SectionStart))
                 {
@@ -181,13 +181,18 @@ namespace SmartTrade
                         TimeSpan.FromDays(DateTime.DaysInMonth(lastDepositTime.Year, lastDepositTime.Month));
                     this.Settings.PeriodEnd = lastDepositTime + duration;
                 }
+
+                return deposit.SecondAmount != 0;
             }
+
+            return false;
         }
 
         private DateTime GetStart(List<ITransaction> transactions)
         {
-            var lastTradeIndex = transactions.FindIndex(
-                t => (t.TransactionType == TransactionType.MarketTrade) || (t.SecondAmount != 0));
+            var lastTradeIndex = transactions.FindIndex(t =>
+                (t.TransactionType == TransactionType.MarketTrade) ||
+                (t.TransactionType == TransactionType.Deposit));
 
             if (lastTradeIndex >= 0)
             {
@@ -214,20 +219,8 @@ namespace SmartTrade
                 var secondBalance = balance.SecondCurrency;
                 this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
                 this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
-
-                var fee = balance.Fee;
-                var secondCurrency = exchange.TickerSymbol.Substring(3);
-                Info("Current balance is {0} {1}.", secondCurrency, secondBalance);
-
-                if (secondBalance < UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, fee))
-                {
-                    this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
-                    popup.Update(this, Resource.String.insufficient_balance_popup);
-                    return null;
-                }
-
                 var transactions = await this.GetTransactions(exchange);
-                this.SetPeriod(transactions);
+                var buy = this.SetPeriod(transactions);
 
                 if (!this.Settings.PeriodEnd.HasValue)
                 {
@@ -236,27 +229,67 @@ namespace SmartTrade
                     return null;
                 }
 
+                var fee = balance.Fee;
+                var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
+                var secondCurrency = exchange.TickerSymbol.Substring(3);
+
+                Info(
+                    "Current balance is {0} {1}.",
+                    buy ? secondCurrency : firstCurrency,
+                    buy ? secondBalance : firstBalance);
+
+                var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, fee);
+                var orderBook = await exchange.GetOrderBookAsync();
+                var bid = orderBook.Bids[0];
+
+                if ((buy ? secondBalance : firstBalance * bid.Price) < minSpendable)
+                {
+                    this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
+                    popup.Update(this, Resource.String.insufficient_balance_popup);
+                    return null;
+                }
+
                 var calculator = new UnitCostAveragingCalculator(this.Settings.PeriodEnd.Value, MinAmount, fee);
                 var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
-                var ask = (await exchange.GetOrderBookAsync()).Asks[0];
                 Info("Current time is {0:o}.", DateTime.UtcNow);
-                var secondAmount = calculator.GetAmount(start, secondBalance, ask.Amount * ask.Price);
-                Info("Amount to spend is {0} {1}.", secondCurrency, secondAmount);
+                var ask = orderBook.Asks[0];
+                var secondAmount = calculator.GetAmount(
+                    start,
+                    buy ? secondBalance : firstBalance * bid.Price,
+                    buy ? ask.Amount * ask.Price : bid.Amount * bid.Price);
 
                 if (secondAmount > 0)
                 {
-                    var firstAmountToBuy = Math.Round((secondAmount - calculator.GetFee(secondAmount)) / ask.Price, 8);
-                    var result = await exchange.CreateBuyOrderAsync(firstAmountToBuy);
-                    this.Settings.LastTradeTime = result.DateTime;
-                    firstBalance += result.Amount;
-                    var bought = result.Amount * result.Price;
-                    var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
-                    popup.Update(this, Resource.String.bought_popup, secondCurrency, bought, firstCurrency);
+                    var secondAmountToTrade = secondAmount - calculator.GetFee(secondAmount);
+                    var firstAmountToTrade = Math.Round(secondAmountToTrade / (buy ? ask.Price : bid.Price), 8);
+                    Info("Amount to trade is {0} {1}.", secondCurrency, secondAmount);
 
-                    start = result.DateTime;
-                    secondAmount = bought + calculator.GetFee(bought);
-                    secondBalance -= secondAmount;
+                    if (buy)
+                    {
+                        var result = await exchange.CreateBuyOrderAsync(firstAmountToTrade);
+                        this.Settings.LastTradeTime = result.DateTime;
+                        firstBalance += result.Amount;
+                        var bought = result.Amount * result.Price;
+                        popup.Update(this, Resource.String.bought_popup, secondCurrency, bought, firstCurrency);
+
+                        start = result.DateTime;
+                        secondAmount = bought + calculator.GetFee(bought);
+                        secondBalance -= secondAmount;
+                    }
+                    else
+                    {
+                        var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
+                        this.Settings.LastTradeTime = result.DateTime;
+                        firstBalance -= result.Amount;
+                        var sold = result.Amount * result.Price;
+                        popup.Update(this, Resource.String.sold_popup, secondCurrency, sold, firstCurrency);
+
+                        start = result.DateTime;
+                        secondAmount = sold - calculator.GetFee(sold);
+                        secondBalance += secondAmount;
+                    }
+
                     this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
                     this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
                 }

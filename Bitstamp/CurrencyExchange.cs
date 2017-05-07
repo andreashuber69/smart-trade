@@ -33,6 +33,12 @@ namespace Bitstamp
             public Task<PrivateOrder> CreateBuyOrderAsync(decimal amount, decimal price) =>
                 this.client.CreateBuyOrderAsync(this.tickerSymbol, amount, price);
 
+            public Task<PrivateOrder> CreateSellOrderAsync(decimal amount) =>
+                this.client.CreateSellOrderAsync(this.tickerSymbol, amount);
+
+            public Task<PrivateOrder> CreateSellOrderAsync(decimal amount, decimal price) =>
+                this.client.CreateSellOrderAsync(this.tickerSymbol, amount, price);
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             internal CurrencyExchange(BitstampClient client, string tickerSymbol)
