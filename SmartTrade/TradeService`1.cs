@@ -121,7 +121,8 @@ namespace SmartTrade
 
         private const long MinRetryIntervalMilliseconds = 2 * 60 * 1000;
         private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
-        private static readonly decimal MinAmount = 5;
+        private static readonly decimal MinFiatAmount = 5;
+        private static readonly decimal MinBtcAmount = 0.001M;
 
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
@@ -238,9 +239,10 @@ namespace SmartTrade
                     buy ? secondCurrency : firstCurrency,
                     buy ? secondBalance : firstBalance);
 
-                var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(MinAmount, fee);
                 var orderBook = await exchange.GetOrderBookAsync();
                 var bid = orderBook.Bids[0];
+                var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(
+                    buy ? MinFiatAmount : MinBtcAmount * bid.Price, fee);
 
                 if ((buy ? secondBalance : firstBalance * bid.Price) < minSpendable)
                 {
@@ -249,7 +251,8 @@ namespace SmartTrade
                     return null;
                 }
 
-                var calculator = new UnitCostAveragingCalculator(this.Settings.PeriodEnd.Value, MinAmount, fee);
+                var calculator = new UnitCostAveragingCalculator(
+                    this.Settings.PeriodEnd.Value, buy ? MinFiatAmount : MinBtcAmount * bid.Price, fee);
                 var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);
