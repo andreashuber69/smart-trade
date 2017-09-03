@@ -290,6 +290,11 @@ namespace SmartTrade
                 }
                 else
                 {
+                    if (input.Length == 0)
+                    {
+                        return input;
+                    }
+
                     cipher.Init(mode, key.PrivateKey);
                 }
 
