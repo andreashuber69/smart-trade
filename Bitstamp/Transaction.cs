@@ -7,64 +7,68 @@
 namespace Bitstamp
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Runtime.Serialization;
+    using System.Json;
 
-    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
-    [DataContract]
     internal sealed class Transaction
     {
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "id")]
-        internal int Id { get; private set; }
+        internal Transaction(JsonValue data)
+        {
+            this.Id = data["id"];
+            this.DateTime = DateTimeHelper.Parse(data["datetime"]);
+            this.TransactionType = (TransactionType)(int)data["type"];
+            this.Usd = data["usd"];
+            this.Eur = data["eur"];
+            this.Btc = data["btc"];
+            this.BtcUsd = GetOptionalDecimal(data, "btc_usd");
+            this.BtcEur = GetOptionalDecimal(data, "btc_eur");
+            this.Fee = data["fee"];
+            this.OrderId = GetOptionalInt(data, "order_id");
+        }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        internal DateTime DateTime { get; private set; }
+        internal int Id { get; }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "type")]
-        internal TransactionType TransactionType { get; private set; }
+        internal DateTime DateTime { get; }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "usd")]
-        internal decimal Usd { get; private set; }
+        internal TransactionType TransactionType { get; }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "eur")]
-        internal decimal Eur { get; private set; }
+        internal decimal Usd { get; }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "btc")]
-        internal decimal Btc { get; private set; }
+        internal decimal Eur { get; }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "btc_usd")]
-        internal decimal? BtcUsd { get; private set; }
+        internal decimal Btc { get; }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "btc_eur")]
-        internal decimal? BtcEur { get; private set; }
+        internal decimal? BtcUsd { get; }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "fee")]
-        internal decimal Fee { get; private set; }
+        internal decimal? BtcEur { get; }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "order_id")]
-        internal int OrderId { get; private set; }
+        internal decimal Fee { get; }
+
+        internal int? OrderId { get; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private Transaction()
+        private static decimal? GetOptionalDecimal(JsonValue data, string key)
         {
+            if (data.ContainsKey(key))
+            {
+                return data[key];
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "datetime")]
-        private string DateTimeImpl
+        private static int? GetOptionalInt(JsonValue data, string key)
         {
-            get { return DateTimeHelper.ToString(this.DateTime); }
-            set { this.DateTime = DateTimeHelper.Parse(value); }
+            if (data.ContainsKey(key))
+            {
+                return data[key];
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

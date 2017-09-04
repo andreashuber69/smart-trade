@@ -6,6 +6,8 @@
 
 namespace Bitstamp
 {
+    using System.Json;
+
     /// <summary>Represents a single element in <see cref="OrderCollection"/>.</summary>
     public sealed class Order
     {
@@ -17,10 +19,10 @@ namespace Bitstamp
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        internal Order(decimal price, decimal amount)
+        internal Order(JsonValue order)
         {
-            this.Price = price;
-            this.Amount = amount;
+            this.Price = order[0];
+            this.Amount = order[1];
         }
     }
 }

@@ -6,65 +6,48 @@
 
 namespace Bitstamp
 {
-    using System.Diagnostics.CodeAnalysis;
-    using System.Runtime.Serialization;
+    using System.Json;
 
-    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
-    [DataContract]
     internal sealed class Balance
     {
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "usd_balance")]
-        internal decimal UsdBalance { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "btc_balance")]
-        internal decimal BtcBalance { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "eur_balance")]
-        internal decimal EurBalance { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "usd_reserved")]
-        internal decimal UsdReserved { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "btc_reserved")]
-        internal decimal BtcReserved { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "eur_reserved")]
-        internal decimal EurReserved { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "usd_available")]
-        internal decimal UsdAvailable { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "btc_available")]
-        internal decimal BtcAvailable { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "eur_available")]
-        internal decimal EurAvailable { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "btcusd_fee")]
-        internal decimal BtcUsdFee { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "btceur_fee")]
-        internal decimal BtcEurFee { get; private set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "eurusd_fee")]
-        internal decimal EurUsdFee { get; private set; }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private Balance()
+        internal Balance(JsonValue data)
         {
+            this.UsdBalance = data["usd_balance"];
+            this.BtcBalance = data["btc_balance"];
+            this.EurBalance = data["eur_balance"];
+            this.UsdReserved = data["usd_reserved"];
+            this.BtcReserved = data["btc_reserved"];
+            this.EurReserved = data["eur_reserved"];
+            this.UsdAvailable = data["usd_available"];
+            this.BtcAvailable = data["btc_available"];
+            this.EurAvailable = data["eur_available"];
+            this.BtcUsdFee = data["btcusd_fee"];
+            this.BtcEurFee = data["btceur_fee"];
+            this.EurUsdFee = data["eurusd_fee"];
         }
+
+        internal decimal UsdBalance { get; }
+
+        internal decimal BtcBalance { get; }
+
+        internal decimal EurBalance { get; }
+
+        internal decimal UsdReserved { get; }
+
+        internal decimal BtcReserved { get; }
+
+        internal decimal EurReserved { get; }
+
+        internal decimal UsdAvailable { get; }
+
+        internal decimal BtcAvailable { get; }
+
+        internal decimal EurAvailable { get; }
+
+        internal decimal BtcUsdFee { get; }
+
+        internal decimal BtcEurFee { get; }
+
+        internal decimal EurUsdFee { get; }
     }
 }

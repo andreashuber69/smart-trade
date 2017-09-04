@@ -49,7 +49,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Json" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +68,6 @@
     <Compile Include="Order.cs" />
     <Compile Include="OrderBook.cs" />
     <Compile Include="OrderCollection.cs" />
-    <Compile Include="OrderSurrogate.cs" />
     <Compile Include="OrderType.cs" />
     <Compile Include="PrivateOrder.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />

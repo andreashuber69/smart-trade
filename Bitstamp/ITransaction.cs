@@ -35,6 +35,6 @@ namespace Bitstamp
         decimal Fee { get; }
 
         /// <summary>Gets the ID of the order that triggered this transaction.</summary>
-        int OrderId { get; }
+        int? OrderId { get; }
     }
 }

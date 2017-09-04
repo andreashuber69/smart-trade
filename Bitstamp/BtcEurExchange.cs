@@ -75,7 +75,7 @@ namespace Bitstamp
 
                 public decimal Fee => this.transaction.Fee;
 
-                public int OrderId => this.transaction.OrderId;
+                public int? OrderId => this.transaction.OrderId;
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

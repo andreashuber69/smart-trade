@@ -7,36 +7,27 @@
 namespace Bitstamp
 {
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Runtime.Serialization;
+    using System.Json;
 
     /// <summary>Represents the result of a call to <see cref="ICurrencyExchange.GetOrderBookAsync"/>.</summary>
-    [DataContract]
     public sealed class OrderBook
     {
         /// <summary>Gets the UTC time at which the order book was current.</summary>
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "timestamp")]
-        public int Timestamp { get; private set; }
+        public int Timestamp { get; }
 
         /// <summary>Gets the bids in descending order.</summary>
-        public IReadOnlyList<Order> Bids => this.BidsImpl;
+        public IReadOnlyList<Order> Bids { get; }
 
         /// <summary>Gets the asks in ascending order.</summary>
-        public IReadOnlyList<Order> Asks => this.AsksImpl;
+        public IReadOnlyList<Order> Asks { get; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private OrderBook()
+        internal OrderBook(JsonValue data)
         {
+            this.Timestamp = data["timestamp"];
+            this.Bids = new OrderCollection(data["bids"]);
+            this.Asks = new OrderCollection(data["asks"]);
         }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "bids")]
-        private OrderCollection BidsImpl { get; set; }
-
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        [DataMember(Name = "asks")]
-        private OrderCollection AsksImpl { get; set; }
     }
 }

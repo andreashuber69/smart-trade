@@ -7,15 +7,16 @@
 namespace Bitstamp
 {
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Runtime.Serialization;
+    using System.Json;
 
-    [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
-    [CollectionDataContract]
     internal sealed class OrderCollection : List<Order>
     {
-        private OrderCollection()
+        internal OrderCollection(JsonValue data)
         {
+            foreach (var element in (JsonArray)data)
+            {
+                this.Add(new Order(element));
+            }
         }
     }
 }

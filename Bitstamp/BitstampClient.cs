@@ -82,19 +82,19 @@ namespace Bitstamp
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Long-running operation.")]
-        internal Task<Balance> GetBalanceAsync() =>
-            this.ExecutePostAsync<Balance>("/api/v2/balance/", Enumerable.Empty<KeyValuePair<string, string>>());
+        internal Task<Balance> GetBalanceAsync() => this.ExecutePostAsync(
+            "/api/v2/balance/", Enumerable.Empty<KeyValuePair<string, string>>(), d => new Balance(d));
 
         internal async Task<IReadOnlyList<Transaction>> GetTransactionsAsync(int offset, int limit)
         {
             var args =
                 new Dictionary<string, string>() { { "offset", ToString(offset) }, { "limit", ToString(limit) } };
-            return await this.ExecutePostAsync<TransactionCollection>("/api/v2/user_transactions/", args);
+            return await this.ExecutePostAsync("/api/v2/user_transactions/", args, d => new TransactionCollection(d));
         }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Long-running operation.")]
         internal Task<OrderBook> GetOrderBookAsync(string tickerSymbol) =>
-            this.ExecuteGetAsync<OrderBook>(Invariant($"/api/v2/order_book/{tickerSymbol}/"));
+            this.ExecuteGetAsync(Invariant($"/api/v2/order_book/{tickerSymbol}/"), d => new OrderBook(d));
 
         internal Task<PrivateOrder> CreateBuyOrderAsync(string currencyPair, decimal amount, decimal price) =>
             this.CreateBuyOrderAsync(currencyPair, amount, price, null);
@@ -123,8 +123,6 @@ namespace Bitstamp
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private const string BaseUri = "https://www.bitstamp.net";
-        private static readonly DataContractJsonSerializerSettings SerializerSettings =
-            new DataContractJsonSerializerSettings() { DataContractSurrogate = new OrderSurrogate() };
 
         private static long nonce = DateTime.UtcNow.Ticks;
 
@@ -132,32 +130,25 @@ namespace Bitstamp
 
         private static long GetNonce() => Interlocked.Increment(ref nonce);
 
-        private static async Task<T> GetResponseBodyAsync<T>(HttpResponseMessage response)
+        private static async Task<T> GetResponseBodyAsync<T>(
+            HttpResponseMessage response, Func<JsonValue, T> createResult)
         {
             using (var memoryStream = new MemoryStream())
             {
                 await response.Content.CopyToAsync(memoryStream);
                 memoryStream.Position = 0;
-
-                // In the case of a failure, the "reason" property in the JSON sometimes is a string and sometimes an
-                // object. It is not easy to predict the type of said property and DataContractJsonSerializer cannot be
-                // used to deserialize JSON with unknown structure. This is why we're deserializing with JsonValue here.
-                var failure = JsonValue.Load(memoryStream) as JsonObject;
+                var data = JsonValue.Load(memoryStream);
                 const string StatusName = "status";
 
-                if ((failure != null) && failure.ContainsKey(StatusName) && (failure[StatusName] == "error"))
+                if ((data is JsonObject) && data.ContainsKey(StatusName) && (data[StatusName] == "error"))
                 {
-                    throw new BitstampException(failure["reason"].ToString());
+                    throw new BitstampException(data["reason"].ToString());
                 }
 
                 response.EnsureSuccessStatusCode();
-                memoryStream.Position = 0;
-                return DeserializeJson<T>(memoryStream);
+                return createResult(data);
             }
         }
-
-        private static T DeserializeJson<T>(Stream stream) =>
-            (T)new DataContractJsonSerializer(typeof(T), SerializerSettings).ReadObject(stream);
 
         private readonly HttpClient httpClient = new HttpClient();
         private readonly int customerId;
@@ -175,24 +166,27 @@ namespace Bitstamp
                     { "limit_price", ToString(limitPrice) }
                 };
 
-            return this.ExecutePostAsync<PrivateOrder>(Invariant($"/api/v2/{command}/{tickerSymbol}/"), args);
+            return this.ExecutePostAsync(
+                Invariant($"/api/v2/{command}/{tickerSymbol}/"), args, d => new PrivateOrder(d));
         }
 
         private Task<PrivateOrder> CreateOrderAsync(string command, string tickerSymbol, decimal amount)
         {
             var args = new Dictionary<string, string>() { { "amount", ToString(amount) } };
-            return this.ExecutePostAsync<PrivateOrder>(Invariant($"/api/v2/{command}/market/{tickerSymbol}/"), args);
+            return this.ExecutePostAsync(
+                Invariant($"/api/v2/{command}/market/{tickerSymbol}/"), args, d => new PrivateOrder(d));
         }
 
-        private async Task<T> ExecuteGetAsync<T>(string uri)
+        private async Task<T> ExecuteGetAsync<T>(string uri, Func<JsonValue, T> createResult)
         {
             using (var response = await this.httpClient.GetAsync(BaseUri + uri))
             {
-                return await GetResponseBodyAsync<T>(response);
+                return await GetResponseBodyAsync<T>(response, createResult);
             }
         }
 
-        private async Task<T> ExecutePostAsync<T>(string uri, IEnumerable<KeyValuePair<string, string>> args)
+        private async Task<T> ExecutePostAsync<T>(
+            string uri, IEnumerable<KeyValuePair<string, string>> args, Func<JsonValue, T> createResult)
         {
             var nonce = GetNonce();
             var signatureArgs =
@@ -207,7 +201,7 @@ namespace Bitstamp
 
             using (var response = await this.httpClient.PostAsync(BaseUri + uri, new FormUrlEncodedContent(allArgs)))
             {
-                return await GetResponseBodyAsync<T>(response);
+                return await GetResponseBodyAsync(response, createResult);
             }
         }
 
