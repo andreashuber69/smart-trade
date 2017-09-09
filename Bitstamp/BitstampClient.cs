@@ -14,7 +14,6 @@ namespace Bitstamp
     using System.Json;
     using System.Linq;
     using System.Net.Http;
-    using System.Runtime.Serialization.Json;
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading;

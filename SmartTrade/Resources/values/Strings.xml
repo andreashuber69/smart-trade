@@ -2,9 +2,9 @@
 <resources>
   <string name="app_name">Smart Trade</string>
   <string name="app_description">Buys or sells on Bitstamp with a unit cost averaging strategy.</string>
-  <string name="customer_id">Customer ID:</string>
-  <string name="api_key">API Key:</string>
-  <string name="api_secret">API Secret:</string>
+  <string name="customer_id">Bitstamp User ID</string>
+  <string name="api_key">API Key</string>
+  <string name="api_secret">API Secret</string>
   <string name="service_is_disabled">Service is Disabled</string>
   <string name="service_is_enabled">Service is Enabled</string>
   <string name="last_trade">Last Trade:</string>

@@ -8,17 +8,20 @@
     android:paddingTop="@dimen/top_padding">
     <EditText
         android:id="@+id/customer_id"
+        android:hint="@string/customer_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:textSize="15sp" />
     <EditText
         android:id="@+id/api_key"
+        android:hint="@string/api_key"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15sp" />
     <EditText
         android:id="@+id/api_secret"
+        android:hint="@string/api_secret"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
