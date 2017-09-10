@@ -122,7 +122,7 @@ namespace SmartTrade
         private const long MinRetryIntervalMilliseconds = 2 * 60 * 1000;
         private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
         private static readonly decimal MinFiatAmount = 5;
-        private static readonly decimal MinBtcAmount = 0.001M;
+        private static readonly decimal MinBtcAmount = 0.003M;
 
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
@@ -178,9 +178,7 @@ namespace SmartTrade
                 if (!this.Settings.SectionStart.HasValue || (lastDepositTime > this.Settings.SectionStart))
                 {
                     this.Settings.SectionStart = lastDepositTime;
-                    var duration =
-                        TimeSpan.FromDays(DateTime.DaysInMonth(lastDepositTime.Year, lastDepositTime.Month));
-                    this.Settings.PeriodEnd = lastDepositTime + duration;
+                    this.Settings.PeriodEnd = lastDepositTime + TimeSpan.FromDays(7);
                 }
 
                 return deposit.SecondAmount != 0;
@@ -303,7 +301,7 @@ namespace SmartTrade
                 }
 
                 this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
-                var nextTradeTime = calculator.GetNextTime(start, secondBalance) - DateTime.UtcNow;
+                var nextTradeTime = calculator.GetNextTime(start, buy ? secondBalance : firstBalance * bid.Price) - DateTime.UtcNow;
 
                 if (!nextTradeTime.HasValue)
                 {
