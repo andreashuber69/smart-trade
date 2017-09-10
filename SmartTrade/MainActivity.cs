@@ -26,6 +26,8 @@ namespace SmartTrade
             this.service.PropertyChanged += this.UpdateView;
             this.service.Settings.PropertyChanged += this.UpdateView;
             this.SetContentView(Resource.Layout.Main);
+            this.updateTimer = new UpdateTimer(60 * 60 * 1000, () => this.UpdateView());
+            this.updateTimer.Start();
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton();
             this.customerIdEditText = this.GetCustomerIdEditText();
             this.apiKeyEditText = this.GetApiKeyEditText();
@@ -43,6 +45,7 @@ namespace SmartTrade
         {
             if (disposing)
             {
+                this.updateTimer.Dispose();
                 this.service.Settings.PropertyChanged -= this.UpdateView;
                 this.service.PropertyChanged -= this.UpdateView;
                 this.service.Dispose();
@@ -90,6 +93,7 @@ namespace SmartTrade
         }
 
         private readonly BtcEurTradeService service = new BtcEurTradeService();
+        private UpdateTimer updateTimer;
         private EditText customerIdEditText;
         private EditText apiKeyEditText;
         private EditText apiSecretEditText;
@@ -175,6 +179,23 @@ namespace SmartTrade
                 this.nextTradeTimeTextView.Text = Format(DateTime.UtcNow +
                     TimeSpan.FromMilliseconds(settings.NextTradeTime - Java.Lang.JavaSystem.CurrentTimeMillis()));
             }
+        }
+
+        private sealed class UpdateTimer : CountDownTimer
+        {
+            public UpdateTimer(long endMilliseconds, Action updateAction)
+                : base(endMilliseconds, 10000)
+            {
+                this.updateAction = updateAction;
+            }
+
+            public sealed override void OnTick(long millisUntilFinished) => this.updateAction();
+
+            public sealed override void OnFinish() => this.updateAction();
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            private readonly Action updateAction;
         }
     }
 }
