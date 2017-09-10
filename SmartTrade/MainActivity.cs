@@ -55,19 +55,38 @@ namespace SmartTrade
 
         private static string Format(DateTime? dateTime)
         {
-            var nullableSpan = DateTime.UtcNow - dateTime;
+            var span = DateTime.UtcNow - dateTime;
 
-            if (nullableSpan.HasValue)
+            if (span.HasValue)
             {
-                var span = nullableSpan.GetValueOrDefault();
-                var hours = (int)(span > TimeSpan.Zero ? span.TotalHours : -span.TotalHours);
-                var formatted = Invariant($"{Abs(hours):00}:{Abs(span.Minutes):00}:{Abs(span.Seconds):00}");
-                return span > TimeSpan.Zero ? Invariant($"{formatted} hours ago") : Invariant($"in {formatted} hours");
+                return
+                    Format(span.Value.TotalDays, "day") ?? Format(span.Value.TotalHours, "hour") ??
+                    Format(span.Value.TotalMinutes, "minute") ?? Format(span.Value.TotalSeconds, "second") ??
+                    "just now";
             }
             else
             {
-                return "-";
+                return "never";
             }
+        }
+
+        private static string Format(double amount, string unit)
+        {
+            var absoluteAmount = Abs(amount);
+
+            if (absoluteAmount < 1.0)
+            {
+                return null;
+            }
+
+            var formatted = Invariant($"{Math.Floor(absoluteAmount)} {unit}");
+
+            if (absoluteAmount > 2.0)
+            {
+                formatted += "s";
+            }
+
+            return amount > 0.0 ? formatted + " ago" : "in " + formatted;
         }
 
         private readonly BtcEurTradeService service = new BtcEurTradeService();
