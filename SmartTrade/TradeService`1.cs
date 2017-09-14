@@ -112,7 +112,7 @@ namespace SmartTrade
             }
 
             var popup = new NotificationPopup(this, Resource.String.checking_popup);
-            var intervalMilliseconds = (long)(await this.BuyAsync(popup)).GetValueOrDefault().TotalMilliseconds;
+            var intervalMilliseconds = (long)(await this.TradeAsync(popup)).GetValueOrDefault().TotalMilliseconds;
             this.ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
                 Math.Max(this.Settings.RetryIntervalMilliseconds, intervalMilliseconds));
         }
@@ -204,10 +204,10 @@ namespace SmartTrade
             }
         }
 
-        /// <summary>Buys on the exchange.</summary>
+        /// <summary>Trades on the exchange.</summary>
         /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found, the
         /// balance is insufficient or if there was a temporary error.</returns>
-        private async Task<TimeSpan?> BuyAsync(NotificationPopup popup)
+        private async Task<TimeSpan?> TradeAsync(NotificationPopup popup)
         {
             try
             {
@@ -296,7 +296,7 @@ namespace SmartTrade
                 }
                 else
                 {
-                    popup.Update(this, Resource.String.nothing_to_buy_popup);
+                    popup.Update(this, Resource.String.nothing_to_trade_popup);
                     popup.Dispose();
                 }
 
@@ -320,7 +320,6 @@ namespace SmartTrade
             catch (Exception ex)
             {
                 popup.Update(this, Resource.String.unexpected_error_popup, ex.GetType().Name, ex.Message);
-                this.Settings.LastResult = popup.ContentText;
                 this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
                 this.IsEnabled = false;
                 Warn("The service has been disabled due to an unexpected error: {0}", ex);

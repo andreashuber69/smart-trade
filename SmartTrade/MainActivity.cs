@@ -106,7 +106,7 @@ namespace SmartTrade
 
         private EditText GetCustomerIdEditText()
         {
-            var result = this.FindViewById<EditText>(Resource.Id.customer_id);
+            var result = this.FindViewById<EditText>(Resource.Id.user_id);
 
             result.TextChanged +=
                 (s, e) =>

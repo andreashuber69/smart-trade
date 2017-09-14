@@ -93,9 +93,6 @@ namespace SmartTrade
 			// aapt resource value: 0x7f070002
 			public const int api_secret = 2131165186;
 			
-			// aapt resource value: 0x7f070000
-			public const int customer_id = 2131165184;
-			
 			// aapt resource value: 0x7f070003
 			public const int enable_disable_service_button = 2131165187;
 			
@@ -113,6 +110,9 @@ namespace SmartTrade
 			
 			// aapt resource value: 0x7f070008
 			public const int next_trade_time_text_view = 2131165192;
+			
+			// aapt resource value: 0x7f070000
+			public const int user_id = 2131165184;
 			
 			static Id()
 			{
@@ -183,9 +183,6 @@ namespace SmartTrade
 			// aapt resource value: 0x7f05000d
 			public const int checking_popup = 2131034125;
 			
-			// aapt resource value: 0x7f050004
-			public const int customer_id = 2131034116;
-			
 			// aapt resource value: 0x7f050012
 			public const int insufficient_balance_popup = 2131034130;
 			
@@ -199,7 +196,7 @@ namespace SmartTrade
 			public const int no_deposit_popup = 2131034129;
 			
 			// aapt resource value: 0x7f05000e
-			public const int nothing_to_buy_popup = 2131034126;
+			public const int nothing_to_trade_popup = 2131034126;
 			
 			// aapt resource value: 0x7f050007
 			public const int service_is_disabled = 2131034119;
@@ -218,6 +215,9 @@ namespace SmartTrade
 			
 			// aapt resource value: 0x7f050013
 			public const int unexpected_error_popup = 2131034131;
+			
+			// aapt resource value: 0x7f050004
+			public const int user_id = 2131034116;
 			
 			static String()
 			{
