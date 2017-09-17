@@ -72,6 +72,7 @@
     <Compile Include="PrivateOrder.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Ticker.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="TransactionCollection.cs" />
     <Compile Include="TransactionType.cs" />

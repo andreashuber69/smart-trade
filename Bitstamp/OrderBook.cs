@@ -6,6 +6,7 @@
 
 namespace Bitstamp
 {
+    using System;
     using System.Collections.Generic;
     using System.Json;
 
@@ -13,7 +14,7 @@ namespace Bitstamp
     public sealed class OrderBook
     {
         /// <summary>Gets the UTC time at which the order book was current.</summary>
-        public int Timestamp { get; }
+        public DateTime Timestamp { get; }
 
         /// <summary>Gets the bids in descending order.</summary>
         public IReadOnlyList<Order> Bids { get; }
@@ -25,7 +26,7 @@ namespace Bitstamp
 
         internal OrderBook(JsonValue data)
         {
-            this.Timestamp = data["timestamp"];
+            this.Timestamp = DateTimeOffset.FromUnixTimeSeconds(data["timestamp"]).UtcDateTime;
             this.Bids = new OrderCollection(data["bids"]);
             this.Asks = new OrderCollection(data["asks"]);
         }

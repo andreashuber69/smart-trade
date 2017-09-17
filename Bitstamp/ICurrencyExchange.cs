@@ -40,6 +40,17 @@ namespace Bitstamp
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Expensive method.")]
         Task<IEnumerable<ITransaction>> GetTransactionsAsync(int offset, int limit);
 
+        /// <summary>Gets the ticker.</summary>
+        /// <exception cref="BitstampException">The Bitstamp server reported an error.</exception>
+        /// <exception cref="HttpRequestException">The Bitstamp server could either not be reached or reported an
+        /// unexpected error.</exception>
+        /// <exception cref="ObjectDisposedException"><see cref="IDisposable.Dispose"/> has been called.</exception>
+        /// <remarks><see cref="Ticker.Volume"/> is always denominated in the first currency. <see cref="Ticker.Last"/>,
+        /// <see cref="Ticker.High"/>, <see cref="Ticker.Low"/>, <see cref="Ticker.Vwap"/>, <see cref="Ticker.Bid"/>,
+        /// <see cref="Ticker.Ask"/> and <see cref="Ticker.Open"/> are always denominated in the second currency.</remarks>
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Expensive method.")]
+        Task<Ticker> GetTickerAsync();
+
         /// <summary>Gets the order book.</summary>
         /// <exception cref="BitstampException">The Bitstamp server reported an error.</exception>
         /// <exception cref="HttpRequestException">The Bitstamp server could either not be reached or reported an

@@ -91,6 +91,9 @@ namespace Bitstamp
             return await this.ExecutePostAsync("/api/v2/user_transactions/", args, d => new TransactionCollection(d));
         }
 
+        internal Task<Ticker> GetTickerAsync(string tickerSymbol) =>
+            this.ExecuteGetAsync(Invariant($"/api/v2/ticker/{tickerSymbol}/"), d => new Ticker(d));
+
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Long-running operation.")]
         internal Task<OrderBook> GetOrderBookAsync(string tickerSymbol) =>
             this.ExecuteGetAsync(Invariant($"/api/v2/order_book/{tickerSymbol}/"), d => new OrderBook(d));

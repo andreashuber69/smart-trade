@@ -25,6 +25,8 @@ namespace Bitstamp
                 return transactions.Select(t => this.CreateTransaction(t)).Where(t => t != null);
             }
 
+            public Task<Ticker> GetTickerAsync() => this.client.GetTickerAsync(this.tickerSymbol);
+
             public Task<OrderBook> GetOrderBookAsync() => this.client.GetOrderBookAsync(this.tickerSymbol);
 
             public Task<PrivateOrder> CreateBuyOrderAsync(decimal amount) =>
