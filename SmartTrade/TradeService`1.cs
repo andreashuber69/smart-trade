@@ -278,7 +278,7 @@ namespace SmartTrade
                         // When we sell on Bitstamp, the fee is subtracted *after* the trade, so we want to sell the
                         // full calculated amount. However, since fees are always rounded *up* to the next cent, we
                         // sell a tiny bit less.
-                        var secondAmountToTrade = secondAmount * 0.9999m;
+                        var secondAmountToTrade = secondAmount - 0.001m;
                         var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Bid, 8);
                         var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;

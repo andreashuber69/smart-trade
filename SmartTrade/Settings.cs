@@ -220,19 +220,19 @@ namespace SmartTrade
         private long GetLong([CallerMemberName] string key = null) => this.GetValue((p, k) => p.GetLong(k, 0), key);
 
         private void SetLong(long value, [CallerMemberName] string key = null) =>
-            this.SetValue((p, k, v) => p.PutLong(k, v), key, value);
+            this.SetValue((p, k, v) => p.PutLong(k, v), key, this.GetLong(key), value);
 
         private float GetFloat([CallerMemberName] string key = null) =>
             this.GetValue((p, k) => p.GetFloat(k, 0.0f), key);
 
         private void SetFloat(float value, [CallerMemberName] string key = null) =>
-            this.SetValue((p, k, v) => p.PutFloat(k, v), key, value, ":f8");
+            this.SetValue((p, k, v) => p.PutFloat(k, v), key, this.GetFloat(key), value, ":f8");
 
         private string GetString([CallerMemberName] string key = null) =>
             this.GetValue((p, k) => p.GetString(k, string.Empty), key);
 
         private void SetString(string value, [CallerMemberName] string key = null) =>
-            this.SetValue((p, k, v) => p.PutString(k, v), key, value);
+            this.SetValue((p, k, v) => p.PutString(k, v), key, this.GetString(key), value);
 
         private void ClearSettings()
         {
@@ -250,24 +250,42 @@ namespace SmartTrade
             getValue(this.preferences, this.groupName + key);
 
         private void SetValue<T>(
-            Action<ISharedPreferencesEditor, string, T> setValue, string key, T value, string valueFormat = null)
+            Action<ISharedPreferencesEditor, string, T> setValue,
+            string key,
+            T currentValue,
+            T newValue,
+            string valueFormat = null)
         {
+            if (object.Equals(currentValue, newValue))
+            {
+                return;
+            }
+
             var groupedKey = this.groupName + key;
 
             using (var editor = this.preferences.Edit())
             {
-                setValue(editor, groupedKey, value);
+                setValue(editor, groupedKey, newValue);
                 editor.Apply();
             }
 
-            this.LogSetValue(key, value, valueFormat);
+            this.LogSetValue(key, newValue, valueFormat);
         }
 
         private string GetPrivateString([CallerMemberName] string key = null) =>
             this.Decrypt(this.GetValue((p, k) => p.GetString(k, string.Empty), key));
 
-        private void SetPrivateString(string value, [CallerMemberName] string key = null) =>
-            this.SetValue((p, k, v) => p.PutString(k, v), key, this.Encrypt(value));
+        private void SetPrivateString(string value, [CallerMemberName] string key = null)
+        {
+            // Because two calls to Encrypt passing the same value will always yield a different cipher text, we have to
+            // check for equality before encryption.
+            if (this.GetPrivateString(key) == value)
+            {
+                return;
+            }
+
+            this.SetValue((p, k, v) => p.PutString(k, v), key, null, this.Encrypt(value));
+        }
 
         private string Decrypt(string encryptedValue) =>
             Encoding.UTF8.GetString(this.Crypt(Convert.FromBase64String(encryptedValue), CipherMode.DecryptMode));
@@ -309,7 +327,7 @@ namespace SmartTrade
                 GenerateKey();
 
                 // If we generate a new key, old encrypted data is useless.
-                this.SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiSecret), string.Empty);
+                this.SetValue((p, k, v) => p.PutString(k, v), nameof(this.ApiSecret), null, string.Empty);
             }
 
             return (KeyStore.PrivateKeyEntry)this.keyStore.GetEntry(KeyName, null);

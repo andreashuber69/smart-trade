@@ -148,7 +148,7 @@ namespace SmartTrade
                 case nameof(ISettings.ApiKey):
                 case nameof(ISettings.ApiSecret):
                     // These settings are only ever changed from the view itself, the view is therefore already up to
-                    // date.
+                    // date. Setting the same value again will reset the cursor and thus make the EditText unusable.
                     return;
                 default:
                     break;
