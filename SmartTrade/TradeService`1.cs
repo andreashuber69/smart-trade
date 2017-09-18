@@ -178,7 +178,7 @@ namespace SmartTrade
                 if (!this.Settings.SectionStart.HasValue || (lastDepositTime > this.Settings.SectionStart))
                 {
                     this.Settings.SectionStart = lastDepositTime;
-                    this.Settings.PeriodEnd = lastDepositTime + TimeSpan.FromDays(7);
+                    this.Settings.PeriodEnd = lastDepositTime + TimeSpan.FromDays(2);
                 }
 
                 return deposit.SecondAmount != 0;
@@ -258,12 +258,14 @@ namespace SmartTrade
 
                 if (secondAmount > 0)
                 {
-                    var secondAmountToTrade = secondAmount - calculator.GetFee(secondAmount);
-                    var firstAmountToTrade = Math.Round(secondAmountToTrade / (buy ? ticker.Ask : ticker.Bid), 8);
                     Info("Amount to trade is {0} {1}.", secondCurrency, secondAmount);
 
                     if (buy)
                     {
+                        // When we buy on Bitstamp, the fee is added *before* the trade, so we want to buy the
+                        // calculated amount minus the fee.
+                        var secondAmountToTrade = secondAmount - calculator.GetFee(secondAmount);
+                        var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Ask, 8);
                         var result = await exchange.CreateBuyOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance += result.Amount;
@@ -276,6 +278,11 @@ namespace SmartTrade
                     }
                     else
                     {
+                        // When we sell on Bitstamp, the fee is subtracted *after* the trade, so we want to sell the
+                        // full calculated amount. However, since fees are always rounded *up* to the next cent, we
+                        // sell a tiny bit less.
+                        var secondAmountToTrade = secondAmount * 0.9999;
+                        var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Bid, 8);
                         var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance -= result.Amount;
