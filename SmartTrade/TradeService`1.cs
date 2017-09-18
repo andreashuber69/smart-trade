@@ -122,7 +122,6 @@ namespace SmartTrade
         private const long MinRetryIntervalMilliseconds = 2 * 60 * 1000;
         private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
         private static readonly decimal MinFiatAmount = 5;
-        private static readonly decimal MinBtcAmount = 0.003M;
 
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
@@ -239,7 +238,7 @@ namespace SmartTrade
 
                 var ticker = await exchange.GetTickerAsync();
                 var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(
-                    buy ? MinFiatAmount : MinBtcAmount * ticker.Bid, fee);
+                    buy ? MinFiatAmount : MinFiatAmount / ticker.Bid, fee);
 
                 if ((buy ? secondBalance : firstBalance * ticker.Bid) < minSpendable)
                 {
@@ -281,7 +280,7 @@ namespace SmartTrade
                         // When we sell on Bitstamp, the fee is subtracted *after* the trade, so we want to sell the
                         // full calculated amount. However, since fees are always rounded *up* to the next cent, we
                         // sell a tiny bit less.
-                        var secondAmountToTrade = secondAmount * 0.9999;
+                        var secondAmountToTrade = secondAmount * 0.9999m;
                         var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Bid, 8);
                         var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
