@@ -237,8 +237,7 @@ namespace SmartTrade
                     buy ? secondBalance : firstBalance);
 
                 var ticker = await exchange.GetTickerAsync();
-                var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(
-                    buy ? MinFiatAmount : MinFiatAmount / ticker.Bid, fee);
+                var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(MinFiatAmount, fee);
 
                 if ((buy ? secondBalance : firstBalance * ticker.Bid) < minSpendable)
                 {
@@ -247,8 +246,7 @@ namespace SmartTrade
                     return null;
                 }
 
-                var calculator = new UnitCostAveragingCalculator(
-                    this.Settings.PeriodEnd.Value, buy ? MinFiatAmount : MinBtcAmount * ticker.Bid, fee);
+                var calculator = new UnitCostAveragingCalculator(this.Settings.PeriodEnd.Value, MinFiatAmount, fee);
                 var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);
