@@ -237,12 +237,11 @@ namespace SmartTrade
                     buy ? secondCurrency : firstCurrency,
                     buy ? secondBalance : firstBalance);
 
-                var orderBook = await exchange.GetOrderBookAsync();
-                var bid = orderBook.Bids[0];
+                var ticker = await exchange.GetTickerAsync();
                 var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(
-                    buy ? MinFiatAmount : MinBtcAmount * bid.Price, fee);
+                    buy ? MinFiatAmount : MinBtcAmount * ticker.Bid, fee);
 
-                if ((buy ? secondBalance : firstBalance * bid.Price) < minSpendable)
+                if ((buy ? secondBalance : firstBalance * ticker.Bid) < minSpendable)
                 {
                     this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
                     popup.Update(this, Resource.String.insufficient_balance_popup);
@@ -250,20 +249,17 @@ namespace SmartTrade
                 }
 
                 var calculator = new UnitCostAveragingCalculator(
-                    this.Settings.PeriodEnd.Value, buy ? MinFiatAmount : MinBtcAmount * bid.Price, fee);
+                    this.Settings.PeriodEnd.Value, buy ? MinFiatAmount : MinBtcAmount * ticker.Bid, fee);
                 var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);
-                var ask = orderBook.Asks[0];
-                var secondAmount = calculator.GetAmount(
-                    start,
-                    buy ? secondBalance : firstBalance * bid.Price,
-                    buy ? ask.Amount * ask.Price : bid.Amount * bid.Price);
+                var startBalance = buy ? secondBalance : firstBalance * ticker.Bid;
+                var secondAmount = calculator.GetAmount(start, startBalance, startBalance);
 
                 if (secondAmount > 0)
                 {
                     var secondAmountToTrade = secondAmount - calculator.GetFee(secondAmount);
-                    var firstAmountToTrade = Math.Round(secondAmountToTrade / (buy ? ask.Price : bid.Price), 8);
+                    var firstAmountToTrade = Math.Round(secondAmountToTrade / (buy ? ticker.Ask : ticker.Bid), 8);
                     Info("Amount to trade is {0} {1}.", secondCurrency, secondAmount);
 
                     if (buy)
@@ -301,7 +297,7 @@ namespace SmartTrade
                 }
 
                 this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
-                var nextTradeTime = calculator.GetNextTime(start, buy ? secondBalance : firstBalance * bid.Price) - DateTime.UtcNow;
+                var nextTradeTime = calculator.GetNextTime(start, buy ? secondBalance : firstBalance * ticker.Bid) - DateTime.UtcNow;
 
                 if (!nextTradeTime.HasValue)
                 {
