@@ -10,6 +10,7 @@ namespace SmartTrade
     using System.ComponentModel;
     using System.Globalization;
     using Android.App;
+    using Android.Content.PM;
     using Android.OS;
     using Android.Widget;
 
@@ -17,7 +18,7 @@ namespace SmartTrade
     using static System.Globalization.CultureInfo;
     using static System.Math;
 
-    [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@mipmap/icon")]
+    [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class MainActivity : Activity
     {
         protected sealed override void OnCreate(Bundle savedInstanceState)
