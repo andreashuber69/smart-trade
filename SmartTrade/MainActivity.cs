@@ -23,11 +23,8 @@ namespace SmartTrade
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            this.service.PropertyChanged += this.UpdateView;
-            this.service.Settings.PropertyChanged += this.UpdateView;
             this.SetContentView(Resource.Layout.Main);
-            this.updateTimer = new UpdateTimer(60 * 60 * 1000, () => this.UpdateView());
-            this.updateTimer.Start();
+
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton();
             this.customerIdEditText = this.GetCustomerIdEditText();
             this.apiKeyEditText = this.GetApiKeyEditText();
@@ -38,6 +35,19 @@ namespace SmartTrade
             this.lastTradeBalance2TextView = this.FindViewById<TextView>(Resource.Id.last_trade_balance2_text_view);
             this.nextTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.next_trade_time_text_view);
 
+            this.service.PropertyChanged += this.UpdateView;
+            this.service.Settings.PropertyChanged += this.UpdateView;
+
+            // https://stackoverflow.com/questions/4597690/android-timer-how-to
+            this.updateAction =
+                () =>
+                {
+                    this.UpdateView();
+                    this.updateHandler.PostDelayed(this.updateAction, 10000);
+                };
+
+            this.updateHandler.PostDelayed(this.updateAction, 10000);
+
             this.UpdateView();
         }
 
@@ -45,7 +55,7 @@ namespace SmartTrade
         {
             if (disposing)
             {
-                this.updateTimer.Dispose();
+                this.updateHandler.RemoveCallbacks(this.updateAction);
                 this.service.Settings.PropertyChanged -= this.UpdateView;
                 this.service.PropertyChanged -= this.UpdateView;
                 this.service.Dispose();
@@ -93,7 +103,7 @@ namespace SmartTrade
         }
 
         private readonly BtcEurTradeService service = new BtcEurTradeService();
-        private UpdateTimer updateTimer;
+        private readonly Handler updateHandler = new Handler();
         private EditText customerIdEditText;
         private EditText apiKeyEditText;
         private EditText apiSecretEditText;
@@ -103,6 +113,7 @@ namespace SmartTrade
         private TextView lastTradeBalance1TextView;
         private TextView lastTradeBalance2TextView;
         private TextView nextTradeTimeTextView;
+        private Action updateAction;
 
         private EditText GetCustomerIdEditText()
         {
@@ -179,23 +190,6 @@ namespace SmartTrade
                 this.nextTradeTimeTextView.Text = Format(DateTime.UtcNow +
                     TimeSpan.FromMilliseconds(settings.NextTradeTime - Java.Lang.JavaSystem.CurrentTimeMillis()));
             }
-        }
-
-        private sealed class UpdateTimer : CountDownTimer
-        {
-            public UpdateTimer(long endMilliseconds, Action updateAction)
-                : base(endMilliseconds, 10000)
-            {
-                this.updateAction = updateAction;
-            }
-
-            public sealed override void OnTick(long millisUntilFinished) => this.updateAction();
-
-            public sealed override void OnFinish() => this.updateAction();
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            private readonly Action updateAction;
         }
     }
 }
