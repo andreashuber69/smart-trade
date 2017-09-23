@@ -43,7 +43,7 @@ namespace SmartTrade
                     this.Settings.SectionStart = DateTime.UtcNow;
                 }
 
-                this.ScheduleTrade(value ? Java.Lang.JavaSystem.CurrentTimeMillis() : 0);
+                this.ScheduleTrade(value ? GetEarliestTradeTime() : 0);
                 Info("Set {0}.{1} = {2}", this.GetType().Name, nameof(this.IsEnabled), this.IsEnabled);
             }
         }
@@ -62,7 +62,7 @@ namespace SmartTrade
                 {
                     var currentTime = Java.Lang.JavaSystem.CurrentTimeMillis();
                     Info("Current UNIX time is {0}.", currentTime);
-                    var nextTradeTime = Math.Max(currentTime + 5000, this.Settings.NextTradeTime);
+                    var nextTradeTime = Math.Max(GetEarliestTradeTime(), this.Settings.NextTradeTime);
                     manager.Set(AlarmType.RtcWakeup, nextTradeTime, alarmIntent);
                     Info("Set alarm time to {0}.", nextTradeTime);
                 }
@@ -122,6 +122,8 @@ namespace SmartTrade
         private const long MinRetryIntervalMilliseconds = 2 * 60 * 1000;
         private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
         private static readonly decimal MinFiatAmount = 5;
+
+        private static long GetEarliestTradeTime() => Java.Lang.JavaSystem.CurrentTimeMillis() + 5000;
 
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
