@@ -105,6 +105,7 @@ namespace SmartTrade
                     GetUpdateDelayIf(span.TotalMinutes) * 60 * 1000 ??
                     GetUpdateDelay(span.TotalSeconds) * 1000;
 
+                // Round up so that the time will have moved when the delay has elapsed.
                 return (long)delayMilliseconds + 1;
             }
             else
@@ -196,7 +197,9 @@ namespace SmartTrade
 
                 if (updateDelay.HasValue)
                 {
-                    this.updateHandler.PostDelayed(this.OnTimeElapsed, updateDelay.Value);
+                    // It appears that PostDelayed sometimes returns a little early. Adding a few milliseconds should
+                    // account for that.
+                    this.updateHandler.PostDelayed(this.OnTimeElapsed, updateDelay.Value + 100);
                 }
             }
         }
