@@ -38,14 +38,14 @@ namespace SmartTrade
 
             this.service.PropertyChanged += this.OnPropertyChanged;
             this.service.Settings.PropertyChanged += this.OnPropertyChanged;
-            this.UpdateView();
+            this.UpdateViewPeriodically();
         }
 
         protected sealed override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this.updateHandler.RemoveCallbacks(this.OnTimeElapsed);
+                this.updateHandler.RemoveCallbacks(this.UpdateViewPeriodicallyIfServiceEnabled);
                 this.service.Settings.PropertyChanged -= this.OnPropertyChanged;
                 this.service.PropertyChanged -= this.OnPropertyChanged;
                 this.service.Dispose();
@@ -58,13 +58,13 @@ namespace SmartTrade
 
         private static string Format(DateTime? dateTime)
         {
-            var span = DateTime.UtcNow - dateTime;
-
-            if (span.HasValue)
+            if (dateTime.HasValue)
             {
+                var span = (DateTime.UtcNow - dateTime).Value;
+
                 return
-                    Format(span.Value.TotalDays, "day") ?? Format(span.Value.TotalHours, "hour") ??
-                    Format(span.Value.TotalMinutes, "minute") ?? Format(span.Value.TotalSeconds, "second") ??
+                    Format(span.TotalDays, "day") ?? Format(span.TotalHours, "hour") ??
+                    Format(span.TotalMinutes, "minute") ?? Format(span.TotalSeconds, "second") ??
                     "just now";
             }
             else
@@ -100,9 +100,9 @@ namespace SmartTrade
             {
                 var span = nullable.Value;
                 var delayMilliseconds =
-                    GetUpdateDelayIf(span.TotalDays) * 24 * 60 * 60 * 1000 ??
-                    GetUpdateDelayIf(span.TotalHours) * 60 * 60 * 1000 ??
-                    GetUpdateDelayIf(span.TotalMinutes) * 60 * 1000 ??
+                    GetUpdateDelayIfGreaterThanOne(span.TotalDays) * 24 * 60 * 60 * 1000 ??
+                    GetUpdateDelayIfGreaterThanOne(span.TotalHours) * 60 * 60 * 1000 ??
+                    GetUpdateDelayIfGreaterThanOne(span.TotalMinutes) * 60 * 1000 ??
                     GetUpdateDelay(span.TotalSeconds) * 1000;
 
                 // Round up so that the time will have moved when the delay has elapsed.
@@ -114,7 +114,7 @@ namespace SmartTrade
             }
         }
 
-        private static double? GetUpdateDelayIf(double amount) =>
+        private static double? GetUpdateDelayIfGreaterThanOne(double amount) =>
             Abs(amount) > 1.0 ? GetUpdateDelay(amount) : (double?)null;
 
         private static double GetUpdateDelay(double amount) =>
@@ -168,7 +168,7 @@ namespace SmartTrade
                 (s, e) =>
                 {
                     this.service.IsEnabled = result.Checked;
-                    this.OnTimeElapsed();
+                    this.UpdateViewPeriodicallyIfServiceEnabled();
                 };
             return result;
         }
@@ -189,18 +189,25 @@ namespace SmartTrade
             }
         }
 
-        private void OnTimeElapsed()
+        private void UpdateViewPeriodicallyIfServiceEnabled()
         {
+            // Periodic updates should only be done when the trade service is enabled. When it's disabled, an update
+            // can wreck settings entry (TODO: This could probably be disabled once setting are on their own screen).
             if (this.service.IsEnabled)
             {
-                var updateDelay = this.UpdateView();
+                this.UpdateViewPeriodically();
+            }
+        }
 
-                if (updateDelay.HasValue)
-                {
-                    // It appears that PostDelayed sometimes returns a little early. Adding a few milliseconds should
-                    // account for that.
-                    this.updateHandler.PostDelayed(this.OnTimeElapsed, updateDelay.Value + 100);
-                }
+        private void UpdateViewPeriodically()
+        {
+            var updateDelay = this.UpdateView();
+
+            if (updateDelay.HasValue)
+            {
+                // It appears that PostDelayed sometimes calls a little early. Adding a few milliseconds should
+                // account for that.
+                this.updateHandler.PostDelayed(this.UpdateViewPeriodicallyIfServiceEnabled, updateDelay.Value + 100);
             }
         }
 
