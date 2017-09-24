@@ -118,8 +118,7 @@ namespace SmartTrade
         private static double? GetUpdateDelayIfGreaterThanOne(double amount) =>
             Abs(amount) > 1.0 ? GetUpdateDelay(amount) : (double?)null;
 
-        private static double GetUpdateDelay(double amount) =>
-            amount > 0.0 ? Ceiling(amount) - amount : amount - Floor(amount);
+        private static double GetUpdateDelay(double amount) => Ceiling(amount) - amount;
 
         private readonly BtcEurTradeService service = new BtcEurTradeService();
         private readonly Handler updateHandler = new Handler();
@@ -214,9 +213,7 @@ namespace SmartTrade
 
             if (updateDelay.HasValue)
             {
-                // It appears that PostDelayed sometimes calls a little early. Adding a few milliseconds should
-                // account for that.
-                this.updateHandler.PostDelayed(this.UpdateTimesPeriodically, updateDelay.Value + 100);
+                this.updateHandler.PostDelayed(this.UpdateTimesPeriodically, updateDelay.Value);
             }
         }
 
