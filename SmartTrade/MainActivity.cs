@@ -38,14 +38,15 @@ namespace SmartTrade
 
             this.service.PropertyChanged += this.OnPropertyChanged;
             this.service.Settings.PropertyChanged += this.OnPropertyChanged;
-            this.UpdateViewPeriodically();
+            this.UpdateAllExceptTimes();
+            this.UpdateTimesPeriodically();
         }
 
         protected sealed override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                this.updateHandler.RemoveCallbacks(this.UpdateViewPeriodicallyIfServiceEnabled);
+                this.updateHandler.RemoveCallbacks(this.UpdateTimesPeriodically);
                 this.service.Settings.PropertyChanged -= this.OnPropertyChanged;
                 this.service.PropertyChanged -= this.OnPropertyChanged;
                 this.service.Dispose();
@@ -168,7 +169,7 @@ namespace SmartTrade
                 (s, e) =>
                 {
                     this.service.IsEnabled = result.Checked;
-                    this.UpdateViewPeriodicallyIfServiceEnabled();
+                    this.UpdateTimesPeriodically();
                 };
             return result;
         }
@@ -184,34 +185,12 @@ namespace SmartTrade
                     // date. Setting the same value again will reset the cursor and thus make the EditText unusable.
                     break;
                 default:
-                    this.UpdateView();
+                    this.UpdateAllExceptTimes();
                     break;
             }
         }
 
-        private void UpdateViewPeriodicallyIfServiceEnabled()
-        {
-            // Periodic updates should only be done when the trade service is enabled. When it's disabled, an update
-            // can wreck settings entry (TODO: This could probably be disabled once setting are on their own screen).
-            if (this.service.IsEnabled)
-            {
-                this.UpdateViewPeriodically();
-            }
-        }
-
-        private void UpdateViewPeriodically()
-        {
-            var updateDelay = this.UpdateView();
-
-            if (updateDelay.HasValue)
-            {
-                // It appears that PostDelayed sometimes calls a little early. Adding a few milliseconds should
-                // account for that.
-                this.updateHandler.PostDelayed(this.UpdateViewPeriodicallyIfServiceEnabled, updateDelay.Value + 100);
-            }
-        }
-
-        private long? UpdateView()
+        private void UpdateAllExceptTimes()
         {
             var settings = this.service.Settings;
             this.customerIdEditText.Text =
@@ -222,12 +201,29 @@ namespace SmartTrade
                 !this.service.IsEnabled;
             this.enableDisableServiceButton.Checked = this.service.IsEnabled;
 
-            this.lastTradeTimeTextView.Text = Format(settings.LastTradeTime);
             this.lastTradeResultTextView.Text = settings.LastResult;
             this.lastTradeBalance1TextView.Text =
                 Invariant($"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:F8}");
             this.lastTradeBalance2TextView.Text =
                 Invariant($"{settings.SecondCurrency} {settings.LastBalanceSecondCurrency:F8}");
+        }
+
+        private void UpdateTimesPeriodically()
+        {
+            var updateDelay = this.UpdateTimes();
+
+            if (updateDelay.HasValue)
+            {
+                // It appears that PostDelayed sometimes calls a little early. Adding a few milliseconds should
+                // account for that.
+                this.updateHandler.PostDelayed(this.UpdateTimesPeriodically, updateDelay.Value + 100);
+            }
+        }
+
+        private long? UpdateTimes()
+        {
+            var settings = this.service.Settings;
+            this.lastTradeTimeTextView.Text = Format(settings.LastTradeTime);
 
             if (settings.NextTradeTime == 0)
             {
