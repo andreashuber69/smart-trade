@@ -46,7 +46,7 @@ namespace SmartTrade
         {
             if (disposing)
             {
-                this.updateHandler.RemoveCallbacks(this.UpdateTimesPeriodically);
+                this.currentTimeUpdateId = 0;
                 this.service.Settings.PropertyChanged -= this.OnPropertyChanged;
                 this.service.PropertyChanged -= this.OnPropertyChanged;
                 this.service.Dispose();
@@ -131,6 +131,7 @@ namespace SmartTrade
         private TextView lastTradeBalance1TextView;
         private TextView lastTradeBalance2TextView;
         private TextView nextTradeTimeTextView;
+        private long currentTimeUpdateId;
 
         private EditText GetCustomerIdEditText()
         {
@@ -207,13 +208,25 @@ namespace SmartTrade
                 Invariant($"{settings.SecondCurrency} {settings.LastBalanceSecondCurrency:F8}");
         }
 
-        private void UpdateTimesPeriodically()
-        {
-            var updateDelay = this.UpdateTimes();
+        private void UpdateTimesPeriodically() => this.UpdateTimesPeriodicallyImpl(++this.currentTimeUpdateId);
 
-            if (updateDelay.HasValue)
+        private void UpdateTimesPeriodicallyImpl(long timeUpdateId)
+        {
+            // this.currentUpdateId is used to ensure that there's only ever at most one update cycle in effect.
+            // Whenever we call UpdateTimesPeriodically, this.currentUpdateId is incremented and thus any calls
+            // previously scheduled with PostDelayed will fail the following test when they are executed. IOW, only the
+            // update cycle initiated with the most recent call to UpdateTimesPeriodically will not fail the following
+            // test and thus be able to perpetuate itself by calling Handler.PostDelayed if necessary.
+            if (timeUpdateId == this.currentTimeUpdateId)
             {
-                this.updateHandler.PostDelayed(this.UpdateTimesPeriodically, updateDelay.Value);
+                var updateDelay = this.UpdateTimes();
+
+                if (updateDelay.HasValue)
+                {
+                    var newTimeUpdateId = ++this.currentTimeUpdateId;
+                    this.updateHandler.PostDelayed(
+                        () => this.UpdateTimesPeriodicallyImpl(newTimeUpdateId), updateDelay.Value);
+                }
             }
         }
 
