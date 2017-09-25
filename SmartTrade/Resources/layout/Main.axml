@@ -1,120 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingStart="@dimen/left_padding"
+  android:paddingEnd="@dimen/right_padding"
+  android:paddingTop="@dimen/top_padding">
+  <EditText
+    android:id="@+id/user_id"
+    android:hint="@string/user_id"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="numberDecimal"
+    android:textSize="15sp" />
+  <EditText
+    android:id="@+id/api_key"
+    android:hint="@string/api_key"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="15sp" />
+  <EditText
+    android:id="@+id/api_secret"
+    android:hint="@string/api_secret"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="textPassword"
+    android:textSize="15sp" />
+  <ToggleButton
+    android:id="@+id/enable_disable_service_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textOff="@string/service_is_disabled"
+    android:textOn="@string/service_is_enabled" />
+  <TextView
+    android:paddingTop="@dimen/top_margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Last Trade"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+  <GridLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/top_padding"
     android:paddingStart="@dimen/left_padding"
-    android:paddingEnd="@dimen/right_padding"
-    android:paddingTop="@dimen/top_padding">
-    <EditText
-        android:id="@+id/user_id"
-        android:hint="@string/user_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:textSize="15sp" />
-    <EditText
-        android:id="@+id/api_key"
-        android:hint="@string/api_key"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15sp" />
-    <EditText
-        android:id="@+id/api_secret"
-        android:hint="@string/api_secret"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:textSize="15sp" />
-    <ToggleButton
-        android:id="@+id/enable_disable_service_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textOff="@string/service_is_disabled"
-        android:textOn="@string/service_is_enabled" />
+    android:columnCount="2"
+    android:rowCount="4"
+    android:orientation="vertical">
     <TextView
-        android:paddingTop="@dimen/top_margin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Last Trade"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    <GridLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/top_padding"
-        android:paddingStart="@dimen/left_padding"
-        android:columnCount="2"
-        android:rowCount="4"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/right_padding"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Time:" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/right_padding"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Balance:" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/right_padding"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/right_padding"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Result:" />
-        <TextView
-            android:id="@+id/last_trade_time_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-        <TextView
-            android:id="@+id/last_trade_balance1_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-        <TextView
-            android:id="@+id/last_trade_balance2_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-        <TextView
-            android:id="@+id/last_trade_result_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-    </GridLayout>
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingEnd="@dimen/right_padding"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:text="Time:" />
     <TextView
-        android:paddingTop="@dimen/top_margin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Next Trade"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    <GridLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/top_padding"
-        android:paddingStart="@dimen/left_padding"
-        android:columnCount="2"
-        android:rowCount="1"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/right_padding"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Time:" />
-        <TextView
-            android:id="@+id/next_trade_time_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </GridLayout>
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingEnd="@dimen/right_padding"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:text="Balance:" />
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingEnd="@dimen/right_padding"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingEnd="@dimen/right_padding"
+      android:textAppearance="?android:attr/textAppearanceSmall"
+      android:text="Result:" />
+    <TextView
+      android:id="@+id/last_trade_time_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+      android:id="@+id/last_trade_balance1_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+      android:id="@+id/last_trade_balance2_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+      android:id="@+id/last_trade_result_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:maxLines="2"
+      android:textAppearance="?android:attr/textAppearanceSmall" />
+  </GridLayout>
+  <TextView
+    android:paddingTop="@dimen/top_margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Next Trade"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+  <GridLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/top_padding"
+    android:paddingStart="@dimen/left_padding"
+    android:columnCount="2"
+    android:rowCount="1"
+    android:orientation="vertical">
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingEnd="@dimen/right_padding"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:text="Time:" />
+    <TextView
+      android:id="@+id/next_trade_time_text_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+  </GridLayout>
 </LinearLayout>
