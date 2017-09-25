@@ -165,12 +165,7 @@ namespace SmartTrade
         private ToggleButton GetEnableDisableServiceButton()
         {
             var result = this.FindViewById<ToggleButton>(Resource.Id.enable_disable_service_button);
-            result.Click +=
-                (s, e) =>
-                {
-                    this.service.IsEnabled = result.Checked;
-                    this.UpdateTimesPeriodically();
-                };
+            result.Click += (s, e) => this.service.IsEnabled = result.Checked;
             return result;
         }
 
@@ -183,6 +178,10 @@ namespace SmartTrade
                 case nameof(ISettings.ApiSecret):
                     // These settings are only ever changed from the view itself, the view is therefore already up to
                     // date. Setting the same value again will reset the cursor and thus make the EditText unusable.
+                    break;
+                case nameof(ISettings.NextTradeTime):
+                case nameof(ISettings.LastTradeTime):
+                    this.UpdateTimesPeriodically();
                     break;
                 default:
                     this.UpdateAllExceptTimes();
