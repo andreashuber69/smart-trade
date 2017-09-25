@@ -93,9 +93,6 @@ namespace SmartTrade
 			// aapt resource value: 0x7f070009
 			public const int api_secret = 2131165193;
 			
-			// aapt resource value: 0x7f07000a
-			public const int done_button = 2131165194;
-			
 			// aapt resource value: 0x7f070001
 			public const int enable_disable_service_button = 2131165185;
 			

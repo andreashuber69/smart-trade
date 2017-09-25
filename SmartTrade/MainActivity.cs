@@ -8,6 +8,7 @@ namespace SmartTrade
 {
     using System;
     using System.ComponentModel;
+
     using Android.App;
     using Android.Content;
     using Android.Content.PM;
@@ -15,7 +16,6 @@ namespace SmartTrade
     using Android.Widget;
 
     using static System.FormattableString;
-    using static System.Globalization.CultureInfo;
     using static System.Math;
 
     [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]

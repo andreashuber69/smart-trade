@@ -18,6 +18,12 @@ namespace SmartTrade
     [Activity]
     internal sealed class SettingsActivity : Activity
     {
+        public sealed override void OnBackPressed()
+        {
+            this.SaveChanges();
+            base.OnBackPressed();
+        }
+
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -31,7 +37,6 @@ namespace SmartTrade
             this.customerIdEditText = this.GetCustomerIdEditText();
             this.apiKeyEditText = this.GetApiKeyEditText();
             this.apiSecretEditText = this.GetApiSecretEditText();
-            this.doneButton = this.GetDoneButton();
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,7 +44,6 @@ namespace SmartTrade
         private EditText customerIdEditText;
         private EditText apiKeyEditText;
         private EditText apiSecretEditText;
-        private Button doneButton;
 
         private EditText GetCustomerIdEditText()
         {
@@ -63,20 +67,13 @@ namespace SmartTrade
             return result;
         }
 
-        private Button GetDoneButton()
+        private void SaveChanges()
         {
-            var result = this.FindViewById<Button>(Resource.Id.done_button);
-            result.Click +=
-                (s, e) =>
-                {
-                    var intent = new Intent(this, typeof(MainActivity));
-                    intent.PutExtra(nameof(ISettings.CustomerId), this.GetCustomerId());
-                    intent.PutExtra(nameof(ISettings.ApiKey), this.apiKeyEditText.Text);
-                    intent.PutExtra(nameof(ISettings.ApiSecret), this.apiSecretEditText.Text);
-                    this.SetResult(Result.Ok, intent);
-                    this.Finish();
-                };
-            return result;
+            var intent = new Intent(this, typeof(MainActivity));
+            intent.PutExtra(nameof(ISettings.CustomerId), this.GetCustomerId());
+            intent.PutExtra(nameof(ISettings.ApiKey), this.apiKeyEditText.Text);
+            intent.PutExtra(nameof(ISettings.ApiSecret), this.apiSecretEditText.Text);
+            this.SetResult(Result.Ok, intent);
         }
 
         private int GetCustomerId() => int.TryParse(
