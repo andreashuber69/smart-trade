@@ -2,13 +2,16 @@
 <resources>
   <string name="app_name">Smart Trade</string>
   <string name="app_description">Buys or sells on Bitstamp with a unit cost averaging strategy.</string>
-  <string name="user_id">Bitstamp User ID</string>
-  <string name="api_key">API Key</string>
-  <string name="api_secret">API Secret</string>
+  <string name="settings">Settings...</string>
   <string name="service_is_disabled">Service is Disabled</string>
   <string name="service_is_enabled">Service is Enabled</string>
   <string name="last_trade">Last Trade:</string>
   <string name="last_balance">Last Balance:</string>
+  <string name="settings_title_format">{0}/{1} Trade Settings</string>
+  <string name="user_id">Bitstamp User ID</string>
+  <string name="api_key">API Key</string>
+  <string name="api_secret">API Secret</string>
+  <string name="done">Done</string>
   <string name="service_is_disabled_popup">Service is disabled. No automatic trading will occur.</string>
   <string name="service_is_enabled_popup">Service is enabled. Automatic trading will continue according to schedule.</string>
   <string name="checking_popup">Checking balance...</string>

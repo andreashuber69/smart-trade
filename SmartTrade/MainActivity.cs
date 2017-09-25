@@ -8,8 +8,8 @@ namespace SmartTrade
 {
     using System;
     using System.ComponentModel;
-    using System.Globalization;
     using Android.App;
+    using Android.Content;
     using Android.Content.PM;
     using Android.OS;
     using Android.Widget;
@@ -26,10 +26,8 @@ namespace SmartTrade
             base.OnCreate(savedInstanceState);
             this.SetContentView(Resource.Layout.Main);
 
+            this.settingsButton = this.GetSettingsButton();
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton();
-            this.customerIdEditText = this.GetCustomerIdEditText();
-            this.apiKeyEditText = this.GetApiKeyEditText();
-            this.apiSecretEditText = this.GetApiSecretEditText();
             this.lastTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.last_trade_time_text_view);
             this.lastTradeResultTextView = this.FindViewById<TextView>(Resource.Id.last_trade_result_text_view);
             this.lastTradeBalance1TextView = this.FindViewById<TextView>(Resource.Id.last_trade_balance1_text_view);
@@ -40,6 +38,18 @@ namespace SmartTrade
             this.service.Settings.PropertyChanged += this.OnPropertyChanged;
             this.UpdateAllExceptTimes();
             this.UpdateTimesPeriodically();
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+
+            if (resultCode == Result.Ok)
+            {
+                this.service.Settings.CustomerId = data.GetIntExtra(nameof(ISettings.CustomerId), 0);
+                this.service.Settings.ApiKey = data.GetStringExtra(nameof(ISettings.ApiKey));
+                this.service.Settings.ApiSecret = data.GetStringExtra(nameof(ISettings.ApiSecret));
+            }
         }
 
         protected sealed override void Dispose(bool disposing)
@@ -122,9 +132,7 @@ namespace SmartTrade
 
         private readonly BtcEurTradeService service = new BtcEurTradeService();
         private readonly Handler updateHandler = new Handler();
-        private EditText customerIdEditText;
-        private EditText apiKeyEditText;
-        private EditText apiSecretEditText;
+        private Button settingsButton;
         private ToggleButton enableDisableServiceButton;
         private TextView lastTradeTimeTextView;
         private TextView lastTradeResultTextView;
@@ -133,32 +141,21 @@ namespace SmartTrade
         private TextView nextTradeTimeTextView;
         private long currentTimeUpdateId;
 
-        private EditText GetCustomerIdEditText()
+        private Button GetSettingsButton()
         {
-            var result = this.FindViewById<EditText>(Resource.Id.user_id);
-
-            result.TextChanged +=
+            var result = this.FindViewById<Button>(Resource.Id.settings_button);
+            result.Click +=
                 (s, e) =>
                 {
-                    int customerId;
-                    this.service.Settings.CustomerId =
-                        int.TryParse(result.Text, NumberStyles.None, InvariantCulture, out customerId) ? customerId : 0;
+                    var settings = this.service.Settings;
+                    var intent = new Intent(this, typeof(SettingsActivity));
+                    intent.PutExtra(nameof(ISettings.FirstCurrency), settings.FirstCurrency);
+                    intent.PutExtra(nameof(ISettings.SecondCurrency), settings.SecondCurrency);
+                    intent.PutExtra(nameof(ISettings.CustomerId), settings.CustomerId);
+                    intent.PutExtra(nameof(ISettings.ApiKey), settings.ApiKey);
+                    intent.PutExtra(nameof(ISettings.ApiSecret), settings.ApiSecret);
+                    this.StartActivityForResult(intent, 0);
                 };
-
-            return result;
-        }
-
-        private EditText GetApiKeyEditText()
-        {
-            var result = this.FindViewById<EditText>(Resource.Id.api_key);
-            result.TextChanged += (s, e) => this.service.Settings.ApiKey = result.Text;
-            return result;
-        }
-
-        private EditText GetApiSecretEditText()
-        {
-            var result = this.FindViewById<EditText>(Resource.Id.api_secret);
-            result.TextChanged += (s, e) => this.service.Settings.ApiSecret = result.Text;
             return result;
         }
 
@@ -173,12 +170,6 @@ namespace SmartTrade
         {
             switch (e.PropertyName)
             {
-                case nameof(ISettings.CustomerId):
-                case nameof(ISettings.ApiKey):
-                case nameof(ISettings.ApiSecret):
-                    // These settings are only ever changed from the view itself, the view is therefore already up to
-                    // date. Setting the same value again will reset the cursor and thus make the EditText unusable.
-                    break;
                 case nameof(ISettings.NextTradeTime):
                 case nameof(ISettings.LastTradeTime):
                     this.UpdateTimesPeriodically();
@@ -192,14 +183,10 @@ namespace SmartTrade
         private void UpdateAllExceptTimes()
         {
             var settings = this.service.Settings;
-            this.customerIdEditText.Text =
-                settings.CustomerId == 0 ? string.Empty : settings.CustomerId.ToString(InvariantCulture);
-            this.apiKeyEditText.Text = settings.ApiKey;
-            this.apiSecretEditText.Text = settings.ApiSecret;
-            this.customerIdEditText.Enabled = this.apiKeyEditText.Enabled = this.apiSecretEditText.Enabled =
-                !this.service.IsEnabled;
+            this.settingsButton.Enabled = !this.service.IsEnabled;
             this.enableDisableServiceButton.Checked = this.service.IsEnabled;
-
+            this.enableDisableServiceButton.Enabled = (settings.CustomerId != 0) &&
+                !string.IsNullOrEmpty(settings.ApiKey) && !string.IsNullOrEmpty(settings.ApiSecret);
             this.lastTradeResultTextView.Text = settings.LastResult;
             this.lastTradeBalance1TextView.Text =
                 Invariant($"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:F8}");

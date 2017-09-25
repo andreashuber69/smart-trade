@@ -6,26 +6,11 @@
   android:paddingStart="@dimen/left_padding"
   android:paddingEnd="@dimen/right_padding"
   android:paddingTop="@dimen/top_padding">
-  <EditText
-    android:id="@+id/user_id"
-    android:hint="@string/user_id"
+  <Button
+    android:id="@+id/settings_button"
+    android:text="@string/settings"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:inputType="numberDecimal"
-    android:textSize="15sp" />
-  <EditText
-    android:id="@+id/api_key"
-    android:hint="@string/api_key"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="15sp" />
-  <EditText
-    android:id="@+id/api_secret"
-    android:hint="@string/api_secret"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:inputType="textPassword"
-    android:textSize="15sp" />
+    android:layout_height="wrap_content" />
   <ToggleButton
     android:id="@+id/enable_disable_service_button"
     android:layout_width="match_parent"
