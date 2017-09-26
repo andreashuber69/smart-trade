@@ -3,9 +3,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="@dimen/left_padding"
-    android:paddingEnd="@dimen/right_padding"
-    android:paddingTop="@dimen/top_padding">
+    android:paddingStart="@dimen/LeftPadding"
+    android:paddingEnd="@dimen/RightPadding"
+    android:paddingTop="@dimen/TopPadding">
     <EditText
         android:id="@+id/user_id"
         android:hint="@string/user_id"

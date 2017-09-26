@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <resources>
-  <dimen name="top_margin">32dp</dimen>
-  <dimen name="top_padding">16dp</dimen>
-  <dimen name="left_padding">16dp</dimen>
-  <dimen name="right_padding">16dp</dimen>
+  <dimen name="TopMargin">32dp</dimen>
+  <dimen name="TopPadding">16dp</dimen>
+  <dimen name="LeftPadding">16dp</dimen>
+  <dimen name="RightPadding">16dp</dimen>
 </resources>

@@ -47,16 +47,16 @@ namespace SmartTrade
 		{
 			
 			// aapt resource value: 0x7f060002
-			public const int left_padding = 2131099650;
+			public const int LeftPadding = 2131099650;
 			
 			// aapt resource value: 0x7f060003
-			public const int right_padding = 2131099651;
+			public const int RightPadding = 2131099651;
 			
 			// aapt resource value: 0x7f060000
-			public const int top_margin = 2131099648;
+			public const int TopMargin = 2131099648;
 			
 			// aapt resource value: 0x7f060001
-			public const int top_padding = 2131099649;
+			public const int TopPadding = 2131099649;
 			
 			static Dimension()
 			{
