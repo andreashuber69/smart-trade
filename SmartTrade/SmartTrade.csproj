@@ -100,16 +100,14 @@
     <AndroidResource Include="Resources\values\dimen.xml" />
     <AndroidResource Include="Resources\drawable-xxhdpi-v11\ic_stat_name.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">
       <Link>CodeAnalysisDictionary.xml</Link>
     </CodeAnalysisDictionary>
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bitstamp\Bitstamp.csproj">
