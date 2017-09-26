@@ -111,7 +111,7 @@ namespace SmartTrade
                 return;
             }
 
-            var popup = new NotificationPopup(this, Resource.String.checking_popup);
+            var popup = new NotificationPopup(this, Resource.String.CheckingPopup);
             var intervalMilliseconds = (long)(await this.TradeAsync(popup)).GetValueOrDefault().TotalMilliseconds;
             this.ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
                 Math.Max(this.Settings.RetryIntervalMilliseconds, intervalMilliseconds));
@@ -225,7 +225,7 @@ namespace SmartTrade
                 if (!this.Settings.PeriodEnd.HasValue)
                 {
                     this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
-                    popup.Update(this, Resource.String.no_deposit_popup);
+                    popup.Update(this, Resource.String.NoDepositPopup);
                     return null;
                 }
 
@@ -244,7 +244,7 @@ namespace SmartTrade
                 if ((buy ? secondBalance : firstBalance * ticker.Bid) < minSpendable)
                 {
                     this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
-                    popup.Update(this, Resource.String.insufficient_balance_popup);
+                    popup.Update(this, Resource.String.InsufficientBalancePopup);
                     return null;
                 }
 
@@ -269,7 +269,7 @@ namespace SmartTrade
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance += result.Amount;
                         var bought = result.Amount * result.Price;
-                        popup.Update(this, Resource.String.bought_popup, secondCurrency, bought, firstCurrency);
+                        popup.Update(this, Resource.String.BoughtPopup, secondCurrency, bought, firstCurrency);
 
                         start = result.DateTime;
                         secondAmount = bought + calculator.GetFee(bought);
@@ -286,7 +286,7 @@ namespace SmartTrade
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance -= result.Amount;
                         var sold = result.Amount * result.Price;
-                        popup.Update(this, Resource.String.sold_popup, secondCurrency, sold, firstCurrency);
+                        popup.Update(this, Resource.String.SoldPopup, secondCurrency, sold, firstCurrency);
 
                         start = result.DateTime;
                         secondAmount = sold - calculator.GetFee(sold);
@@ -298,7 +298,7 @@ namespace SmartTrade
                 }
                 else
                 {
-                    popup.Update(this, Resource.String.nothing_to_trade_popup);
+                    popup.Update(this, Resource.String.NothingToTradePopup);
                     popup.Dispose();
                 }
 
@@ -321,7 +321,7 @@ namespace SmartTrade
             }
             catch (Exception ex)
             {
-                popup.Update(this, Resource.String.unexpected_error_popup, ex.GetType().Name, ex.Message);
+                popup.Update(this, Resource.String.UnexpectedErrorPopup, ex.GetType().Name, ex.Message);
                 this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
                 this.IsEnabled = false;
                 Warn("The service has been disabled due to an unexpected error: {0}", ex);
