@@ -24,15 +24,61 @@ namespace SmartTrade
             base.OnBackPressed();
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        internal sealed class Data
+        {
+            internal static Data Get(Intent intent)
+            {
+                return new Data(
+                    intent.GetStringExtra(nameof(FirstCurrency)),
+                    intent.GetStringExtra(nameof(SecondCurrency)),
+                    intent.GetIntExtra(nameof(CustomerId), 0),
+                    intent.GetStringExtra(nameof(ApiKey)),
+                    intent.GetStringExtra(nameof(ApiSecret)));
+            }
+
+            internal Data(string firstCurrency, string secondCurrency, int customerId, string apiKey, string apiSecret)
+            {
+                this.FirstCurrency = firstCurrency;
+                this.SecondCurrency = secondCurrency;
+                this.CustomerId = customerId;
+                this.ApiKey = apiKey;
+                this.ApiSecret = apiSecret;
+            }
+
+            internal string FirstCurrency { get; }
+
+            internal string SecondCurrency { get; }
+
+            internal int CustomerId { get; }
+
+            internal string ApiKey { get; }
+
+            internal string ApiSecret { get; }
+
+            internal void Put(Intent intent)
+            {
+                intent.PutExtra(nameof(this.FirstCurrency), this.FirstCurrency);
+                intent.PutExtra(nameof(this.SecondCurrency), this.SecondCurrency);
+                intent.PutExtra(nameof(this.CustomerId), this.CustomerId);
+                intent.PutExtra(nameof(this.ApiKey), this.ApiKey);
+                intent.PutExtra(nameof(this.ApiSecret), this.ApiSecret);
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             this.SetContentView(Resource.Layout.Settings);
+            this.data = Data.Get(this.Intent);
             this.Title = string.Format(
                 InvariantCulture,
                 this.Resources.GetString(Resource.String.settings_title_format),
-                this.Intent.GetStringExtra(nameof(ISettings.FirstCurrency)),
-                this.Intent.GetStringExtra(nameof(ISettings.SecondCurrency)));
+                this.data.FirstCurrency,
+                this.data.SecondCurrency);
 
             this.customerIdEditText = this.GetCustomerIdEditText();
             this.apiKeyEditText = this.GetApiKeyEditText();
@@ -41,6 +87,7 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        private Data data;
         private EditText customerIdEditText;
         private EditText apiKeyEditText;
         private EditText apiSecretEditText;
@@ -48,31 +95,34 @@ namespace SmartTrade
         private EditText GetCustomerIdEditText()
         {
             var result = this.FindViewById<EditText>(Resource.Id.user_id);
-            var customerId = this.Intent.GetIntExtra(nameof(ISettings.CustomerId), 0);
-            result.Text = customerId == 0 ? string.Empty : customerId.ToString(InvariantCulture);
+            result.Text = this.data.CustomerId == 0 ? string.Empty : this.data.CustomerId.ToString(InvariantCulture);
             return result;
         }
 
         private EditText GetApiKeyEditText()
         {
             var result = this.FindViewById<EditText>(Resource.Id.api_key);
-            result.Text = this.Intent.GetStringExtra(nameof(ISettings.ApiKey));
+            result.Text = this.data.ApiKey;
             return result;
         }
 
         private EditText GetApiSecretEditText()
         {
             var result = this.FindViewById<EditText>(Resource.Id.api_secret);
-            result.Text = this.Intent.GetStringExtra(nameof(ISettings.ApiSecret));
+            result.Text = this.data.ApiSecret;
             return result;
         }
 
         private void SaveChanges()
         {
             var intent = new Intent(this, typeof(MainActivity));
-            intent.PutExtra(nameof(ISettings.CustomerId), this.GetCustomerId());
-            intent.PutExtra(nameof(ISettings.ApiKey), this.apiKeyEditText.Text);
-            intent.PutExtra(nameof(ISettings.ApiSecret), this.apiSecretEditText.Text);
+            this.data = new Data(
+                this.data.FirstCurrency,
+                this.data.SecondCurrency,
+                this.GetCustomerId(),
+                this.apiKeyEditText.Text,
+                this.apiSecretEditText.Text);
+            this.data.Put(intent);
             this.SetResult(Result.Ok, intent);
         }
 

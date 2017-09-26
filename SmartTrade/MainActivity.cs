@@ -40,15 +40,16 @@ namespace SmartTrade
             this.UpdateTimesPeriodically();
         }
 
-        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
         {
-            base.OnActivityResult(requestCode, resultCode, data);
+            base.OnActivityResult(requestCode, resultCode, intent);
 
             if (resultCode == Result.Ok)
             {
-                this.service.Settings.CustomerId = data.GetIntExtra(nameof(ISettings.CustomerId), 0);
-                this.service.Settings.ApiKey = data.GetStringExtra(nameof(ISettings.ApiKey));
-                this.service.Settings.ApiSecret = data.GetStringExtra(nameof(ISettings.ApiSecret));
+                var data = SettingsActivity.Data.Get(intent);
+                this.service.Settings.CustomerId = data.CustomerId;
+                this.service.Settings.ApiKey = data.ApiKey;
+                this.service.Settings.ApiSecret = data.ApiSecret;
             }
         }
 
@@ -149,11 +150,13 @@ namespace SmartTrade
                 {
                     var settings = this.service.Settings;
                     var intent = new Intent(this, typeof(SettingsActivity));
-                    intent.PutExtra(nameof(ISettings.FirstCurrency), settings.FirstCurrency);
-                    intent.PutExtra(nameof(ISettings.SecondCurrency), settings.SecondCurrency);
-                    intent.PutExtra(nameof(ISettings.CustomerId), settings.CustomerId);
-                    intent.PutExtra(nameof(ISettings.ApiKey), settings.ApiKey);
-                    intent.PutExtra(nameof(ISettings.ApiSecret), settings.ApiSecret);
+                    var data = new SettingsActivity.Data(
+                        settings.FirstCurrency,
+                        settings.SecondCurrency,
+                        settings.CustomerId,
+                        settings.ApiKey,
+                        settings.ApiSecret);
+                    data.Put(intent);
                     this.StartActivityForResult(intent, 0);
                 };
             return result;
