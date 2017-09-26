@@ -88,10 +88,13 @@ namespace SmartTrade
 		{
 			
 			// aapt resource value: 0x7f070008
-			public const int api_key = 2131165192;
+			public const int ApiKey = 2131165192;
 			
 			// aapt resource value: 0x7f070009
-			public const int api_secret = 2131165193;
+			public const int ApiSecret = 2131165193;
+			
+			// aapt resource value: 0x7f070007
+			public const int UserId = 2131165191;
 			
 			// aapt resource value: 0x7f070001
 			public const int enable_disable_service_button = 2131165185;
@@ -113,9 +116,6 @@ namespace SmartTrade
 			
 			// aapt resource value: 0x7f070000
 			public const int settings_button = 2131165184;
-			
-			// aapt resource value: 0x7f070007
-			public const int user_id = 2131165191;
 			
 			static Id()
 			{
@@ -165,74 +165,68 @@ namespace SmartTrade
 		public partial class String
 		{
 			
+			// aapt resource value: 0x7f05000a
+			public const int ApiKey = 2131034122;
+			
+			// aapt resource value: 0x7f05000b
+			public const int ApiSecret = 2131034123;
+			
+			// aapt resource value: 0x7f050003
+			public const int AppDescription = 2131034115;
+			
+			// aapt resource value: 0x7f050002
+			public const int AppName = 2131034114;
+			
 			// aapt resource value: 0x7f050001
 			public const int ApplicationName = 2131034113;
+			
+			// aapt resource value: 0x7f050010
+			public const int BoughtPopup = 2131034128;
+			
+			// aapt resource value: 0x7f05000e
+			public const int CheckingPopup = 2131034126;
 			
 			// aapt resource value: 0x7f050000
 			public const int Hello = 2131034112;
 			
-			// aapt resource value: 0x7f05000b
-			public const int api_key = 2131034123;
-			
-			// aapt resource value: 0x7f05000c
-			public const int api_secret = 2131034124;
-			
-			// aapt resource value: 0x7f050003
-			public const int app_description = 2131034115;
-			
-			// aapt resource value: 0x7f050002
-			public const int app_name = 2131034114;
-			
-			// aapt resource value: 0x7f050012
-			public const int bought_popup = 2131034130;
-			
-			// aapt resource value: 0x7f050010
-			public const int checking_popup = 2131034128;
-			
-			// aapt resource value: 0x7f05000d
-			public const int done = 2131034125;
-			
-			// aapt resource value: 0x7f050015
-			public const int insufficient_balance_popup = 2131034133;
-			
-			// aapt resource value: 0x7f050008
-			public const int last_balance = 2131034120;
+			// aapt resource value: 0x7f050013
+			public const int InsufficientBalancePopup = 2131034131;
 			
 			// aapt resource value: 0x7f050007
-			public const int last_trade = 2131034119;
+			public const int LastTrade = 2131034119;
 			
-			// aapt resource value: 0x7f050014
-			public const int no_deposit_popup = 2131034132;
-			
-			// aapt resource value: 0x7f050011
-			public const int nothing_to_trade_popup = 2131034129;
-			
-			// aapt resource value: 0x7f050005
-			public const int service_is_disabled = 2131034117;
-			
-			// aapt resource value: 0x7f05000e
-			public const int service_is_disabled_popup = 2131034126;
-			
-			// aapt resource value: 0x7f050006
-			public const int service_is_enabled = 2131034118;
+			// aapt resource value: 0x7f050012
+			public const int NoDepositPopup = 2131034130;
 			
 			// aapt resource value: 0x7f05000f
-			public const int service_is_enabled_popup = 2131034127;
+			public const int NothingToTradePopup = 2131034127;
+			
+			// aapt resource value: 0x7f050005
+			public const int ServiceIsDisabled = 2131034117;
+			
+			// aapt resource value: 0x7f05000c
+			public const int ServiceIsDisabledPopup = 2131034124;
+			
+			// aapt resource value: 0x7f050006
+			public const int ServiceIsEnabled = 2131034118;
+			
+			// aapt resource value: 0x7f05000d
+			public const int ServiceIsEnabledPopup = 2131034125;
 			
 			// aapt resource value: 0x7f050004
-			public const int settings = 2131034116;
+			public const int Settings = 2131034116;
+			
+			// aapt resource value: 0x7f050008
+			public const int SettingsTitleFormat = 2131034120;
+			
+			// aapt resource value: 0x7f050011
+			public const int SoldPopup = 2131034129;
+			
+			// aapt resource value: 0x7f050014
+			public const int UnexpectedErrorPopup = 2131034132;
 			
 			// aapt resource value: 0x7f050009
-			public const int settings_title_format = 2131034121;
-			
-			// aapt resource value: 0x7f050013
-			public const int sold_popup = 2131034131;
-			
-			// aapt resource value: 0x7f050016
-			public const int unexpected_error_popup = 2131034134;
-			
-			// aapt resource value: 0x7f05000a
-			public const int user_id = 2131034122;
+			public const int UserId = 2131034121;
 			
 			static String()
 			{

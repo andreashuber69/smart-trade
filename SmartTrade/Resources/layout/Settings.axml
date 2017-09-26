@@ -7,21 +7,21 @@
     android:paddingEnd="@dimen/RightPadding"
     android:paddingTop="@dimen/TopPadding">
     <EditText
-        android:id="@+id/user_id"
-        android:hint="@string/user_id"
+        android:id="@+id/UserId"
+        android:hint="@string/UserId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="numberDecimal"
         android:textSize="15sp" />
     <EditText
-        android:id="@+id/api_key"
-        android:hint="@string/api_key"
+        android:id="@+id/ApiKey"
+        android:hint="@string/ApiKey"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15sp" />
     <EditText
-        android:id="@+id/api_secret"
-        android:hint="@string/api_secret"
+        android:id="@+id/ApiSecret"
+        android:hint="@string/ApiSecret"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"

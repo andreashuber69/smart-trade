@@ -76,7 +76,7 @@ namespace SmartTrade
             this.data = Data.Get(this.Intent);
             this.Title = string.Format(
                 InvariantCulture,
-                this.Resources.GetString(Resource.String.settings_title_format),
+                this.Resources.GetString(Resource.String.SettingsTitleFormat),
                 this.data.FirstCurrency,
                 this.data.SecondCurrency);
 
@@ -94,21 +94,21 @@ namespace SmartTrade
 
         private EditText GetCustomerIdEditText()
         {
-            var result = this.FindViewById<EditText>(Resource.Id.user_id);
+            var result = this.FindViewById<EditText>(Resource.Id.UserId);
             result.Text = this.data.CustomerId == 0 ? string.Empty : this.data.CustomerId.ToString(InvariantCulture);
             return result;
         }
 
         private EditText GetApiKeyEditText()
         {
-            var result = this.FindViewById<EditText>(Resource.Id.api_key);
+            var result = this.FindViewById<EditText>(Resource.Id.ApiKey);
             result.Text = this.data.ApiKey;
             return result;
         }
 
         private EditText GetApiSecretEditText()
         {
-            var result = this.FindViewById<EditText>(Resource.Id.api_secret);
+            var result = this.FindViewById<EditText>(Resource.Id.ApiSecret);
             result.Text = this.data.ApiSecret;
             return result;
         }

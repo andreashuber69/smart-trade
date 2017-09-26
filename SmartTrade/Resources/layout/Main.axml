@@ -8,20 +8,20 @@
   android:paddingTop="@dimen/TopPadding">
   <Button
     android:id="@+id/settings_button"
-    android:text="@string/settings"
+    android:text="@string/Settings"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
   <ToggleButton
     android:id="@+id/enable_disable_service_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textOff="@string/service_is_disabled"
-    android:textOn="@string/service_is_enabled" />
+    android:textOff="@string/ServiceIsDisabled"
+    android:textOn="@string/ServiceIsEnabled" />
   <TextView
     android:paddingTop="@dimen/TopMargin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Last Trade"
+    android:text="@string/LastTrade"
     android:textAppearance="?android:attr/textAppearanceLarge" />
   <GridLayout
     android:layout_width="wrap_content"

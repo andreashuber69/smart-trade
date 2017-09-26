@@ -42,7 +42,7 @@ namespace SmartTrade
             {
                 builder
                     .SetSmallIcon(Resource.Drawable.ic_stat_name)
-                    .SetContentTitle(context.Resources.GetString(Resource.String.app_name))
+                    .SetContentTitle(context.Resources.GetString(Resource.String.AppName))
                     .SetContentText(this.ContentText)
                     .SetContentIntent(PendingIntent.GetActivity(context, 0, intent, 0))
                     .SetStyle(style.BigText(this.ContentText))

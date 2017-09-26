@@ -18,7 +18,7 @@ namespace SmartTrade
     using static System.FormattableString;
     using static System.Math;
 
-    [Activity(Label = "@string/app_name", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(Label = "@string/AppName", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class MainActivity : Activity
     {
         protected sealed override void OnCreate(Bundle savedInstanceState)
