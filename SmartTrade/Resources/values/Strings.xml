@@ -6,7 +6,7 @@
   <string name="ServiceIsDisabled">Service is Disabled</string>
   <string name="ServiceIsEnabled">Service is Enabled</string>
   <string name="LastTrade">Last Trade</string>
-  <string name="SettingsTitleFormat">{0}/{1} Trade Settings</string>
+  <string name="SettingsTitle">{0}/{1} Trade Settings</string>
   <string name="UserId">Bitstamp User ID</string>
   <string name="ApiKey">API Key</string>
   <string name="ApiSecret">API Secret</string>

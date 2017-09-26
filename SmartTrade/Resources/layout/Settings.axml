@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingStart="@dimen/LeftPadding"
+  android:paddingEnd="@dimen/RightPadding"
+  android:paddingTop="@dimen/TopPadding">
+  <EditText
+    android:id="@+id/UserId"
+    android:hint="@string/UserId"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="@dimen/LeftPadding"
-    android:paddingEnd="@dimen/RightPadding"
-    android:paddingTop="@dimen/TopPadding">
-    <EditText
-        android:id="@+id/UserId"
-        android:hint="@string/UserId"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:textSize="15sp" />
-    <EditText
-        android:id="@+id/ApiKey"
-        android:hint="@string/ApiKey"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15sp" />
-    <EditText
-        android:id="@+id/ApiSecret"
-        android:hint="@string/ApiSecret"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:textSize="15sp" />
+    android:layout_height="wrap_content"
+    android:inputType="numberDecimal"
+    android:textSize="15sp" />
+  <EditText
+    android:id="@+id/ApiKey"
+    android:hint="@string/ApiKey"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="15sp" />
+  <EditText
+    android:id="@+id/ApiSecret"
+    android:hint="@string/ApiSecret"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="textPassword"
+    android:textSize="15sp" />
 </LinearLayout>

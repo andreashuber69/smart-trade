@@ -28,11 +28,11 @@ namespace SmartTrade
 
             this.settingsButton = this.GetSettingsButton();
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton();
-            this.lastTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.last_trade_time_text_view);
-            this.lastTradeResultTextView = this.FindViewById<TextView>(Resource.Id.last_trade_result_text_view);
-            this.lastTradeBalance1TextView = this.FindViewById<TextView>(Resource.Id.last_trade_balance1_text_view);
-            this.lastTradeBalance2TextView = this.FindViewById<TextView>(Resource.Id.last_trade_balance2_text_view);
-            this.nextTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.next_trade_time_text_view);
+            this.lastTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.LastTradeTimeTextView);
+            this.lastTradeResultTextView = this.FindViewById<TextView>(Resource.Id.LastTradeResultTextView);
+            this.lastTradeBalance1TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance1TextView);
+            this.lastTradeBalance2TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance2TextView);
+            this.nextTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.NextTradeTimeTextView);
 
             this.service.PropertyChanged += this.OnPropertyChanged;
             this.service.Settings.PropertyChanged += this.OnPropertyChanged;
@@ -144,7 +144,7 @@ namespace SmartTrade
 
         private Button GetSettingsButton()
         {
-            var result = this.FindViewById<Button>(Resource.Id.settings_button);
+            var result = this.FindViewById<Button>(Resource.Id.SettingsButton);
             result.Click +=
                 (s, e) =>
                 {
@@ -164,7 +164,7 @@ namespace SmartTrade
 
         private ToggleButton GetEnableDisableServiceButton()
         {
-            var result = this.FindViewById<ToggleButton>(Resource.Id.enable_disable_service_button);
+            var result = this.FindViewById<ToggleButton>(Resource.Id.EnableDisableServiceButton);
             result.Click += (s, e) => this.service.IsEnabled = result.Checked;
             return result;
         }

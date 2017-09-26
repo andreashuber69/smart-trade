@@ -93,29 +93,29 @@ namespace SmartTrade
 			// aapt resource value: 0x7f070009
 			public const int ApiSecret = 2131165193;
 			
-			// aapt resource value: 0x7f070007
-			public const int UserId = 2131165191;
-			
 			// aapt resource value: 0x7f070001
-			public const int enable_disable_service_button = 2131165185;
+			public const int EnableDisableServiceButton = 2131165185;
 			
 			// aapt resource value: 0x7f070003
-			public const int last_trade_balance1_text_view = 2131165187;
+			public const int LastTradeBalance1TextView = 2131165187;
 			
 			// aapt resource value: 0x7f070004
-			public const int last_trade_balance2_text_view = 2131165188;
+			public const int LastTradeBalance2TextView = 2131165188;
 			
 			// aapt resource value: 0x7f070005
-			public const int last_trade_result_text_view = 2131165189;
+			public const int LastTradeResultTextView = 2131165189;
 			
 			// aapt resource value: 0x7f070002
-			public const int last_trade_time_text_view = 2131165186;
+			public const int LastTradeTimeTextView = 2131165186;
 			
 			// aapt resource value: 0x7f070006
-			public const int next_trade_time_text_view = 2131165190;
+			public const int NextTradeTimeTextView = 2131165190;
 			
 			// aapt resource value: 0x7f070000
-			public const int settings_button = 2131165184;
+			public const int SettingsButton = 2131165184;
+			
+			// aapt resource value: 0x7f070007
+			public const int UserId = 2131165191;
 			
 			static Id()
 			{
@@ -217,7 +217,7 @@ namespace SmartTrade
 			public const int Settings = 2131034116;
 			
 			// aapt resource value: 0x7f050008
-			public const int SettingsTitleFormat = 2131034120;
+			public const int SettingsTitle = 2131034120;
 			
 			// aapt resource value: 0x7f050011
 			public const int SoldPopup = 2131034129;

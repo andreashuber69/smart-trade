@@ -76,7 +76,7 @@ namespace SmartTrade
             this.data = Data.Get(this.Intent);
             this.Title = string.Format(
                 InvariantCulture,
-                this.Resources.GetString(Resource.String.SettingsTitleFormat),
+                this.GetString(Resource.String.SettingsTitle),
                 this.data.FirstCurrency,
                 this.data.SecondCurrency);
 
