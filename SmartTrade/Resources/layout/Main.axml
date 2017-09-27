@@ -36,13 +36,13 @@
       android:layout_height="wrap_content"
       android:paddingEnd="@dimen/RightPadding"
       android:textAppearance="?android:attr/textAppearanceMedium"
-      android:text="Time:" />
+      android:text="@string/Time" />
     <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:paddingEnd="@dimen/RightPadding"
       android:textAppearance="?android:attr/textAppearanceMedium"
-      android:text="Balance:" />
+      android:text="@string/Balance" />
     <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
       android:layout_height="wrap_content"
       android:paddingEnd="@dimen/RightPadding"
       android:textAppearance="?android:attr/textAppearanceSmall"
-      android:text="Result:" />
+      android:text="@string/Result" />
     <TextView
       android:id="@+id/LastTradeTimeTextView"
       android:layout_width="match_parent"
@@ -80,7 +80,7 @@
     android:paddingTop="@dimen/TopMargin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Next Trade"
+    android:text="@string/NextTrade"
     android:textAppearance="?android:attr/textAppearanceLarge" />
   <GridLayout
     android:layout_width="wrap_content"
@@ -95,7 +95,7 @@
       android:layout_height="wrap_content"
       android:paddingEnd="@dimen/RightPadding"
       android:textAppearance="?android:attr/textAppearanceMedium"
-      android:text="Time:" />
+      android:text="@string/Time" />
     <TextView
       android:id="@+id/NextTradeTimeTextView"
       android:layout_width="match_parent"
