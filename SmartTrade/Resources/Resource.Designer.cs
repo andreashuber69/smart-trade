@@ -85,11 +85,11 @@ namespace SmartTrade
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f070008
-			public const int ApiKey = 2131165192;
+			// aapt resource value: 0x7f07000a
+			public const int ApiKey = 2131165194;
 			
-			// aapt resource value: 0x7f070009
-			public const int ApiSecret = 2131165193;
+			// aapt resource value: 0x7f07000b
+			public const int ApiSecret = 2131165195;
 			
 			// aapt resource value: 0x7f070001
 			public const int EnableDisableServiceButton = 2131165185;
@@ -109,11 +109,17 @@ namespace SmartTrade
 			// aapt resource value: 0x7f070006
 			public const int NextTradeTimeTextView = 2131165190;
 			
+			// aapt resource value: 0x7f070008
+			public const int PeriodEndTextView = 2131165192;
+			
+			// aapt resource value: 0x7f070007
+			public const int PeriodStartTextView = 2131165191;
+			
 			// aapt resource value: 0x7f070000
 			public const int SettingsButton = 2131165184;
 			
-			// aapt resource value: 0x7f070007
-			public const int UserId = 2131165191;
+			// aapt resource value: 0x7f070009
+			public const int UserId = 2131165193;
 			
 			static Id()
 			{
@@ -178,14 +184,17 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060007
 			public const int Balance = 2131099655;
 			
-			// aapt resource value: 0x7f060012
-			public const int BoughtPopup = 2131099666;
+			// aapt resource value: 0x7f060015
+			public const int BoughtPopup = 2131099669;
+			
+			// aapt resource value: 0x7f060013
+			public const int CheckingPopup = 2131099667;
 			
 			// aapt resource value: 0x7f060010
-			public const int CheckingPopup = 2131099664;
+			public const int End = 2131099664;
 			
-			// aapt resource value: 0x7f060015
-			public const int InsufficientBalancePopup = 2131099669;
+			// aapt resource value: 0x7f060018
+			public const int InsufficientBalancePopup = 2131099672;
 			
 			// aapt resource value: 0x7f060005
 			public const int LastTrade = 2131099653;
@@ -193,11 +202,14 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060009
 			public const int NextTrade = 2131099657;
 			
-			// aapt resource value: 0x7f060014
-			public const int NoDepositPopup = 2131099668;
+			// aapt resource value: 0x7f060017
+			public const int NoDepositPopup = 2131099671;
 			
-			// aapt resource value: 0x7f060011
-			public const int NothingToTradePopup = 2131099665;
+			// aapt resource value: 0x7f060014
+			public const int NothingToTradePopup = 2131099668;
+			
+			// aapt resource value: 0x7f06000e
+			public const int Period = 2131099662;
 			
 			// aapt resource value: 0x7f060008
 			public const int Result = 2131099656;
@@ -205,14 +217,14 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060003
 			public const int ServiceIsDisabled = 2131099651;
 			
-			// aapt resource value: 0x7f06000e
-			public const int ServiceIsDisabledPopup = 2131099662;
+			// aapt resource value: 0x7f060011
+			public const int ServiceIsDisabledPopup = 2131099665;
 			
 			// aapt resource value: 0x7f060004
 			public const int ServiceIsEnabled = 2131099652;
 			
-			// aapt resource value: 0x7f06000f
-			public const int ServiceIsEnabledPopup = 2131099663;
+			// aapt resource value: 0x7f060012
+			public const int ServiceIsEnabledPopup = 2131099666;
 			
 			// aapt resource value: 0x7f060002
 			public const int Settings = 2131099650;
@@ -220,14 +232,17 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06000a
 			public const int SettingsTitle = 2131099658;
 			
-			// aapt resource value: 0x7f060013
-			public const int SoldPopup = 2131099667;
+			// aapt resource value: 0x7f060016
+			public const int SoldPopup = 2131099670;
+			
+			// aapt resource value: 0x7f06000f
+			public const int Start = 2131099663;
 			
 			// aapt resource value: 0x7f060006
 			public const int Time = 2131099654;
 			
-			// aapt resource value: 0x7f060016
-			public const int UnexpectedErrorPopup = 2131099670;
+			// aapt resource value: 0x7f060019
+			public const int UnexpectedErrorPopup = 2131099673;
 			
 			// aapt resource value: 0x7f06000b
 			public const int UserId = 2131099659;

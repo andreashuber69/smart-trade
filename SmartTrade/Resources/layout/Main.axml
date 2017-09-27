@@ -18,7 +18,7 @@
     android:textOff="@string/ServiceIsDisabled"
     android:textOn="@string/ServiceIsEnabled" />
   <TextView
-    android:paddingTop="@dimen/TopMargin"
+    android:paddingTop="@dimen/TopPadding"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/LastTrade"
@@ -77,7 +77,7 @@
       android:textAppearance="?android:attr/textAppearanceSmall" />
   </GridLayout>
   <TextView
-    android:paddingTop="@dimen/TopMargin"
+    android:paddingTop="@dimen/TopPadding"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/NextTrade"
@@ -98,6 +98,43 @@
       android:text="@string/Time" />
     <TextView
       android:id="@+id/NextTradeTimeTextView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+  </GridLayout>
+  <TextView
+    android:paddingTop="@dimen/TopPadding"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/Period"
+    android:textAppearance="?android:attr/textAppearanceLarge" />
+  <GridLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/TopPadding"
+    android:paddingStart="@dimen/LeftPadding"
+    android:columnCount="2"
+    android:rowCount="2"
+    android:orientation="vertical">
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingEnd="@dimen/RightPadding"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:text="@string/Start" />
+    <TextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingEnd="@dimen/RightPadding"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:text="@string/End" />
+    <TextView
+      android:id="@+id/PeriodStartTextView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+      android:id="@+id/PeriodEndTextView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textAppearance="?android:attr/textAppearanceMedium" />

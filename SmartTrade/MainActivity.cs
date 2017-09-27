@@ -33,6 +33,8 @@ namespace SmartTrade
             this.lastTradeBalance1TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance1TextView);
             this.lastTradeBalance2TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance2TextView);
             this.nextTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.NextTradeTimeTextView);
+            this.periodStartTextView = this.FindViewById<TextView>(Resource.Id.PeriodStartTextView);
+            this.periodEndTextView = this.FindViewById<TextView>(Resource.Id.PeriodEndTextView);
 
             this.service.PropertyChanged += this.OnPropertyChanged;
             this.service.Settings.PropertyChanged += this.OnPropertyChanged;
@@ -140,6 +142,8 @@ namespace SmartTrade
         private TextView lastTradeBalance1TextView;
         private TextView lastTradeBalance2TextView;
         private TextView nextTradeTimeTextView;
+        private TextView periodStartTextView;
+        private TextView periodEndTextView;
         private long currentTimeUpdateId;
 
         private Button GetSettingsButton()
@@ -223,6 +227,8 @@ namespace SmartTrade
         {
             var settings = this.service.Settings;
             this.lastTradeTimeTextView.Text = Format(settings.LastTradeTime);
+
+            this.periodEndTextView.Text = Format(settings.PeriodEnd);
 
             if (settings.NextTradeTime == 0)
             {
