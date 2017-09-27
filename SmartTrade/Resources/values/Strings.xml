@@ -14,7 +14,7 @@
   <string name="UserId">Bitstamp User ID</string>
   <string name="ApiKey">API Key</string>
   <string name="ApiSecret">API Secret</string>
-  <string name="Period">Period</string>
+  <string name="Section">Section</string>
   <string name="Start">Start:</string>
   <string name="End">End:</string>
   <string name="ServiceIsDisabledPopup">Service is disabled. No automatic trading will occur.</string>

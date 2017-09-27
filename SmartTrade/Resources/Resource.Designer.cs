@@ -110,10 +110,10 @@ namespace SmartTrade
 			public const int NextTradeTimeTextView = 2131165190;
 			
 			// aapt resource value: 0x7f070008
-			public const int PeriodEndTextView = 2131165192;
+			public const int SectionEndTextView = 2131165192;
 			
 			// aapt resource value: 0x7f070007
-			public const int PeriodStartTextView = 2131165191;
+			public const int SectionStartTextView = 2131165191;
 			
 			// aapt resource value: 0x7f070000
 			public const int SettingsButton = 2131165184;
@@ -208,11 +208,11 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060014
 			public const int NothingToTradePopup = 2131099668;
 			
-			// aapt resource value: 0x7f06000e
-			public const int Period = 2131099662;
-			
 			// aapt resource value: 0x7f060008
 			public const int Result = 2131099656;
+			
+			// aapt resource value: 0x7f06000e
+			public const int Section = 2131099662;
 			
 			// aapt resource value: 0x7f060003
 			public const int ServiceIsDisabled = 2131099651;

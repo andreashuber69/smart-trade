@@ -106,7 +106,7 @@
     android:paddingTop="@dimen/TopPadding"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="@string/Period"
+    android:text="@string/Section"
     android:textAppearance="?android:attr/textAppearanceLarge" />
   <GridLayout
     android:layout_width="wrap_content"
@@ -129,12 +129,12 @@
       android:textAppearance="?android:attr/textAppearanceMedium"
       android:text="@string/End" />
     <TextView
-      android:id="@+id/PeriodStartTextView"
+      android:id="@+id/SectionStartTextView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textAppearance="?android:attr/textAppearanceMedium" />
     <TextView
-      android:id="@+id/PeriodEndTextView"
+      android:id="@+id/SectionEndTextView"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textAppearance="?android:attr/textAppearanceMedium" />
