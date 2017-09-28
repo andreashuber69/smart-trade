@@ -137,7 +137,15 @@ namespace Bitstamp
         {
             using (var memoryStream = new MemoryStream())
             {
-                await response.Content.CopyToAsync(memoryStream);
+                try
+                {
+                    await response.Content.CopyToAsync(memoryStream);
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    throw new HttpRequestException("Failed to retrieve response.", ex);
+                }
+
                 memoryStream.Position = 0;
                 var data = JsonValue.Load(memoryStream);
                 const string StatusName = "status";
