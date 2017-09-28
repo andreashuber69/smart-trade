@@ -31,7 +31,8 @@ namespace Bitstamp
                 {
                     case TransactionType.Deposit:
                     case TransactionType.Withdrawal:
-                        return (transaction.Eur != 0) || (transaction.Btc != 0);
+                    case TransactionType.SubaccountTransfer:
+                        return (transaction.Btc != 0) || (transaction.Eur != 0);
                     case TransactionType.MarketTrade:
                         return transaction.BtcEur.HasValue;
                     default:

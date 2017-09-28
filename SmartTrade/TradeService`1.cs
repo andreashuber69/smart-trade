@@ -169,7 +169,9 @@ namespace SmartTrade
 
         private bool SetPeriod(List<ITransaction> transactions)
         {
-            var lastDepositIndex = transactions.FindIndex(t => (t.TransactionType == TransactionType.Deposit));
+            var lastDepositIndex = transactions.FindIndex(t =>
+                (t.TransactionType == TransactionType.Deposit) ||
+                (t.TransactionType == TransactionType.SubaccountTransfer));
 
             if (lastDepositIndex >= 0)
             {
