@@ -128,6 +128,18 @@ namespace SmartTrade
         private static bool GetMore(DateTime lastTimestamp, List<ITransaction> transactions) =>
             (transactions.Count == 0) || (transactions[transactions.Count - 1].DateTime > lastTimestamp);
 
+        private static bool IsRelevantDeposit(ITransaction transaction, bool buy)
+        {
+            switch (transaction.TransactionType)
+            {
+                case TransactionType.Deposit:
+                case TransactionType.SubaccountTransfer:
+                    return buy == (transaction.SecondAmount > 0);
+                default:
+                    return false;
+            }
+        }
+
         private readonly TExchangeClient client = new TExchangeClient();
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -167,11 +179,9 @@ namespace SmartTrade
             return result;
         }
 
-        private bool SetPeriod(List<ITransaction> transactions)
+        private void SetPeriod(List<ITransaction> transactions, bool buy)
         {
-            var lastDepositIndex = transactions.FindIndex(t =>
-                (t.TransactionType == TransactionType.Deposit) ||
-                (t.TransactionType == TransactionType.SubaccountTransfer));
+            var lastDepositIndex = transactions.FindIndex(t => IsRelevantDeposit(t, buy));
 
             if (lastDepositIndex >= 0)
             {
@@ -181,20 +191,14 @@ namespace SmartTrade
                 if (!this.Settings.SectionStart.HasValue || (lastDepositTime > this.Settings.SectionStart))
                 {
                     this.Settings.SectionStart = lastDepositTime;
-                    this.Settings.PeriodEnd = lastDepositTime + TimeSpan.FromDays(20);
+                    this.Settings.PeriodEnd = lastDepositTime + TimeSpan.FromDays(2);
                 }
-
-                return deposit.SecondAmount != 0;
             }
-
-            return false;
         }
 
         private DateTime GetStart(List<ITransaction> transactions)
         {
-            var lastTradeIndex = transactions.FindIndex(t =>
-                (t.TransactionType == TransactionType.MarketTrade) ||
-                (t.TransactionType == TransactionType.Deposit));
+            var lastTradeIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.MarketTrade);
 
             if (lastTradeIndex >= 0)
             {
@@ -222,7 +226,8 @@ namespace SmartTrade
                 this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
                 this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
                 var transactions = await this.GetTransactions(exchange);
-                var buy = this.SetPeriod(transactions);
+                var buy = false;
+                this.SetPeriod(transactions, buy);
 
                 if (!this.Settings.PeriodEnd.HasValue)
                 {
