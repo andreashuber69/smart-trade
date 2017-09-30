@@ -10,13 +10,14 @@ namespace SmartTrade
 
     using Android.App;
     using Android.Content;
+    using Android.Content.PM;
     using Android.OS;
     using Android.Widget;
 
     using static System.Globalization.CultureInfo;
     using static System.Globalization.NumberStyles;
 
-    [Activity]
+    [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class SettingsActivity : Activity
     {
         public sealed override void OnBackPressed()
