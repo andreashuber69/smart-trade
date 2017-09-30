@@ -266,11 +266,17 @@ namespace SmartTrade
                 {
                     Info("Amount to trade is {0} {1}.", secondCurrency, secondAmount);
 
+                    // When we trade fiat on Bitstamp, the fee is calculated as implemented in
+                    // UnitCostAveragingCalculator.GetFee. We always want to sell a bit less than calculated
+                    // by UnitCostAveragingCalculator.GetAmount, otherwise we end up paying 1 cent more than necessary.
+                    // Since the market can move between the time we query the price and the time our trade is executed,
+                    // we cannot just subtract a constant amount (like e.g. 0.001, as we did in tests). Instead, we need
+                    // to lower the amount such that it becomes unlikely that the fiat amount will move over the
+                    // threshold. For now we try with 0.1%, which amounts to less than 1 cent for a typical trade.
+                    var secondAmountToTrade = secondAmount * 0.999m;
+
                     if (buy)
                     {
-                        // When we buy on Bitstamp, the fee is added *before* the trade, so we want to buy the
-                        // calculated amount minus the fee.
-                        var secondAmountToTrade = secondAmount - calculator.GetFee(secondAmount);
                         var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Ask, 8);
                         var result = await exchange.CreateBuyOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
@@ -284,10 +290,6 @@ namespace SmartTrade
                     }
                     else
                     {
-                        // When we sell on Bitstamp, the fee is subtracted *after* the trade, so we want to sell the
-                        // full calculated amount. However, since fees are always rounded *up* to the next cent, we
-                        // sell a tiny bit less.
-                        var secondAmountToTrade = secondAmount - 0.001m;
                         var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Bid, 8);
                         var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
