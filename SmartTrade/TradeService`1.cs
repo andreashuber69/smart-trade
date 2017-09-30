@@ -191,7 +191,7 @@ namespace SmartTrade
                 if (!this.Settings.SectionStart.HasValue || (lastDepositTime > this.Settings.SectionStart))
                 {
                     this.Settings.SectionStart = lastDepositTime;
-                    this.Settings.PeriodEnd = lastDepositTime + TimeSpan.FromDays(2);
+                    this.Settings.PeriodEnd = lastDepositTime + TimeSpan.FromDays(this.Settings.TradePeriod);
                 }
             }
         }

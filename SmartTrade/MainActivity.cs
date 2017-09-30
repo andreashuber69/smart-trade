@@ -53,6 +53,7 @@ namespace SmartTrade
                 this.service.Settings.ApiKey = data.ApiKey;
                 this.service.Settings.ApiSecret = data.ApiSecret;
                 this.service.Settings.Buy = data.Buy;
+                this.service.Settings.TradePeriod = data.TradePeriod;
             }
         }
 
@@ -161,7 +162,8 @@ namespace SmartTrade
                         settings.CustomerId,
                         settings.ApiKey,
                         settings.ApiSecret,
-                        settings.Buy);
+                        settings.Buy,
+                        settings.TradePeriod);
                     data.Put(intent);
                     this.StartActivityForResult(intent, 0);
                 };

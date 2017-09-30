@@ -8,16 +8,18 @@ namespace Bitstamp
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-    using System.Globalization;
+
+    using static System.Globalization.CultureInfo;
+    using static System.Globalization.DateTimeStyles;
 
     internal static class DateTimeHelper
     {
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        internal static DateTime Parse(string value) => DateTime.Parse(
-            value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+        internal static DateTime Parse(string value) =>
+            DateTime.Parse(value, InvariantCulture, AssumeUniversal | AdjustToUniversal);
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Called through reflection.")]
-        internal static string ToString(DateTime dateTime) => dateTime.ToString(Format, CultureInfo.InvariantCulture);
+        internal static string ToString(DateTime dateTime) => dateTime.ToString(Format, InvariantCulture);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

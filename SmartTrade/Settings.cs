@@ -59,6 +59,12 @@ namespace SmartTrade
             set { this.SetLong(value ? 1 : 0); }
         }
 
+        public float TradePeriod
+        {
+            get { return this.GetFloat(); }
+            set { this.SetFloat(value); }
+        }
+
         public DateTime? LastTradeTime
         {
             get { return this.GetDateTime(); }

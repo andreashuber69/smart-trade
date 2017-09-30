@@ -32,4 +32,11 @@
     android:layout_height="wrap_content"
     android:spinnerMode="dialog"
     android:prompt="@string/Mode"/>
+  <EditText
+    android:id="@+id/TradePeriod"
+    android:hint="@string/TradePeriod"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:inputType="numberDecimal"
+    android:textSize="15sp" />
 </LinearLayout>

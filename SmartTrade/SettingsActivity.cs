@@ -14,6 +14,7 @@ namespace SmartTrade
     using Android.Widget;
 
     using static System.Globalization.CultureInfo;
+    using static System.Globalization.NumberStyles;
 
     [Activity]
     internal sealed class SettingsActivity : Activity
@@ -36,11 +37,18 @@ namespace SmartTrade
                     intent.GetIntExtra(nameof(CustomerId), 0),
                     intent.GetStringExtra(nameof(ApiKey)),
                     intent.GetStringExtra(nameof(ApiSecret)),
-                    intent.GetBooleanExtra(nameof(Buy), false));
+                    intent.GetBooleanExtra(nameof(Buy), false),
+                    intent.GetFloatExtra(nameof(TradePeriod), 0.0f));
             }
 
             internal Data(
-                string firstCurrency, string secondCurrency, int customerId, string apiKey, string apiSecret, bool buy)
+                string firstCurrency,
+                string secondCurrency,
+                int customerId,
+                string apiKey,
+                string apiSecret,
+                bool buy,
+                float tradePeriod)
             {
                 this.FirstCurrency = firstCurrency;
                 this.SecondCurrency = secondCurrency;
@@ -48,6 +56,7 @@ namespace SmartTrade
                 this.ApiKey = apiKey;
                 this.ApiSecret = apiSecret;
                 this.Buy = buy;
+                this.TradePeriod = tradePeriod;
             }
 
             internal string FirstCurrency { get; }
@@ -62,6 +71,8 @@ namespace SmartTrade
 
             internal bool Buy { get; }
 
+            internal float TradePeriod { get; }
+
             internal void Put(Intent intent)
             {
                 intent.PutExtra(nameof(this.FirstCurrency), this.FirstCurrency);
@@ -70,6 +81,7 @@ namespace SmartTrade
                 intent.PutExtra(nameof(this.ApiKey), this.ApiKey);
                 intent.PutExtra(nameof(this.ApiSecret), this.ApiSecret);
                 intent.PutExtra(nameof(this.Buy), this.Buy);
+                intent.PutExtra(nameof(this.TradePeriod), this.TradePeriod);
             }
         }
 
@@ -90,18 +102,20 @@ namespace SmartTrade
             this.apiKeyEditText = this.GetApiKeyEditText();
             this.apiSecretEditText = this.GetApiSecretEditText();
             this.modeSpinner = this.GetModeSpinner();
+            this.tradePeriodEditText = this.GetTradePeriodEditText();
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private static string Invariant(string format, params string[] args) =>
-            string.Format(CultureInfo.InvariantCulture, format, args);
+            string.Format(InvariantCulture, format, args);
 
         private Data data;
         private EditText customerIdEditText;
         private EditText apiKeyEditText;
         private EditText apiSecretEditText;
         private Spinner modeSpinner;
+        private EditText tradePeriodEditText;
 
         private EditText GetCustomerIdEditText()
         {
@@ -140,6 +154,13 @@ namespace SmartTrade
             return result;
         }
 
+        private EditText GetTradePeriodEditText()
+        {
+            var result = this.FindViewById<EditText>(Resource.Id.TradePeriod);
+            result.Text = this.data.TradePeriod == 0 ? string.Empty : this.data.TradePeriod.ToString(InvariantCulture);
+            return result;
+        }
+
         private void SaveChanges()
         {
             var intent = new Intent(this, typeof(MainActivity));
@@ -149,12 +170,16 @@ namespace SmartTrade
                 this.GetCustomerId(),
                 this.apiKeyEditText.Text,
                 this.apiSecretEditText.Text,
-                this.modeSpinner.SelectedItemPosition == 1);
+                this.modeSpinner.SelectedItemPosition == 1,
+                this.GetTradePeriod());
             this.data.Put(intent);
             this.SetResult(Result.Ok, intent);
         }
 
         private int GetCustomerId() => int.TryParse(
-            this.customerIdEditText.Text, NumberStyles.None, InvariantCulture, out var customerId) ? customerId : 0;
+            this.customerIdEditText.Text, None, InvariantCulture, out var customerId) ? customerId : 0;
+
+        private float GetTradePeriod() => float.TryParse(
+            this.tradePeriodEditText.Text, AllowDecimalPoint, InvariantCulture, out var tradePeriod) ? tradePeriod : 0;
     }
 }

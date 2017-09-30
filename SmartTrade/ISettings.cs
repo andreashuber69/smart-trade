@@ -28,8 +28,11 @@ namespace SmartTrade
         string ApiSecret { get; set; }
 
         /// <summary>Gets or sets a value indicating whether to buy.</summary>
-        /// <value><c>true</c> if the trade mode is buy; <c>flase</c> if the trade mode is sell.</value>
+        /// <value><c>true</c> if the trade mode is buy; <c>false</c> if the trade mode is sell.</value>
         bool Buy { get; set; }
+
+        /// <summary>Gets or sets the trade period.</summary>
+        float TradePeriod { get; set; }
 
         /// <summary>Gets or sets the time of the last trade.</summary>
         /// <value>The time of the last trade attempt; or <c>null</c> if no trade has been made yet.</value>
