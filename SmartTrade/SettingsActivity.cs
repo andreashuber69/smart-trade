@@ -6,8 +6,6 @@
 
 namespace SmartTrade
 {
-    using System.Globalization;
-
     using Android.App;
     using Android.Content;
     using Android.Content.PM;
