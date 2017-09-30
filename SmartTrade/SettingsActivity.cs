@@ -35,16 +35,19 @@ namespace SmartTrade
                     intent.GetStringExtra(nameof(SecondCurrency)),
                     intent.GetIntExtra(nameof(CustomerId), 0),
                     intent.GetStringExtra(nameof(ApiKey)),
-                    intent.GetStringExtra(nameof(ApiSecret)));
+                    intent.GetStringExtra(nameof(ApiSecret)),
+                    intent.GetBooleanExtra(nameof(Buy), false));
             }
 
-            internal Data(string firstCurrency, string secondCurrency, int customerId, string apiKey, string apiSecret)
+            internal Data(
+                string firstCurrency, string secondCurrency, int customerId, string apiKey, string apiSecret, bool buy)
             {
                 this.FirstCurrency = firstCurrency;
                 this.SecondCurrency = secondCurrency;
                 this.CustomerId = customerId;
                 this.ApiKey = apiKey;
                 this.ApiSecret = apiSecret;
+                this.Buy = buy;
             }
 
             internal string FirstCurrency { get; }
@@ -57,6 +60,8 @@ namespace SmartTrade
 
             internal string ApiSecret { get; }
 
+            internal bool Buy { get; }
+
             internal void Put(Intent intent)
             {
                 intent.PutExtra(nameof(this.FirstCurrency), this.FirstCurrency);
@@ -64,6 +69,7 @@ namespace SmartTrade
                 intent.PutExtra(nameof(this.CustomerId), this.CustomerId);
                 intent.PutExtra(nameof(this.ApiKey), this.ApiKey);
                 intent.PutExtra(nameof(this.ApiSecret), this.ApiSecret);
+                intent.PutExtra(nameof(this.Buy), this.Buy);
             }
         }
 
@@ -83,14 +89,19 @@ namespace SmartTrade
             this.customerIdEditText = this.GetCustomerIdEditText();
             this.apiKeyEditText = this.GetApiKeyEditText();
             this.apiSecretEditText = this.GetApiSecretEditText();
+            this.modeSpinner = this.GetModeSpinner();
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        private static string Invariant(string format, params string[] args) =>
+            string.Format(CultureInfo.InvariantCulture, format, args);
 
         private Data data;
         private EditText customerIdEditText;
         private EditText apiKeyEditText;
         private EditText apiSecretEditText;
+        private Spinner modeSpinner;
 
         private EditText GetCustomerIdEditText()
         {
@@ -113,6 +124,22 @@ namespace SmartTrade
             return result;
         }
 
+        private Spinner GetModeSpinner()
+        {
+            var items =
+                new[]
+                {
+                    Invariant(this.GetString(Resource.String.Sell), this.data.FirstCurrency),
+                    Invariant(this.GetString(Resource.String.Buy), this.data.FirstCurrency)
+                };
+
+            var adapter = new ArrayAdapter<string>(this, Resource.Layout.SimpleSpinnerDropDownItem, items);
+            var result = this.FindViewById<Spinner>(Resource.Id.Mode);
+            result.Adapter = adapter;
+            result.SetSelection(this.data.Buy ? 1 : 0);
+            return result;
+        }
+
         private void SaveChanges()
         {
             var intent = new Intent(this, typeof(MainActivity));
@@ -121,7 +148,8 @@ namespace SmartTrade
                 this.data.SecondCurrency,
                 this.GetCustomerId(),
                 this.apiKeyEditText.Text,
-                this.apiSecretEditText.Text);
+                this.apiSecretEditText.Text,
+                this.modeSpinner.SelectedItemPosition == 1);
             this.data.Put(intent);
             this.SetResult(Result.Ok, intent);
         }

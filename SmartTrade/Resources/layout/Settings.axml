@@ -26,4 +26,10 @@
     android:layout_height="wrap_content"
     android:inputType="textPassword"
     android:textSize="15sp" />
+  <Spinner
+    android:id="@+id/Mode"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:spinnerMode="dialog"
+    android:prompt="@string/Mode"/>
 </LinearLayout>

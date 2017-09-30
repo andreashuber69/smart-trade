@@ -226,7 +226,7 @@ namespace SmartTrade
                 this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
                 this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
                 var transactions = await this.GetTransactions(exchange);
-                var buy = false;
+                var buy = this.Settings.Buy;
                 this.SetPeriod(transactions, buy);
 
                 if (!this.Settings.PeriodEnd.HasValue)

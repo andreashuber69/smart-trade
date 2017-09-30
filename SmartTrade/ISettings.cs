@@ -27,6 +27,10 @@ namespace SmartTrade
         /// <summary>Gets or sets the Bitstamp api secret.</summary>
         string ApiSecret { get; set; }
 
+        /// <summary>Gets or sets a value indicating whether to buy.</summary>
+        /// <value><c>true</c> if the trade mode is buy; <c>flase</c> if the trade mode is sell.</value>
+        bool Buy { get; set; }
+
         /// <summary>Gets or sets the time of the last trade.</summary>
         /// <value>The time of the last trade attempt; or <c>null</c> if no trade has been made yet.</value>
         DateTime? LastTradeTime { get; set; }

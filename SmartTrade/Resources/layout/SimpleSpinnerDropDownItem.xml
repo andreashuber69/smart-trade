@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copied from https://github.com/android/platform_frameworks_base/blob/master/core/res/res/layout/simple_spinner_dropdown_item.xml
+  This was necessary to be able to modify the textSize to match the one of the other controls in the settings view.
+  layout_height is ?android:attr/dropdownListPreferredItemHeight in the original, but this is not public, so we have to
+  hard code this as well.
+-->
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@android:id/text1"
+  style="?android:attr/spinnerDropDownItemStyle"
+  android:singleLine="true"
+  android:layout_width="match_parent"
+  android:layout_height="48dp"
+  android:ellipsize="marquee"
+  android:textSize="15sp" />

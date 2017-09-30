@@ -53,6 +53,12 @@ namespace SmartTrade
             set { this.SetPrivateString(value); }
         }
 
+        public bool Buy
+        {
+            get { return this.GetLong() != 0; }
+            set { this.SetLong(value ? 1 : 0); }
+        }
+
         public DateTime? LastTradeTime
         {
             get { return this.GetDateTime(); }
@@ -124,6 +130,7 @@ namespace SmartTrade
             this.LogCurrentValue(nameof(this.CustomerId), this.CustomerId);
             this.LogCurrentValue(nameof(this.ApiKey), this.ApiKey);
             this.LogCurrentValue(nameof(this.ApiSecret), "<secret>");
+            this.LogCurrentValue(nameof(this.Buy), this.Buy);
             this.LogCurrentValue(nameof(this.LastTradeTime), this.LastTradeTime, ":o");
             this.LogCurrentValue(nameof(this.LastResult), this.LastResult);
             this.LogCurrentValue(nameof(this.LastBalanceFirstCurrency), this.LastBalanceFirstCurrency, ":f8");

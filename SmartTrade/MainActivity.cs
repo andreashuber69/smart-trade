@@ -52,6 +52,7 @@ namespace SmartTrade
                 this.service.Settings.CustomerId = data.CustomerId;
                 this.service.Settings.ApiKey = data.ApiKey;
                 this.service.Settings.ApiSecret = data.ApiSecret;
+                this.service.Settings.Buy = data.Buy;
             }
         }
 
@@ -159,7 +160,8 @@ namespace SmartTrade
                         settings.SecondCurrency,
                         settings.CustomerId,
                         settings.ApiKey,
-                        settings.ApiSecret);
+                        settings.ApiSecret,
+                        settings.Buy);
                     data.Put(intent);
                     this.StartActivityForResult(intent, 0);
                 };
