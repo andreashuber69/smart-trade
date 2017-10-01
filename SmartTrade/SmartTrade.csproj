@@ -77,7 +77,6 @@
     <Compile Include="BtcEurTradeService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsActivity.cs" />
-    <Compile Include="SmartTradeApplication.cs" />
     <Compile Include="TradeService`1.cs" />
   </ItemGroup>
   <ItemGroup>

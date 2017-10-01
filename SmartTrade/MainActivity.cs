@@ -21,10 +21,6 @@ namespace SmartTrade
     [Activity(Label = "@string/AppName", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class MainActivity : Activity
     {
-        internal void UpdateTimesPeriodically() => this.UpdateTimesPeriodicallyImpl(++this.currentTimeUpdateId);
-
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -42,7 +38,13 @@ namespace SmartTrade
 
             this.service.PropertyChanged += this.OnPropertyChanged;
             this.service.Settings.PropertyChanged += this.OnPropertyChanged;
+        }
+
+        protected sealed override void OnStart()
+        {
+            base.OnStart();
             this.UpdateAllExceptTimes();
+            this.UpdateTimesPeriodically();
         }
 
         protected sealed override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
@@ -207,6 +209,8 @@ namespace SmartTrade
             this.lastTradeBalance2TextView.Text =
                 Invariant($"{settings.SecondCurrency} {settings.LastBalanceSecondCurrency:F8}");
         }
+
+        private void UpdateTimesPeriodically() => this.UpdateTimesPeriodicallyImpl(++this.currentTimeUpdateId);
 
         private void UpdateTimesPeriodicallyImpl(long timeUpdateId)
         {
