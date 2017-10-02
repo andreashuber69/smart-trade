@@ -8,6 +8,7 @@ namespace SmartTrade
 {
     using System;
     using System.ComponentModel;
+    using System.Linq;
 
     using Android.App;
     using Android.Content;
@@ -128,24 +129,20 @@ namespace SmartTrade
 
         private static long? GetUpdateDelay(DateTime? dateTime)
         {
-            var nullable = DateTime.UtcNow - dateTime;
-
-            if (nullable.HasValue)
-            {
-                var span = nullable.Value;
-                var delayMilliseconds =
-                    GetUpdateDelayIfGreaterThanOne(span.TotalDays) * 24 * 60 * 60 * 1000 ??
-                    GetUpdateDelayIfGreaterThanOne(span.TotalHours) * 60 * 60 * 1000 ??
-                    GetUpdateDelayIfGreaterThanOne(span.TotalMinutes) * 60 * 1000 ??
-                    GetUpdateDelay(span.TotalSeconds) * 1000;
-
-                // Round up so that the time will have moved when the delay has elapsed.
-                return (long)delayMilliseconds + 1;
-            }
-            else
+            if (!dateTime.HasValue)
             {
                 return null;
             }
+
+            var span = DateTime.UtcNow - dateTime.Value;
+            var delayMilliseconds =
+                GetUpdateDelayIfGreaterThanOne(span.TotalDays) * 24 * 60 * 60 * 1000 ??
+                GetUpdateDelayIfGreaterThanOne(span.TotalHours) * 60 * 60 * 1000 ??
+                GetUpdateDelayIfGreaterThanOne(span.TotalMinutes) * 60 * 1000 ??
+                GetUpdateDelay(span.TotalSeconds) * 1000;
+
+            // Round up so that the time will have moved when the delay has elapsed.
+            return (long)delayMilliseconds + 1;
         }
 
         private static double? GetUpdateDelayIfGreaterThanOne(double amount) =>
@@ -215,7 +212,8 @@ namespace SmartTrade
             this.settingsButton.Enabled = !this.service.IsEnabled;
             this.enableDisableServiceButton.Checked = this.service.IsEnabled;
             this.enableDisableServiceButton.Enabled = (settings.CustomerId != 0) &&
-                !string.IsNullOrEmpty(settings.ApiKey) && !string.IsNullOrEmpty(settings.ApiSecret);
+                !string.IsNullOrEmpty(settings.ApiKey) && !string.IsNullOrEmpty(settings.ApiSecret) &&
+                (settings.TradePeriod != 0.0f);
             this.lastTradeResultTextView.Text = settings.LastResult;
             this.lastTradeBalance1TextView.Text =
                 Invariant($"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:F8}");
@@ -248,31 +246,17 @@ namespace SmartTrade
         private long? UpdateTimes()
         {
             var settings = this.service.Settings;
-            this.lastTradeTimeTextView.Text = Format(settings.LastTradeTime);
+            var lastTradeTime = settings.LastTradeTime;
             var nextTradeTime = GetNextTradeTime(settings.NextTradeTime);
+            var sectionStart = settings.SectionStart;
+            var periodEnd = settings.PeriodEnd;
+
+            this.lastTradeTimeTextView.Text = Format(lastTradeTime);
             this.nextTradeTimeTextView.Text = Format(nextTradeTime);
+            this.sectionStartTextView.Text = Format(sectionStart);
+            this.sectionEndTextView.Text = Format(periodEnd);
 
-            this.sectionStartTextView.Text = Format(settings.SectionStart);
-            this.sectionEndTextView.Text = Format(settings.PeriodEnd);
-
-            if (settings.NextTradeTime == 0)
-            {
-                return GetUpdateDelay(settings.LastTradeTime);
-            }
-            else
-            {
-                var lastDelay = GetUpdateDelay(settings.LastTradeTime);
-                var nextDelay = GetUpdateDelay(nextTradeTime);
-
-                if (lastDelay.HasValue && nextDelay.HasValue)
-                {
-                    return Min(lastDelay.Value, nextDelay.Value);
-                }
-                else
-                {
-                    return lastDelay ?? nextDelay;
-                }
-            }
+            return new[] { lastTradeTime, nextTradeTime, sectionStart, periodEnd }.Select(t => GetUpdateDelay(t)).Min();
         }
     }
 }

@@ -179,6 +179,6 @@ namespace SmartTrade
             this.customerIdEditText.Text, None, InvariantCulture, out var customerId) ? customerId : 0;
 
         private float GetTradePeriod() => float.TryParse(
-            this.tradePeriodEditText.Text, AllowDecimalPoint, InvariantCulture, out var tradePeriod) ? tradePeriod : 0;
+            this.tradePeriodEditText.Text, AllowDecimalPoint, InvariantCulture, out var tradePeriod) ? tradePeriod : 0.0f;
     }
 }
