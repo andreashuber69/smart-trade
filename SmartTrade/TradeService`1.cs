@@ -133,6 +133,7 @@ namespace SmartTrade
             switch (transaction.TransactionType)
             {
                 case TransactionType.Deposit:
+                case TransactionType.Withdrawal:
                 case TransactionType.SubaccountTransfer:
                     return buy == (transaction.SecondAmount > 0);
                 default:
