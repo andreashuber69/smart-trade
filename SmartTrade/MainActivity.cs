@@ -77,6 +77,19 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        private static DateTime? GetNextTradeTime(long nextTradeTime)
+        {
+            if (nextTradeTime == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return DateTime.UtcNow +
+                    TimeSpan.FromMilliseconds(nextTradeTime - Java.Lang.JavaSystem.CurrentTimeMillis());
+            }
+        }
+
         private static string Format(DateTime? dateTime)
         {
             if (dateTime.HasValue)
@@ -236,21 +249,18 @@ namespace SmartTrade
         {
             var settings = this.service.Settings;
             this.lastTradeTimeTextView.Text = Format(settings.LastTradeTime);
+            var nextTradeTime = GetNextTradeTime(settings.NextTradeTime);
+            this.nextTradeTimeTextView.Text = Format(nextTradeTime);
 
             this.sectionStartTextView.Text = Format(settings.SectionStart);
             this.sectionEndTextView.Text = Format(settings.PeriodEnd);
 
             if (settings.NextTradeTime == 0)
             {
-                this.nextTradeTimeTextView.Text = Format(null);
                 return GetUpdateDelay(settings.LastTradeTime);
             }
             else
             {
-                var nextTradeTime = DateTime.UtcNow +
-                    TimeSpan.FromMilliseconds(settings.NextTradeTime - Java.Lang.JavaSystem.CurrentTimeMillis());
-                this.nextTradeTimeTextView.Text = Format(nextTradeTime);
-
                 var lastDelay = GetUpdateDelay(settings.LastTradeTime);
                 var nextDelay = GetUpdateDelay(nextTradeTime);
 
