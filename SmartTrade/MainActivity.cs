@@ -98,8 +98,8 @@ namespace SmartTrade
                 var span = (DateTime.UtcNow - dateTime).Value;
 
                 return
-                    Format(span.TotalDays, "day") ?? Format(span.TotalHours, "hour") ??
-                    Format(span.TotalMinutes, "minute") ?? Format(span.TotalSeconds, "second") ??
+                    Format(span.TotalDays, "days") ?? Format(span.TotalHours, "hours") ??
+                    Format(span.TotalMinutes, "minutes") ?? Format(span.TotalSeconds, "seconds") ??
                     "just now";
             }
             else
@@ -112,19 +112,15 @@ namespace SmartTrade
         {
             var absoluteAmount = Abs(amount);
 
-            if (absoluteAmount < 1.0)
+            if (absoluteAmount < 2.0)
             {
                 return null;
             }
-
-            var formatted = Invariant($"{Math.Floor(absoluteAmount)} {unit}");
-
-            if (absoluteAmount >= 2.0)
+            else
             {
-                formatted += "s";
+                var formatted = Invariant($"{Math.Floor(absoluteAmount)} {unit}");
+                return amount > 0.0 ? formatted + " ago" : "in " + formatted;
             }
-
-            return amount > 0.0 ? formatted + " ago" : "in " + formatted;
         }
 
         private static long? GetUpdateDelay(DateTime? dateTime)
@@ -136,17 +132,17 @@ namespace SmartTrade
 
             var span = DateTime.UtcNow - dateTime.Value;
             var delayMilliseconds =
-                GetUpdateDelayIfGreaterThanOne(span.TotalDays) * 24 * 60 * 60 * 1000 ??
-                GetUpdateDelayIfGreaterThanOne(span.TotalHours) * 60 * 60 * 1000 ??
-                GetUpdateDelayIfGreaterThanOne(span.TotalMinutes) * 60 * 1000 ??
+                GetUpdateDelayIfGreaterThanTwo(span.TotalDays) * 24 * 60 * 60 * 1000 ??
+                GetUpdateDelayIfGreaterThanTwo(span.TotalHours) * 60 * 60 * 1000 ??
+                GetUpdateDelayIfGreaterThanTwo(span.TotalMinutes) * 60 * 1000 ??
                 GetUpdateDelay(span.TotalSeconds) * 1000;
 
             // Round up so that the time will have moved when the delay has elapsed.
             return (long)delayMilliseconds + 1;
         }
 
-        private static double? GetUpdateDelayIfGreaterThanOne(double amount) =>
-            Abs(amount) > 1.0 ? GetUpdateDelay(amount) : (double?)null;
+        private static double? GetUpdateDelayIfGreaterThanTwo(double amount) =>
+            Abs(amount) >= 2.0 ? GetUpdateDelay(amount) : (double?)null;
 
         private static double GetUpdateDelay(double amount) => Ceiling(amount) - amount;
 
@@ -198,6 +194,8 @@ namespace SmartTrade
             {
                 case nameof(ISettings.NextTradeTime):
                 case nameof(ISettings.LastTradeTime):
+                case nameof(ISettings.SectionStart):
+                case nameof(ISettings.PeriodEnd):
                     this.UpdateTimesPeriodically();
                     break;
                 default:
