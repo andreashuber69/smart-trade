@@ -178,11 +178,11 @@ namespace SmartTrade
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f06000f
-			public const int ApiKey = 2131099663;
+			// aapt resource value: 0x7f060017
+			public const int ApiKey = 2131099671;
 			
-			// aapt resource value: 0x7f060010
-			public const int ApiSecret = 2131099664;
+			// aapt resource value: 0x7f060018
+			public const int ApiSecret = 2131099672;
 			
 			// aapt resource value: 0x7f060001
 			public const int AppDescription = 2131099649;
@@ -193,65 +193,89 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060007
 			public const int Balance = 2131099655;
 			
-			// aapt resource value: 0x7f060019
-			public const int BoughtPopup = 2131099673;
+			// aapt resource value: 0x7f060021
+			public const int BoughtPopup = 2131099681;
 			
-			// aapt resource value: 0x7f060012
-			public const int Buy = 2131099666;
+			// aapt resource value: 0x7f06001a
+			public const int Buy = 2131099674;
 			
-			// aapt resource value: 0x7f060017
-			public const int CheckingPopup = 2131099671;
+			// aapt resource value: 0x7f06001f
+			public const int CheckingPopup = 2131099679;
+			
+			// aapt resource value: 0x7f06000d
+			public const int Days = 2131099661;
 			
 			// aapt resource value: 0x7f06000c
 			public const int End = 2131099660;
 			
-			// aapt resource value: 0x7f06001c
-			public const int InsufficientBalancePopup = 2131099676;
+			// aapt resource value: 0x7f060013
+			public const int FutureFix = 2131099667;
+			
+			// aapt resource value: 0x7f06000e
+			public const int Hours = 2131099662;
+			
+			// aapt resource value: 0x7f060024
+			public const int InsufficientBalancePopup = 2131099684;
+			
+			// aapt resource value: 0x7f060011
+			public const int JustNow = 2131099665;
 			
 			// aapt resource value: 0x7f060005
 			public const int LastTrade = 2131099653;
 			
-			// aapt resource value: 0x7f060011
-			public const int Mode = 2131099665;
+			// aapt resource value: 0x7f06000f
+			public const int Minutes = 2131099663;
+			
+			// aapt resource value: 0x7f060019
+			public const int Mode = 2131099673;
+			
+			// aapt resource value: 0x7f060012
+			public const int Never = 2131099666;
 			
 			// aapt resource value: 0x7f060009
 			public const int NextTrade = 2131099657;
 			
-			// aapt resource value: 0x7f06001b
-			public const int NoDepositPopup = 2131099675;
+			// aapt resource value: 0x7f060023
+			public const int NoDepositPopup = 2131099683;
 			
-			// aapt resource value: 0x7f060018
-			public const int NothingToTradePopup = 2131099672;
+			// aapt resource value: 0x7f060020
+			public const int NothingToTradePopup = 2131099680;
+			
+			// aapt resource value: 0x7f060014
+			public const int PastFix = 2131099668;
 			
 			// aapt resource value: 0x7f060008
 			public const int Result = 2131099656;
 			
+			// aapt resource value: 0x7f060010
+			public const int Seconds = 2131099664;
+			
 			// aapt resource value: 0x7f06000a
 			public const int Section = 2131099658;
 			
-			// aapt resource value: 0x7f060013
-			public const int Sell = 2131099667;
+			// aapt resource value: 0x7f06001b
+			public const int Sell = 2131099675;
 			
 			// aapt resource value: 0x7f060003
 			public const int ServiceIsDisabled = 2131099651;
 			
-			// aapt resource value: 0x7f060015
-			public const int ServiceIsDisabledPopup = 2131099669;
+			// aapt resource value: 0x7f06001d
+			public const int ServiceIsDisabledPopup = 2131099677;
 			
 			// aapt resource value: 0x7f060004
 			public const int ServiceIsEnabled = 2131099652;
 			
-			// aapt resource value: 0x7f060016
-			public const int ServiceIsEnabledPopup = 2131099670;
+			// aapt resource value: 0x7f06001e
+			public const int ServiceIsEnabledPopup = 2131099678;
 			
 			// aapt resource value: 0x7f060002
 			public const int Settings = 2131099650;
 			
-			// aapt resource value: 0x7f06000d
-			public const int SettingsTitle = 2131099661;
+			// aapt resource value: 0x7f060015
+			public const int SettingsTitle = 2131099669;
 			
-			// aapt resource value: 0x7f06001a
-			public const int SoldPopup = 2131099674;
+			// aapt resource value: 0x7f060022
+			public const int SoldPopup = 2131099682;
 			
 			// aapt resource value: 0x7f06000b
 			public const int Start = 2131099659;
@@ -259,14 +283,14 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060006
 			public const int Time = 2131099654;
 			
-			// aapt resource value: 0x7f060014
-			public const int TradePeriod = 2131099668;
+			// aapt resource value: 0x7f06001c
+			public const int TradePeriod = 2131099676;
 			
-			// aapt resource value: 0x7f06001d
-			public const int UnexpectedErrorPopup = 2131099677;
+			// aapt resource value: 0x7f060025
+			public const int UnexpectedErrorPopup = 2131099685;
 			
-			// aapt resource value: 0x7f06000e
-			public const int UserId = 2131099662;
+			// aapt resource value: 0x7f060016
+			public const int UserId = 2131099670;
 			
 			static String()
 			{

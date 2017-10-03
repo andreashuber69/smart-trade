@@ -17,6 +17,7 @@ namespace SmartTrade
     using Android.Widget;
 
     using static System.FormattableString;
+    using static System.Globalization.CultureInfo;
     using static System.Math;
 
     [Activity(Label = "@string/AppName", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
@@ -88,38 +89,6 @@ namespace SmartTrade
             {
                 return DateTime.UtcNow +
                     TimeSpan.FromMilliseconds(nextTradeTime - Java.Lang.JavaSystem.CurrentTimeMillis());
-            }
-        }
-
-        private static string Format(DateTime? dateTime)
-        {
-            if (dateTime.HasValue)
-            {
-                var span = (DateTime.UtcNow - dateTime).Value;
-
-                return
-                    Format(span.TotalDays, "days") ?? Format(span.TotalHours, "hours") ??
-                    Format(span.TotalMinutes, "minutes") ?? Format(span.TotalSeconds, "seconds") ??
-                    "just now";
-            }
-            else
-            {
-                return "never";
-            }
-        }
-
-        private static string Format(double amount, string unit)
-        {
-            var absoluteAmount = Abs(amount);
-
-            if (absoluteAmount < 2.0)
-            {
-                return null;
-            }
-            else
-            {
-                var formatted = Invariant($"{Math.Floor(absoluteAmount)} {unit}");
-                return amount > 0.0 ? formatted + " ago" : "in " + formatted;
             }
         }
 
@@ -249,12 +218,48 @@ namespace SmartTrade
             var sectionStart = settings.SectionStart;
             var periodEnd = settings.PeriodEnd;
 
-            this.lastTradeTimeTextView.Text = Format(lastTradeTime);
-            this.nextTradeTimeTextView.Text = Format(nextTradeTime);
-            this.sectionStartTextView.Text = Format(sectionStart);
-            this.sectionEndTextView.Text = Format(periodEnd);
+            this.lastTradeTimeTextView.Text = this.Format(lastTradeTime);
+            this.nextTradeTimeTextView.Text = this.Format(nextTradeTime);
+            this.sectionStartTextView.Text = this.Format(sectionStart);
+            this.sectionEndTextView.Text = this.Format(periodEnd);
 
             return new[] { lastTradeTime, nextTradeTime, sectionStart, periodEnd }.Select(t => GetUpdateDelay(t)).Min();
+        }
+
+        private string Format(DateTime? dateTime)
+        {
+            if (dateTime.HasValue)
+            {
+                var span = DateTime.UtcNow - dateTime.Value;
+
+                return
+                    this.Format(span.TotalDays, this.GetString(Resource.String.Days)) ??
+                    this.Format(span.TotalHours, this.GetString(Resource.String.Hours)) ??
+                    this.Format(span.TotalMinutes, this.GetString(Resource.String.Minutes)) ??
+                    this.Format(span.TotalSeconds, this.GetString(Resource.String.Seconds)) ??
+                    this.GetString(Resource.String.JustNow);
+            }
+            else
+            {
+                return this.GetString(Resource.String.Never);
+            }
+        }
+
+        private string Format(double amount, string unitFormat)
+        {
+            var absoluteAmount = Abs(amount);
+
+            if (absoluteAmount < 2.0)
+            {
+                return null;
+            }
+            else
+            {
+                return string.Format(
+                    InvariantCulture,
+                    this.GetString(amount > 0.0 ? Resource.String.PastFix : Resource.String.FutureFix),
+                    string.Format(InvariantCulture, unitFormat, Floor(absoluteAmount)));
+            }
         }
     }
 }

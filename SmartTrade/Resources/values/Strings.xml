@@ -13,6 +13,14 @@
   <string name="Section">Section</string>
   <string name="Start">Start:</string>
   <string name="End">End:</string>
+  <string name="Days">{0} days</string>
+  <string name="Hours">{0} hours</string>
+  <string name="Minutes">{0} minutes</string>
+  <string name="Seconds">{0} seconds</string>
+  <string name="JustNow">just now</string>
+  <string name="Never">never</string>
+  <string name="FutureFix">in {0}</string>
+  <string name="PastFix">{0} ago</string>
   <string name="SettingsTitle">{0}/{1} Trade Settings</string>
   <string name="UserId">Bitstamp User ID</string>
   <string name="ApiKey">API Key</string>
