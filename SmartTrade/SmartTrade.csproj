@@ -64,7 +64,6 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BootCompletedReceiver.cs" />
-    <Compile Include="BtcEurExchangeClient.cs" />
     <Compile Include="ExchangeClient.cs" />
     <Compile Include="IExchangeClient.cs" />
     <Compile Include="ISettings.cs" />
@@ -76,7 +75,7 @@
     <Compile Include="BtcEurTradeService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsActivity.cs" />
-    <Compile Include="TradeService`1.cs" />
+    <Compile Include="TradeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)\..\stylecop.json">

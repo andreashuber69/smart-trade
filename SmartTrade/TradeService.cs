@@ -20,10 +20,8 @@ namespace SmartTrade
     using static Logger;
 
     /// <summary>Buys or sells according to the configured schedule.</summary>
-    /// <typeparam name="TExchangeClient">The type of the exchange client.</typeparam>
     /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
-    internal abstract partial class TradeService<TExchangeClient> : IntentService, INotifyPropertyChanged
-        where TExchangeClient : IExchangeClient, new()
+    internal abstract class TradeService : IntentService, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -74,8 +72,9 @@ namespace SmartTrade
             }
         }
 
-        protected TradeService()
+        protected TradeService(IExchangeClient client)
         {
+            this.client = client;
             this.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
         }
 
@@ -141,7 +140,7 @@ namespace SmartTrade
             }
         }
 
-        private readonly TExchangeClient client = new TExchangeClient();
+        private readonly IExchangeClient client;
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
