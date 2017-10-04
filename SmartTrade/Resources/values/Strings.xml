@@ -11,7 +11,7 @@
   <string name="Balance">Balance:</string>
   <string name="Result">Result:</string>
   <string name="NextTrade">Next Trade</string>
-  <string name="Section">Section</string>
+  <string name="Period">Trade Period</string>
   <string name="Start">Start:</string>
   <string name="End">End:</string>
   <string name="Days">{0} days</string>

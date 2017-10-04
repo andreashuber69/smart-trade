@@ -94,23 +94,23 @@ namespace SmartTrade
 			// aapt resource value: 0x7f070001
 			public const int EnableDisableServiceButton = 2131165185;
 			
-			// aapt resource value: 0x7f070003
-			public const int LastTradeBalance1TextView = 2131165187;
-			
 			// aapt resource value: 0x7f070004
-			public const int LastTradeBalance2TextView = 2131165188;
+			public const int LastTradeBalance1TextView = 2131165188;
 			
 			// aapt resource value: 0x7f070005
-			public const int LastTradeResultTextView = 2131165189;
+			public const int LastTradeBalance2TextView = 2131165189;
 			
-			// aapt resource value: 0x7f070002
-			public const int LastTradeTimeTextView = 2131165186;
+			// aapt resource value: 0x7f070006
+			public const int LastTradeResultTextView = 2131165190;
+			
+			// aapt resource value: 0x7f070003
+			public const int LastTradeTimeTextView = 2131165187;
 			
 			// aapt resource value: 0x7f07000c
 			public const int Mode = 2131165196;
 			
-			// aapt resource value: 0x7f070006
-			public const int NextTradeTimeTextView = 2131165190;
+			// aapt resource value: 0x7f070002
+			public const int NextTradeTimeTextView = 2131165186;
 			
 			// aapt resource value: 0x7f070008
 			public const int SectionEndTextView = 2131165192;
@@ -244,14 +244,14 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060015
 			public const int PastFix = 2131099669;
 			
+			// aapt resource value: 0x7f06000b
+			public const int Period = 2131099659;
+			
 			// aapt resource value: 0x7f060009
 			public const int Result = 2131099657;
 			
 			// aapt resource value: 0x7f060011
 			public const int Seconds = 2131099665;
-			
-			// aapt resource value: 0x7f06000b
-			public const int Section = 2131099659;
 			
 			// aapt resource value: 0x7f06001c
 			public const int Sell = 2131099676;
