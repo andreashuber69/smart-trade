@@ -20,13 +20,18 @@ namespace SmartTrade
     using static System.Globalization.CultureInfo;
     using static System.Math;
 
-    [Activity(Label = "@string/AppName", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class MainActivity : Activity
     {
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             this.SetContentView(Resource.Layout.Main);
+            this.Title = string.Format(
+                InvariantCulture,
+                this.GetString(Resource.String.StatusTitle),
+                this.service.Settings.FirstCurrency,
+                this.service.Settings.SecondCurrency);
 
             this.settingsButton = this.GetSettingsButton();
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton();

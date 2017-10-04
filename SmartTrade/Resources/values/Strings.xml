@@ -2,6 +2,7 @@
 <resources>
   <string name="AppName">Smart Trade</string>
   <string name="AppDescription">Buys or sells on Bitstamp with a unit cost averaging strategy.</string>
+  <string name="StatusTitle">{0}/{1} Status</string>
   <string name="Settings">Settings...</string>
   <string name="ServiceIsDisabled">Service is Disabled</string>
   <string name="ServiceIsEnabled">Service is Enabled</string>
@@ -21,7 +22,7 @@
   <string name="Never">never</string>
   <string name="FutureFix">in {0}</string>
   <string name="PastFix">{0} ago</string>
-  <string name="SettingsTitle">{0}/{1} Trade Settings</string>
+  <string name="SettingsTitle">{0}/{1} Settings</string>
   <string name="UserId">Bitstamp User ID</string>
   <string name="ApiKey">API Key</string>
   <string name="ApiSecret">API Secret</string>
