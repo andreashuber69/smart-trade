@@ -28,10 +28,7 @@ namespace SmartTrade
             base.OnCreate(savedInstanceState);
             this.SetContentView(Resource.Layout.Main);
             this.Title = string.Format(
-                InvariantCulture,
-                this.GetString(Resource.String.StatusTitle),
-                this.service.Settings.FirstCurrency,
-                this.service.Settings.SecondCurrency);
+                InvariantCulture, this.GetString(Resource.String.StatusTitle), this.service.Settings.Ticker);
 
             this.settingsButton = this.GetSettingsButton();
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton();

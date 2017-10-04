@@ -12,6 +12,9 @@ namespace SmartTrade
     /// <summary>Represents the settings that need to be made persistent.</summary>
     internal interface ISettings : INotifyPropertyChanged, IDisposable
     {
+        /// <summary>Gets the ticker symbol of the currency pair associated with the settings.</summary>
+        string Ticker { get; }
+
         /// <summary>Gets the first currency symbol.</summary>
         string FirstCurrency { get; }
 

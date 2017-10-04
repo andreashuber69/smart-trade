@@ -31,6 +31,8 @@ namespace SmartTrade
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public string Ticker => this.FirstCurrency + "/" + this.SecondCurrency;
+
         public string FirstCurrency => this.groupName.Substring(0, 3).ToUpperInvariant();
 
         public string SecondCurrency => this.groupName.Substring(3).ToUpperInvariant();
