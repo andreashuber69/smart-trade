@@ -12,7 +12,7 @@ namespace SmartTrade
     {
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Object is disposed in the ExchangeClient class.")]
         public BtcEurExchangeClient()
-            : base(new BtcEurSettings(), c => c.BtcEur)
+            : base(new Settings("BtcEur"), c => c.BtcEur)
         {
         }
     }

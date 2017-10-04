@@ -24,10 +24,10 @@ namespace SmartTrade
 
     using static Logger;
 
-    /// <summary>The base of all settings classes.</summary>
+    /// <summary>Holds the settings for a given ticker symbol.</summary>
     /// <remarks>The object implementing <see cref="ISharedPreferencesOnSharedPreferenceChangeListener"/> apparently
     /// needs to derive from <see cref="Java.Lang.Object"/>.</remarks>
-    internal abstract class Settings : Java.Lang.Object, ISettings, ISharedPreferencesOnSharedPreferenceChangeListener
+    internal sealed class Settings : Java.Lang.Object, ISettings, ISharedPreferencesOnSharedPreferenceChangeListener
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -137,6 +137,7 @@ namespace SmartTrade
             this.LogCurrentValue(nameof(this.ApiKey), this.ApiKey);
             this.LogCurrentValue(nameof(this.ApiSecret), "<secret>");
             this.LogCurrentValue(nameof(this.Buy), this.Buy);
+            this.LogCurrentValue(nameof(this.TradePeriod), this.TradePeriod);
             this.LogCurrentValue(nameof(this.LastTradeTime), this.LastTradeTime, ":o");
             this.LogCurrentValue(nameof(this.LastResult), this.LastResult);
             this.LogCurrentValue(nameof(this.LastBalanceFirstCurrency), this.LastBalanceFirstCurrency, ":f8");
@@ -159,8 +160,7 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Justification = "Ctor is being called, CA bug?")]
-        protected Settings(string groupName)
+        internal Settings(string groupName)
         {
             this.groupName = groupName;
             this.preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
@@ -168,6 +168,8 @@ namespace SmartTrade
             this.keyStore = KeyStore.GetInstance(KeyStoreName);
             this.keyStore.Load(null);
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         protected sealed override void Dispose(bool disposing)
         {
