@@ -20,7 +20,7 @@ namespace SmartTrade
     using static System.Globalization.CultureInfo;
     using static System.Math;
 
-    [Activity(MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class StatusActivity : Activity
     {
         protected sealed override void OnCreate(Bundle savedInstanceState)
@@ -117,7 +117,7 @@ namespace SmartTrade
 
         private static double GetUpdateDelay(double amount) => Ceiling(amount) - amount;
 
-        private readonly BtcEurTradeService service = new BtcEurTradeService();
+        private readonly TradeService service = new BtcEurTradeService();
         private readonly Handler updateHandler = new Handler();
         private Button settingsButton;
         private ToggleButton enableDisableServiceButton;

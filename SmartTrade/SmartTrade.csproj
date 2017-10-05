@@ -68,6 +68,7 @@
     <Compile Include="IExchangeClient.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="MainActivity.cs" />
     <Compile Include="StatusActivity.cs" />
     <Compile Include="NotificationPopup.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
@@ -89,6 +90,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\SimpleSpinnerDropDownItem.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\Main.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
