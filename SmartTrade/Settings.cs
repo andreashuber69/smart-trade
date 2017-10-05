@@ -264,7 +264,7 @@ namespace SmartTrade
         }
 
         private T GetValue<T>(Func<ISharedPreferences, string, T> getValue, string key) =>
-            getValue(this.preferences, this.groupName + key);
+            getValue(this.preferences, this.GetGroupedKey(key));
 
         private void SetValue<T>(
             Action<ISharedPreferencesEditor, string, T> setValue,
@@ -278,11 +278,9 @@ namespace SmartTrade
                 return;
             }
 
-            var groupedKey = this.groupName + key;
-
             using (var editor = this.preferences.Edit())
             {
-                setValue(editor, groupedKey, newValue);
+                setValue(editor, this.GetGroupedKey(key), newValue);
                 editor.Apply();
             }
 
@@ -358,5 +356,7 @@ namespace SmartTrade
 
         private void LogValue<T>(string prefix, string key, T value, string valueFormat = null) =>
             Info("{0} {1}.{2}{3} = {4" + valueFormat + "}.", prefix, nameof(Settings), this.groupName, key, value);
+
+        private string GetGroupedKey(string key) => this.groupName + key;
     }
 }
