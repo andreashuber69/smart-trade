@@ -21,12 +21,12 @@ namespace SmartTrade
     using static System.Math;
 
     [Activity(MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
-    internal sealed class MainActivity : Activity
+    internal sealed class StatusActivity : Activity
     {
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            this.SetContentView(Resource.Layout.Main);
+            this.SetContentView(Resource.Layout.Status);
             this.Title = string.Format(
                 InvariantCulture, this.GetString(Resource.String.StatusTitle), this.service.Settings.Ticker);
 

@@ -37,7 +37,7 @@ namespace SmartTrade
             this.ContentText = args.Length > 0 ? string.Format(CurrentCulture, contentFormat, args) : contentFormat;
 
             using (var builder = new Notification.Builder(context))
-            using (var intent = new Intent(context, typeof(MainActivity)))
+            using (var intent = new Intent(context, typeof(StatusActivity)))
             using (var style = new Notification.BigTextStyle())
             {
                 builder

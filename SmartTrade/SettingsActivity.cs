@@ -162,7 +162,7 @@ namespace SmartTrade
 
         private void SaveChanges()
         {
-            var intent = new Intent(this, typeof(MainActivity));
+            var intent = new Intent(this, typeof(StatusActivity));
             this.data = new Data(
                 this.data.FirstCurrency,
                 this.data.SecondCurrency,

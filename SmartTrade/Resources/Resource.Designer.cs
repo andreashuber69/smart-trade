@@ -85,47 +85,47 @@ namespace SmartTrade
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f07000a
-			public const int ApiKey = 2131165194;
-			
-			// aapt resource value: 0x7f07000b
-			public const int ApiSecret = 2131165195;
-			
 			// aapt resource value: 0x7f070001
-			public const int EnableDisableServiceButton = 2131165185;
-			
-			// aapt resource value: 0x7f070004
-			public const int LastTradeBalance1TextView = 2131165188;
-			
-			// aapt resource value: 0x7f070005
-			public const int LastTradeBalance2TextView = 2131165189;
-			
-			// aapt resource value: 0x7f070006
-			public const int LastTradeResultTextView = 2131165190;
-			
-			// aapt resource value: 0x7f070003
-			public const int LastTradeTimeTextView = 2131165187;
-			
-			// aapt resource value: 0x7f07000c
-			public const int Mode = 2131165196;
+			public const int ApiKey = 2131165185;
 			
 			// aapt resource value: 0x7f070002
-			public const int NextTradeTimeTextView = 2131165186;
+			public const int ApiSecret = 2131165186;
 			
-			// aapt resource value: 0x7f070008
-			public const int SectionEndTextView = 2131165192;
-			
-			// aapt resource value: 0x7f070007
-			public const int SectionStartTextView = 2131165191;
-			
-			// aapt resource value: 0x7f070000
-			public const int SettingsButton = 2131165184;
-			
-			// aapt resource value: 0x7f07000d
-			public const int TradePeriod = 2131165197;
+			// aapt resource value: 0x7f070006
+			public const int EnableDisableServiceButton = 2131165190;
 			
 			// aapt resource value: 0x7f070009
-			public const int UserId = 2131165193;
+			public const int LastTradeBalance1TextView = 2131165193;
+			
+			// aapt resource value: 0x7f07000a
+			public const int LastTradeBalance2TextView = 2131165194;
+			
+			// aapt resource value: 0x7f07000b
+			public const int LastTradeResultTextView = 2131165195;
+			
+			// aapt resource value: 0x7f070008
+			public const int LastTradeTimeTextView = 2131165192;
+			
+			// aapt resource value: 0x7f070003
+			public const int Mode = 2131165187;
+			
+			// aapt resource value: 0x7f070007
+			public const int NextTradeTimeTextView = 2131165191;
+			
+			// aapt resource value: 0x7f07000d
+			public const int SectionEndTextView = 2131165197;
+			
+			// aapt resource value: 0x7f07000c
+			public const int SectionStartTextView = 2131165196;
+			
+			// aapt resource value: 0x7f070005
+			public const int SettingsButton = 2131165189;
+			
+			// aapt resource value: 0x7f070004
+			public const int TradePeriod = 2131165188;
+			
+			// aapt resource value: 0x7f070000
+			public const int UserId = 2131165184;
 			
 			static Id()
 			{
@@ -141,13 +141,13 @@ namespace SmartTrade
 		{
 			
 			// aapt resource value: 0x7f040000
-			public const int Main = 2130968576;
+			public const int Settings = 2130968576;
 			
 			// aapt resource value: 0x7f040001
-			public const int Settings = 2130968577;
+			public const int SimpleSpinnerDropDownItem = 2130968577;
 			
 			// aapt resource value: 0x7f040002
-			public const int SimpleSpinnerDropDownItem = 2130968578;
+			public const int Status = 2130968578;
 			
 			static Layout()
 			{

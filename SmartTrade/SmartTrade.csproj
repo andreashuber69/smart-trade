@@ -68,7 +68,7 @@
     <Compile Include="IExchangeClient.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="MainActivity.cs" />
+    <Compile Include="StatusActivity.cs" />
     <Compile Include="NotificationPopup.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -93,7 +93,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\Main.axml">
+    <AndroidResource Include="Resources\layout\Status.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\values\Strings.xml" />
