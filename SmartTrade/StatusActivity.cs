@@ -21,7 +21,7 @@ namespace SmartTrade
     using static System.Math;
 
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    internal sealed class StatusActivity : Activity
+    internal sealed class StatusActivity : ActivityBase
     {
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {

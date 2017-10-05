@@ -16,7 +16,7 @@ namespace SmartTrade
     using static System.Globalization.NumberStyles;
 
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
-    internal sealed class SettingsActivity : Activity
+    internal sealed class SettingsActivity : ActivityBase
     {
         public sealed override void OnBackPressed()
         {

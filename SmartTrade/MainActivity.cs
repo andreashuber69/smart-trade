@@ -14,7 +14,7 @@ namespace SmartTrade
     using Android.Widget;
 
     [Activity(Label = "@string/AppName", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
-    internal sealed class MainActivity : Activity, AdapterView.IOnItemClickListener
+    internal sealed class MainActivity : ActivityBase, AdapterView.IOnItemClickListener
     {
         public void OnItemClick(AdapterView parent, View view, int position, long id)
         {
