@@ -262,7 +262,7 @@ namespace SmartTrade
 
                 if (secondAmount > 0)
                 {
-                    Info("Amount to trade is {0} {1}.", secondCurrency, secondAmount);
+                    Info("Amount to trade is {0} {1}.", this.Settings.SecondCurrency, secondAmount);
 
                     // When we trade fiat on Bitstamp, the fee is calculated as implemented in
                     // UnitCostAveragingCalculator.GetFee. We always want to sell a bit less than calculated
@@ -280,7 +280,12 @@ namespace SmartTrade
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance += result.Amount;
                         var bought = result.Amount * result.Price;
-                        popup.Update(this, Resource.String.BoughtPopup, secondCurrency, bought, firstCurrency);
+                        popup.Update(
+                            this,
+                            Resource.String.BoughtPopup,
+                            this.Settings.SecondCurrency,
+                            bought,
+                            this.Settings.FirstCurrency);
 
                         start = result.DateTime;
                         secondAmount = bought + calculator.GetFee(bought);
@@ -293,7 +298,12 @@ namespace SmartTrade
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance -= result.Amount;
                         var sold = result.Amount * result.Price;
-                        popup.Update(this, Resource.String.SoldPopup, secondCurrency, sold, firstCurrency);
+                        popup.Update(
+                            this,
+                            Resource.String.SoldPopup,
+                            this.Settings.SecondCurrency,
+                            sold,
+                            this.Settings.FirstCurrency);
 
                         start = result.DateTime;
                         secondAmount = sold - calculator.GetFee(sold);
@@ -310,7 +320,8 @@ namespace SmartTrade
                 }
 
                 this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
-                var nextTradeTime = calculator.GetNextTime(start, buy ? secondBalance : firstBalance * ticker.Bid) - DateTime.UtcNow;
+                var nextTradeTime =
+                    calculator.GetNextTime(start, buy ? secondBalance : firstBalance * ticker.Bid) - DateTime.UtcNow;
 
                 if (!nextTradeTime.HasValue)
                 {
