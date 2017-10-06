@@ -13,7 +13,7 @@ namespace SmartTrade
     internal interface ISettings : INotifyPropertyChanged, IDisposable
     {
         /// <summary>Gets the ticker symbol of the currency pair associated with the settings.</summary>
-        string Ticker { get; }
+        string TickerSymbol { get; }
 
         /// <summary>Gets the first currency symbol.</summary>
         string FirstCurrency { get; }

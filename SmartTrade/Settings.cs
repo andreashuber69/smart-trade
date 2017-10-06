@@ -31,11 +31,11 @@ namespace SmartTrade
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string Ticker => this.FirstCurrency + "/" + this.SecondCurrency;
+        public string TickerSymbol { get; }
 
-        public string FirstCurrency => this.groupName.Substring(0, 3).ToUpperInvariant();
+        public string FirstCurrency => this.TickerSymbol.Substring(0, this.TickerSymbol.IndexOf('/'));
 
-        public string SecondCurrency => this.groupName.Substring(3).ToUpperInvariant();
+        public string SecondCurrency => this.TickerSymbol.Substring(this.TickerSymbol.IndexOf('/') + 1);
 
         public int CustomerId
         {
@@ -162,9 +162,12 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        internal Settings(string groupName)
+        internal Settings(string tickerSymbol)
         {
-            this.groupName = groupName;
+            this.TickerSymbol = tickerSymbol;
+            var slashPosition = tickerSymbol.IndexOf('/');
+            this.groupName = CamelCase(tickerSymbol.Substring(0, slashPosition)) +
+                CamelCase(tickerSymbol.Substring(slashPosition + 1));
             this.preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
             this.preferences.RegisterOnSharedPreferenceChangeListener(this);
             this.keyStore = KeyStore.GetInstance(KeyStoreName);
@@ -184,6 +187,9 @@ namespace SmartTrade
 
         private const string KeyStoreName = "AndroidKeyStore";
         private const string KeyName = "BitstampApiCredentials";
+
+        private static string CamelCase(string str) =>
+            char.ToUpperInvariant(str[0]) + str.Substring(1).ToLowerInvariant();
 
         private static void GenerateKey()
         {

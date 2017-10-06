@@ -15,7 +15,7 @@ namespace Bitstamp
     {
         internal abstract class CurrencyExchange : ICurrencyExchange
         {
-            public string TickerSymbol => this.tickerSymbol.ToUpperInvariant();
+            public string TickerSymbol { get; }
 
             public async Task<IBalance> GetBalanceAsync() => this.CreateBalance(await this.client.GetBalanceAsync());
 
@@ -25,29 +25,23 @@ namespace Bitstamp
                 return transactions.Select(t => this.CreateTransaction(t)).Where(t => t != null);
             }
 
-            public Task<Ticker> GetTickerAsync() => this.client.GetTickerAsync(this.tickerSymbol);
+            public Task<Ticker> GetTickerAsync() => this.client.GetTickerAsync(this.CurrencyPair);
 
-            public Task<OrderBook> GetOrderBookAsync() => this.client.GetOrderBookAsync(this.tickerSymbol);
+            public Task<OrderBook> GetOrderBookAsync() => this.client.GetOrderBookAsync(this.CurrencyPair);
 
             public Task<PrivateOrder> CreateBuyOrderAsync(decimal amount) =>
-                this.client.CreateBuyOrderAsync(this.tickerSymbol, amount);
+                this.client.CreateBuyOrderAsync(this.CurrencyPair, amount);
 
             public Task<PrivateOrder> CreateBuyOrderAsync(decimal amount, decimal price) =>
-                this.client.CreateBuyOrderAsync(this.tickerSymbol, amount, price);
+                this.client.CreateBuyOrderAsync(this.CurrencyPair, amount, price);
 
             public Task<PrivateOrder> CreateSellOrderAsync(decimal amount) =>
-                this.client.CreateSellOrderAsync(this.tickerSymbol, amount);
+                this.client.CreateSellOrderAsync(this.CurrencyPair, amount);
 
             public Task<PrivateOrder> CreateSellOrderAsync(decimal amount, decimal price) =>
-                this.client.CreateSellOrderAsync(this.tickerSymbol, amount, price);
+                this.client.CreateSellOrderAsync(this.CurrencyPair, amount, price);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            internal CurrencyExchange(BitstampClient client, string tickerSymbol)
-            {
-                this.client = client;
-                this.tickerSymbol = tickerSymbol;
-            }
 
             internal abstract IBalance CreateBalance(Balance balance);
 
@@ -55,8 +49,17 @@ namespace Bitstamp
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            protected CurrencyExchange(BitstampClient client, string tickerSymbol)
+            {
+                this.client = client;
+                this.TickerSymbol = tickerSymbol;
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
             private readonly BitstampClient client;
-            private readonly string tickerSymbol;
+
+            private string CurrencyPair => this.TickerSymbol.Replace("/", string.Empty).ToLowerInvariant();
         }
     }
 }

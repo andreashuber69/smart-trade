@@ -87,36 +87,36 @@ namespace Bitstamp
             return await this.ExecutePostAsync("/api/v2/user_transactions/", args, d => new TransactionCollection(d));
         }
 
-        internal Task<Ticker> GetTickerAsync(string tickerSymbol) =>
-            this.ExecuteGetAsync(Invariant($"/api/v2/ticker/{tickerSymbol}/"), d => new Ticker(d));
+        internal Task<Ticker> GetTickerAsync(string currencyPair) =>
+            this.ExecuteGetAsync(Invariant($"/api/v2/ticker/{currencyPair}/"), d => new Ticker(d));
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Long-running operation.")]
-        internal Task<OrderBook> GetOrderBookAsync(string tickerSymbol) =>
-            this.ExecuteGetAsync(Invariant($"/api/v2/order_book/{tickerSymbol}/"), d => new OrderBook(d));
+        internal Task<OrderBook> GetOrderBookAsync(string currencyPair) =>
+            this.ExecuteGetAsync(Invariant($"/api/v2/order_book/{currencyPair}/"), d => new OrderBook(d));
 
         internal Task<PrivateOrder> CreateBuyOrderAsync(string currencyPair, decimal amount, decimal price) =>
             this.CreateBuyOrderAsync(currencyPair, amount, price, null);
 
         internal Task<PrivateOrder> CreateBuyOrderAsync(
-            string tickerSymbol, decimal amount, decimal price, decimal? limitPrice)
+            string currencyPair, decimal amount, decimal price, decimal? limitPrice)
         {
-            return this.CreateOrderAsync("buy", tickerSymbol, amount, price, limitPrice);
+            return this.CreateOrderAsync("buy", currencyPair, amount, price, limitPrice);
         }
 
-        internal Task<PrivateOrder> CreateBuyOrderAsync(string tickerSymbol, decimal amount) =>
-            this.CreateOrderAsync("buy", tickerSymbol, amount);
+        internal Task<PrivateOrder> CreateBuyOrderAsync(string currencyPair, decimal amount) =>
+            this.CreateOrderAsync("buy", currencyPair, amount);
 
         internal Task<PrivateOrder> CreateSellOrderAsync(string currencyPair, decimal amount, decimal price) =>
             this.CreateSellOrderAsync(currencyPair, amount, price, null);
 
         internal Task<PrivateOrder> CreateSellOrderAsync(
-            string tickerSymbol, decimal amount, decimal price, decimal? limitPrice)
+            string currencyPair, decimal amount, decimal price, decimal? limitPrice)
         {
-            return this.CreateOrderAsync("sell", tickerSymbol, amount, price, limitPrice);
+            return this.CreateOrderAsync("sell", currencyPair, amount, price, limitPrice);
         }
 
-        internal Task<PrivateOrder> CreateSellOrderAsync(string tickerSymbol, decimal amount) =>
-            this.CreateOrderAsync("sell", tickerSymbol, amount);
+        internal Task<PrivateOrder> CreateSellOrderAsync(string currencyPair, decimal amount) =>
+            this.CreateOrderAsync("sell", currencyPair, amount);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
