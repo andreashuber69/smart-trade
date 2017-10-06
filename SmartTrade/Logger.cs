@@ -39,7 +39,7 @@ namespace SmartTrade
             var files = new DirectoryInfo(folder).EnumerateFiles().OrderBy(i => i.Name).ToList();
             FileInfo lastFile;
 
-            if ((files.Count > 0) && (lastFile = files[files.Count - 1]).Length < MaxFileLength)
+            if ((files.Count > 0) && ((lastFile = files[files.Count - 1]).Length < MaxFileLength))
             {
                 return lastFile.FullName;
             }
