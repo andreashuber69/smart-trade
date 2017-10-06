@@ -7,12 +7,14 @@
 namespace SmartTrade
 {
     using Android.App;
+    using Bitstamp;
 
     [Service]
     internal sealed class BtcEurTradeService : TradeService
     {
         public BtcEurTradeService()
-            : base(new ExchangeClient(new Settings("BTC/EUR"), c => c.BtcEur))
+            : base(new ExchangeClient(
+                new Settings(BitstampClient.BtcEurSymbol), c => c.Exchanges[BitstampClient.BtcEurSymbol]))
         {
         }
     }

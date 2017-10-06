@@ -6,12 +6,15 @@
 
 namespace SmartTrade
 {
+    using System.Linq;
+
     using Android.App;
     using Android.Content;
     using Android.Content.PM;
     using Android.OS;
     using Android.Views;
     using Android.Widget;
+    using Bitstamp;
 
     [Activity(Label = "@string/AppName", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class MainActivity : ActivityBase, AdapterView.IOnItemClickListener
@@ -30,8 +33,8 @@ namespace SmartTrade
             this.SetContentView(Resource.Layout.Main);
 
             this.tickersListView = this.FindViewById<ListView>(Resource.Id.TickersListView);
-            this.tickersListView.Adapter =
-                new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleListItem1, new[] { "BTC/EUR" });
+            this.tickersListView.Adapter = new ArrayAdapter<string>(
+                this, Android.Resource.Layout.SimpleListItem1, BitstampClient.TickerSymbols.ToArray());
             this.tickersListView.OnItemClickListener = this;
         }
 

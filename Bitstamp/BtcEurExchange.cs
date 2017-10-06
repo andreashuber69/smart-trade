@@ -14,7 +14,7 @@ namespace Bitstamp
         private sealed class BtcEurExchange : CurrencyExchange
         {
             internal BtcEurExchange(BitstampClient client)
-                : base(client, "BTC/EUR")
+                : base(client, BtcEurSymbol)
             {
             }
 

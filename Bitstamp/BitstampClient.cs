@@ -24,11 +24,21 @@ namespace Bitstamp
     /// <summary>Represents a client for the Bitstamp API.</summary>
     public sealed partial class BitstampClient : IDisposable
     {
+        /// <summary>Gets the BTC/EUR ticker symbol.</summary>
+        public static string BtcEurSymbol => "BTC/EUR";
+
+        /// <summary>Gets the ticker symbol for BTC/EUR.</summary>
+        public static IReadOnlyList<string> TickerSymbols { get; } = new[] { BtcEurSymbol };
+
         /// <summary>Initializes a new instance of the <see cref="BitstampClient"/> class.</summary>
         /// <remarks>An instance initialized with this constructor can be used to access the public API only.</remarks>
         public BitstampClient()
         {
-            this.BtcEur = new BtcEurExchange(this);
+            this.Exchanges =
+                new Dictionary<string, ICurrencyExchange>()
+                {
+                    { BtcEurSymbol, new BtcEurExchange(this) }
+                };
         }
 
         /// <summary>Initializes a new instance of the <see cref="BitstampClient"/> class.</summary>
@@ -57,8 +67,8 @@ namespace Bitstamp
             this.sha256 = new HMACSHA256(Encoding.ASCII.GetBytes(apiSecret));
         }
 
-        /// <summary>Gets the exchange for BTCEUR.</summary>
-        public ICurrencyExchange BtcEur { get; }
+        /// <summary>Gets the supported currency exchanges.</summary>
+        public IReadOnlyDictionary<string, ICurrencyExchange> Exchanges { get; }
 
         /// <summary>Releases all resources used by the <see cref="BitstampClient"/>.</summary>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Dispose must never throw.")]
