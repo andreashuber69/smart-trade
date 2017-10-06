@@ -237,12 +237,10 @@ namespace SmartTrade
                 }
 
                 var fee = balance.Fee;
-                var firstCurrency = exchange.TickerSymbol.Substring(0, 3);
-                var secondCurrency = exchange.TickerSymbol.Substring(3);
 
                 Info(
                     "Current balance is {0} {1}.",
-                    buy ? secondCurrency : firstCurrency,
+                    buy ? this.Settings.SecondCurrency : this.Settings.FirstCurrency,
                     buy ? secondBalance : firstBalance);
 
                 var ticker = await exchange.GetTickerAsync();
