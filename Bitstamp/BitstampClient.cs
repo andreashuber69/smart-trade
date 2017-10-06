@@ -66,11 +66,7 @@ namespace Bitstamp
         {
             try
             {
-                if (this.sha256 != null)
-                {
-                    this.sha256.Dispose();
-                }
-
+                this.sha256?.Dispose();
                 this.httpClient.Dispose();
             }
             catch

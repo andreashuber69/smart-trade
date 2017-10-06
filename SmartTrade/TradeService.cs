@@ -272,8 +272,8 @@ namespace SmartTrade
                     // Since the market can move between the time we query the price and the time our trade is executed,
                     // we cannot just subtract a constant amount (like e.g. 0.001, as we did in tests). Instead, we need
                     // to lower the amount such that it becomes unlikely that the fiat amount will move over the
-                    // threshold. For now we try with 0.1%, which amounts to less than 1 cent for a typical trade.
-                    var secondAmountToTrade = secondAmount * 0.999m;
+                    // threshold. For now we try with 0.2%, which amounts to less than 2 cents for a typical trade.
+                    var secondAmountToTrade = secondAmount * 0.998m;
 
                     if (buy)
                     {
