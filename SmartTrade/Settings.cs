@@ -179,7 +179,12 @@ namespace SmartTrade
         protected sealed override void Dispose(bool disposing)
         {
             this.preferences.UnregisterOnSharedPreferenceChangeListener(this);
-            this.preferences.Dispose();
+
+            // Apparently the call to PreferenceManager.GetDefaultSharedPreferences() in the constructor returns a
+            // singleton instance. Therefore, calling this.preferences.Dispose() here works as intended if and only if
+            // at most one instance of this class ever exists. When multiple instances are in existence,
+            // calling this.preferences.Dispose() here will render invalid this.preferences for *all* Settings objects
+            // as soon as the Settings.Dispose() is called on any object.
             base.Dispose(disposing);
         }
 
