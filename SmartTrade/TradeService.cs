@@ -72,22 +72,17 @@ namespace SmartTrade
             }
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         protected TradeService(IExchangeClient client)
         {
             this.client = client;
             this.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
         }
 
-        protected sealed override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
-                this.client.Dispose();
-            }
+        protected abstract decimal MinTradeAmount { get; }
 
-            base.Dispose(disposing);
-        }
+        protected abstract decimal FeeStep { get; }
 
         protected sealed override async void OnHandleIntent(Intent intent)
         {
@@ -116,11 +111,21 @@ namespace SmartTrade
                 Math.Max(this.Settings.RetryIntervalMilliseconds, intervalMilliseconds));
         }
 
+        protected sealed override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
+                this.client.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private const long MinRetryIntervalMilliseconds = 2 * 60 * 1000;
         private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
-        private static readonly decimal MinFiatAmount = 5;
 
         private static long GetEarliestTradeTime() => Java.Lang.JavaSystem.CurrentTimeMillis() + 5000;
 
@@ -243,9 +248,9 @@ namespace SmartTrade
                     buy ? this.Settings.SecondCurrency : this.Settings.FirstCurrency,
                     buy ? secondBalance : firstBalance);
 
-                // TODO: MinFiatAmount as well as the fee step should be added as abstract properties to this class.
                 var ticker = await exchange.GetTickerAsync();
-                var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(MinFiatAmount, fee, 0.01m);
+                var minSpendable =
+                    UnitCostAveragingCalculator.GetMinSpendableAmount(this.MinTradeAmount, fee, this.FeeStep);
 
                 if ((buy ? secondBalance : firstBalance * ticker.Bid) < minSpendable)
                 {
@@ -254,7 +259,8 @@ namespace SmartTrade
                     return null;
                 }
 
-                var calculator = new UnitCostAveragingCalculator(this.Settings.PeriodEnd.Value, MinFiatAmount, fee, 0.01m);
+                var calculator = new UnitCostAveragingCalculator(
+                    this.Settings.PeriodEnd.Value, this.MinTradeAmount, fee, this.FeeStep);
                 var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);

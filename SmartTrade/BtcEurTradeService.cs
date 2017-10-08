@@ -17,5 +17,11 @@ namespace SmartTrade
                 new Settings(BitstampClient.BtcEurSymbol), c => c.Exchanges[BitstampClient.BtcEurSymbol]))
         {
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        protected sealed override decimal MinTradeAmount => 5m;
+
+        protected sealed override decimal FeeStep => 0.01m;
     }
 }
