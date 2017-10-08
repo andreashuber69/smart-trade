@@ -10,7 +10,7 @@ namespace Bitstamp
 
     using static System.Math;
 
-    /// <summary>Provides methods to calculate how much an when to trade such that a given balance will be spent
+    /// <summary>Provides methods to calculate how much and when to trade such that a given balance will be spent
     /// uniformly over a given period of time.</summary>
     /// <remarks>A traded amount refers to the amount actually traded. A spent amount refers to the amount traded +
     /// exchange fees.</remarks>
@@ -19,16 +19,18 @@ namespace Bitstamp
         /// <summary>Gets the minimal spendable amount.</summary>
         /// <returns>The smallest value greater than or equal to <paramref name="minAmount"/> such that the fee amounts
         /// to whole cents.</returns>
-        public static decimal GetMinSpendableAmount(decimal minAmount, decimal feePercent) =>
-            Ceiling(minAmount * feePercent) / feePercent;
+        public static decimal GetMinSpendableAmount(decimal minAmount, decimal feePercent, decimal feeStep) =>
+            GetMinSpendableAmountImpl(minAmount, GetFeeStepsPerUnit(feePercent, feeStep));
 
         /// <summary>Initializes a new instance of the <see cref="UnitCostAveragingCalculator"/> class.</summary>
         /// <param name="periodEnd">The UTC point in time when the balance should reach zero.</param>
         /// <param name="minAmount">The minimal amount that can be traded.</param>
         /// <param name="feePercent">The fee that will be added to the traded amount in percent.</param>
+        /// <param name="feeStep">The smallest amount the trading fee can be incremented by.</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="minAmount"/> and/or
-        /// <paramref name="feePercent"/> are outside of the allowed range.</exception>
-        public UnitCostAveragingCalculator(DateTime periodEnd, decimal minAmount, decimal feePercent)
+        /// <paramref name="feePercent"/> and/or <paramref name="feeStep"/> are outside of the allowed range.
+        /// </exception>
+        public UnitCostAveragingCalculator(DateTime periodEnd, decimal minAmount, decimal feePercent, decimal feeStep)
         {
             if (minAmount < 0)
             {
@@ -40,9 +42,15 @@ namespace Bitstamp
                 throw new ArgumentOutOfRangeException(nameof(feePercent), "Must not be negative.");
             }
 
+            if (feeStep <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(feeStep), "Must be positive.");
+            }
+
             this.periodEnd = periodEnd;
             this.minAmount = minAmount;
-            this.feePercent = feePercent;
+            this.feeStepsPerUnit = GetFeeStepsPerUnit(feePercent, feeStep);
+            this.feeStep = feeStep;
         }
 
         /// <summary>Gets the amount to spend right now.</summary>
@@ -64,7 +72,7 @@ namespace Bitstamp
             var duration = this.periodEnd - startTime;
             var balanceTarget = (1M - ((decimal)elapsed.Ticks / duration.Ticks)) * startBalance;
             var amountTarget = Min(startBalance - balanceTarget, Min(maxAmount, startBalance));
-            var amountToSpend = Floor(amountTarget * this.feePercent) / this.feePercent;
+            var amountToSpend = Floor(amountTarget * this.feeStepsPerUnit) / this.feeStepsPerUnit;
 
             if (amountToSpend < this.MinSpendableAmount)
             {
@@ -82,7 +90,7 @@ namespace Bitstamp
         }
 
         /// <summary>Gets the trading fee for <paramref name="amount"/>.</summary>
-        public decimal GetFee(decimal amount) => Ceiling(amount * this.feePercent) / 100;
+        public decimal GetFee(decimal amount) => Ceiling(amount * this.feeStepsPerUnit) * this.feeStep;
 
         /// <summary>Gets the UTC time at which <see cref="GetAmount"/> can return a non-zero number.</summary>
         /// <param name="lastTradeTime">The UTC point in time of the last trade.</param>
@@ -104,10 +112,16 @@ namespace Bitstamp
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        private static decimal GetMinSpendableAmountImpl(decimal minAmount, decimal feeStepsPerUnit) =>
+            Ceiling(minAmount * feeStepsPerUnit) / feeStepsPerUnit;
+
+        private static decimal GetFeeStepsPerUnit(decimal feePercent, decimal feeStep) => feePercent / 100m / feeStep;
+
         private readonly DateTime periodEnd;
         private readonly decimal minAmount;
-        private readonly decimal feePercent;
+        private readonly decimal feeStepsPerUnit;
+        private readonly decimal feeStep;
 
-        private decimal MinSpendableAmount => GetMinSpendableAmount(this.minAmount, this.feePercent);
+        private decimal MinSpendableAmount => GetMinSpendableAmountImpl(this.minAmount, this.feeStepsPerUnit);
     }
 }

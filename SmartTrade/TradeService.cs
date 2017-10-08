@@ -243,8 +243,9 @@ namespace SmartTrade
                     buy ? this.Settings.SecondCurrency : this.Settings.FirstCurrency,
                     buy ? secondBalance : firstBalance);
 
+                // TODO: MinFiatAmount as well as the fee step should be added as abstract properties to this class.
                 var ticker = await exchange.GetTickerAsync();
-                var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(MinFiatAmount, fee);
+                var minSpendable = UnitCostAveragingCalculator.GetMinSpendableAmount(MinFiatAmount, fee, 0.01m);
 
                 if ((buy ? secondBalance : firstBalance * ticker.Bid) < minSpendable)
                 {
@@ -253,7 +254,7 @@ namespace SmartTrade
                     return null;
                 }
 
-                var calculator = new UnitCostAveragingCalculator(this.Settings.PeriodEnd.Value, MinFiatAmount, fee);
+                var calculator = new UnitCostAveragingCalculator(this.Settings.PeriodEnd.Value, MinFiatAmount, fee, 0.01m);
                 var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);
@@ -264,13 +265,23 @@ namespace SmartTrade
                 {
                     Info("Amount to trade is {0} {1}.", this.Settings.SecondCurrency, secondAmount);
 
-                    // When we trade fiat on Bitstamp, the fee is calculated as implemented in
-                    // UnitCostAveragingCalculator.GetFee. We always want to sell a bit less than calculated
-                    // by UnitCostAveragingCalculator.GetAmount, otherwise we end up paying 1 cent more than necessary.
+                    // When we trade on Bitstamp, the fee is calculated as implemented in
+                    // UnitCostAveragingCalculator.GetFee. The fee is charged in discrete steps (e.g. 0.01 for fiat and
+                    // 0.00001 for BTC) and always rounded up to the next step. We therefore always want to sell a bit
+                    // less than calculated by UnitCostAveragingCalculator.GetAmount, otherwise we end up paying a fee
+                    // step more than necessary.
                     // Since the market can move between the time we query the price and the time our trade is executed,
-                    // we cannot just subtract a constant amount (like e.g. 0.001, as we did in tests). Instead, we need
-                    // to lower the amount such that it becomes unlikely that the fiat amount will move over the
-                    // threshold. For now we try with 0.2%, which amounts to less than 2 cents for a typical trade.
+                    // we cannot just subtract a constant amount (like e.g. 0.001, as we did in tests). In general we
+                    // need to lower the amount such that the average total paid to trade a given amount is equal to the
+                    // total we pay due to lower than optimal amounts.
+                    // If we lowered the trade amount by just one satoshi, we would expect that roughly half of the
+                    // trades pay higher fees than intended. With a 0.25% fee, for a goal of buying EUR 8000 worth of
+                    // BTC we'd thus end up with 500 EUR 8 trades paying 3 cents in fees and 500 EUR 8 trades paying 2
+                    // cents in fees. We'd therefore pay EUR 8025 for EUR 8000 worth of BTC.
+                    // If we lowered the amount per trade by 0.1%, we end up having to put in 1001 EUR 7.992 trades. If
+                    // that reduced the number of trades going over the threshold to 20%, we'd get 200 trades paying 3
+                    // cents in fees and 801 trades paying 2 cents in fees. We'd therefore pay ~EUR 8022 for EUR 8000
+                    // worth of BTC.
                     var secondAmountToTrade = secondAmount * 0.998m;
 
                     if (buy)
