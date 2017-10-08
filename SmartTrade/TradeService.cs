@@ -46,7 +46,7 @@ namespace SmartTrade
             }
         }
 
-        internal ISettings Settings => this.client.Settings;
+        internal ISettings Settings { get; }
 
         internal void ScheduleTrade()
         {
@@ -74,10 +74,12 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        protected TradeService(IExchangeClient client)
+        protected TradeService(string tickerSymbol)
         {
-            this.client = client;
+            this.tickerSymbol = tickerSymbol;
+            this.Settings = new Settings(this.tickerSymbol);
             this.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
+            this.client = new BitstampClient(this.Settings.CustomerId, this.Settings.ApiKey, this.Settings.ApiSecret);
         }
 
         protected abstract decimal MinTradeAmount { get; }
@@ -115,8 +117,9 @@ namespace SmartTrade
         {
             if (disposing)
             {
-                this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
                 this.client.Dispose();
+                this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
+                this.Settings.Dispose();
             }
 
             base.Dispose(disposing);
@@ -145,7 +148,10 @@ namespace SmartTrade
             }
         }
 
-        private readonly IExchangeClient client;
+        private readonly string tickerSymbol;
+        private readonly BitstampClient client;
+
+        private ICurrencyExchange Exchange => this.client.Exchanges[this.tickerSymbol];
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -223,14 +229,13 @@ namespace SmartTrade
         {
             try
             {
-                var exchange = this.client.CurrencyExchange;
                 this.Settings.LastTradeTime = DateTime.UtcNow;
-                var balance = await exchange.GetBalanceAsync();
+                var balance = await this.Exchange.GetBalanceAsync();
                 var firstBalance = balance.FirstCurrency;
                 var secondBalance = balance.SecondCurrency;
                 this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
                 this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
-                var transactions = await this.GetTransactions(exchange);
+                var transactions = await this.GetTransactions(this.Exchange);
                 var buy = this.Settings.Buy;
                 this.SetPeriod(transactions, buy);
 
@@ -248,7 +253,7 @@ namespace SmartTrade
                     buy ? this.Settings.SecondCurrency : this.Settings.FirstCurrency,
                     buy ? secondBalance : firstBalance);
 
-                var ticker = await exchange.GetTickerAsync();
+                var ticker = await this.Exchange.GetTickerAsync();
                 var minSpendable =
                     UnitCostAveragingCalculator.GetMinSpendableAmount(this.MinTradeAmount, fee, this.FeeStep);
 
@@ -293,7 +298,7 @@ namespace SmartTrade
                     if (buy)
                     {
                         var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Ask, 8);
-                        var result = await exchange.CreateBuyOrderAsync(firstAmountToTrade);
+                        var result = await this.Exchange.CreateBuyOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance += result.Amount;
                         var bought = result.Amount * result.Price;
@@ -311,7 +316,7 @@ namespace SmartTrade
                     else
                     {
                         var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Bid, 8);
-                        var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
+                        var result = await this.Exchange.CreateSellOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance -= result.Amount;
                         var sold = result.Amount * result.Price;
