@@ -9,6 +9,7 @@ namespace SmartTrade
     using System;
     using Android.App;
     using Android.Content;
+    using Bitstamp;
 
     using static Logger;
     using static System.Globalization.CultureInfo;
@@ -40,6 +41,9 @@ namespace SmartTrade
             using (var intent = new Intent(context, typeof(StatusActivity)))
             using (var style = new Notification.BigTextStyle())
             {
+                // TODO: The symbol should be passed in as a parameter. Moreover, the intent that the popup is expected
+                // to start when touched, should also be a parameter, as the boot activity should go to the main screen.
+                new StatusActivity.Data(BitstampClient.BtcEurSymbol).Put(intent);
                 builder
                     .SetSmallIcon(Resource.Drawable.ic_stat_name)
                     .SetContentTitle(context.Resources.GetString(Resource.String.AppName))

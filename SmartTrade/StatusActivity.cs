@@ -15,7 +15,6 @@ namespace SmartTrade
     using Android.Content.PM;
     using Android.OS;
     using Android.Widget;
-    using Bitstamp;
 
     using static System.FormattableString;
     using static System.Globalization.CultureInfo;
@@ -24,10 +23,24 @@ namespace SmartTrade
     [Activity(ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class StatusActivity : ActivityBase
     {
+        internal sealed class Data
+        {
+            internal static Data Get(Intent intent) => new Data(intent.GetStringExtra(nameof(TickerSymbol)));
+
+            internal Data(string tickerSymbol) => this.TickerSymbol = tickerSymbol;
+
+            internal string TickerSymbol { get; }
+
+            internal void Put(Intent intent) => intent.PutExtra(nameof(this.TickerSymbol), this.TickerSymbol);
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         protected sealed override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             this.SetContentView(Resource.Layout.Status);
+            this.service = TradeService.Create(Data.Get(this.Intent).TickerSymbol);
             this.Title = string.Format(
                 InvariantCulture, this.GetString(Resource.String.StatusTitle), this.service.Settings.TickerSymbol);
 
@@ -118,8 +131,8 @@ namespace SmartTrade
 
         private static double GetUpdateDelay(double amount) => Ceiling(amount) - amount;
 
-        private readonly TradeService service = TradeService.Create(BitstampClient.BtcEurSymbol);
         private readonly Handler updateHandler = new Handler();
+        private TradeService service;
         private Button settingsButton;
         private ToggleButton enableDisableServiceButton;
         private TextView lastTradeTimeTextView;

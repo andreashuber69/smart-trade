@@ -92,6 +92,8 @@ namespace SmartTrade
             this.feeStep = feeStep;
             this.Settings = new Settings(this.tickerSymbol);
             this.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
+
+            // TODO: Maybe it's better to only create the client in the TradeAsync method.
             this.client = new BitstampClient(this.Settings.CustomerId, this.Settings.ApiKey, this.Settings.ApiSecret);
         }
 
