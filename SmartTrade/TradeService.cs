@@ -33,6 +33,8 @@ namespace SmartTrade
             {
                 case BitstampClient.BtcEurSymbol:
                     return new BtcEurTradeService();
+                case BitstampClient.LtcBtcSymbol:
+                    return new LtcBtcTradeService();
                 default:
                     throw new ArgumentException("Unsupported symbol.", nameof(tickerSymbol));
             }

@@ -11,17 +11,17 @@ namespace Bitstamp
     /// <summary>Represents a client for the Bitstamp API.</summary>
     public sealed partial class BitstampClient
     {
-        private sealed class BtcEurExchange : CurrencyExchange
+        private sealed class LtcBtcExchange : CurrencyExchange
         {
-            internal BtcEurExchange(BitstampClient client)
-                : base(client, BtcEurSymbol)
+            internal LtcBtcExchange(BitstampClient client)
+                : base(client, LtcBtcSymbol)
             {
             }
 
-            internal sealed override IBalance CreateBalance(Balance balance) => new BtcEurBalance(balance);
+            internal sealed override IBalance CreateBalance(Balance balance) => new LtcBtcBalance(balance);
 
             internal sealed override ITransaction CreateTransaction(Transaction transaction) =>
-                IsRelevant(transaction) ? new BtcEurTransaction(transaction) : null;
+                IsRelevant(transaction) ? new LtcBtcTransaction(transaction) : null;
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -32,32 +32,32 @@ namespace Bitstamp
                     case TransactionType.Deposit:
                     case TransactionType.Withdrawal:
                     case TransactionType.SubaccountTransfer:
-                        return (transaction.Btc != 0m) || (transaction.Eur != 0m);
+                        return (transaction.Ltc != 0m) || (transaction.Btc != 0m);
                     case TransactionType.MarketTrade:
-                        return transaction.BtcEur.HasValue;
+                        return transaction.LtcBtc.HasValue;
                     default:
                         return false;
                 }
             }
 
-            private sealed class BtcEurBalance : IBalance
+            private sealed class LtcBtcBalance : IBalance
             {
-                public decimal FirstCurrency => this.balance.BtcAvailable;
+                public decimal FirstCurrency => this.balance.LtcAvailable;
 
-                public decimal SecondCurrency => this.balance.EurAvailable;
+                public decimal SecondCurrency => this.balance.BtcAvailable;
 
-                public decimal Fee => this.balance.BtcEurFee;
+                public decimal Fee => this.balance.LtcBtcFee;
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                internal BtcEurBalance(Balance balance) => this.balance = balance;
+                internal LtcBtcBalance(Balance balance) => this.balance = balance;
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 private readonly Balance balance;
             }
 
-            private sealed class BtcEurTransaction : ITransaction
+            private sealed class LtcBtcTransaction : ITransaction
             {
                 public int Id => this.transaction.Id;
 
@@ -65,11 +65,11 @@ namespace Bitstamp
 
                 public TransactionType TransactionType => this.transaction.TransactionType;
 
-                public decimal FirstAmount => this.transaction.Btc;
+                public decimal FirstAmount => this.transaction.Ltc.Value;
 
-                public decimal SecondAmount => this.transaction.Eur;
+                public decimal SecondAmount => this.transaction.Btc;
 
-                public decimal? Price => this.transaction.BtcEur;
+                public decimal? Price => this.transaction.LtcBtc;
 
                 public decimal Fee => this.transaction.Fee;
 
@@ -77,7 +77,7 @@ namespace Bitstamp
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                internal BtcEurTransaction(Transaction transaction) => this.transaction = transaction;
+                internal LtcBtcTransaction(Transaction transaction) => this.transaction = transaction;
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -27,8 +27,11 @@ namespace Bitstamp
         /// <summary>The BTC/EUR ticker symbol.</summary>
         public const string BtcEurSymbol = "BTC/EUR";
 
+        /// <summary>The LTC/BTC ticker symbol.</summary>
+        public const string LtcBtcSymbol = "LTC/BTC";
+
         /// <summary>Gets all supported ticker symbols.</summary>
-        public static IReadOnlyList<string> TickerSymbols { get; } = new[] { BtcEurSymbol };
+        public static IReadOnlyList<string> TickerSymbols { get; } = new[] { BtcEurSymbol, LtcBtcSymbol };
 
         /// <summary>Initializes a new instance of the <see cref="BitstampClient"/> class.</summary>
         /// <remarks>An instance initialized with this constructor can be used to access the public API only.</remarks>
@@ -37,7 +40,8 @@ namespace Bitstamp
             this.Exchanges =
                 new Dictionary<string, ICurrencyExchange>()
                 {
-                    { BtcEurSymbol, new BtcEurExchange(this) }
+                    { BtcEurSymbol, new BtcEurExchange(this) },
+                    { LtcBtcSymbol, new LtcBtcExchange(this) }
                 };
         }
 
