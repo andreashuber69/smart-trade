@@ -15,6 +15,7 @@ namespace SmartTrade
     using Android.Content.PM;
     using Android.OS;
     using Android.Widget;
+    using Bitstamp;
 
     using static System.FormattableString;
     using static System.Globalization.CultureInfo;
@@ -117,7 +118,7 @@ namespace SmartTrade
 
         private static double GetUpdateDelay(double amount) => Ceiling(amount) - amount;
 
-        private readonly TradeService service = new BtcEurTradeService();
+        private readonly TradeService service = TradeService.Create(BitstampClient.BtcEurSymbol);
         private readonly Handler updateHandler = new Handler();
         private Button settingsButton;
         private ToggleButton enableDisableServiceButton;

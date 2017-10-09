@@ -9,18 +9,21 @@ namespace SmartTrade
     using Android.App;
     using Bitstamp;
 
-    [Service]
-    internal sealed class BtcEurTradeService : TradeService
+    internal abstract partial class TradeService
     {
-        public BtcEurTradeService()
-            : base(BitstampClient.BtcEurSymbol)
+        [Service]
+        private sealed class BtcEurTradeService : TradeService
         {
+            public BtcEurTradeService()
+                : base(BitstampClient.BtcEurSymbol)
+            {
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            protected sealed override decimal MinTradeAmount => 5m;
+
+            protected sealed override decimal FeeStep => 0.01m;
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        protected sealed override decimal MinTradeAmount => 5m;
-
-        protected sealed override decimal FeeStep => 0.01m;
     }
 }

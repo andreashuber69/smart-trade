@@ -6,13 +6,16 @@
 
 namespace SmartTrade
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Text;
 
     using Android.App;
     using Android.Content;
+    using Bitstamp;
 
-    /// <summary>Sets or cancels an alarm which calls the <see cref="BtcEurTradeService"/> depending on whether
-    /// trading is currently enabled.</summary>
+    /// <summary>Calls <see cref="TradeService.ScheduleTrade()"/> for all ticker symbols.</summary>
+    /// <remarks>Notifies the user about enabled and disabled services.</remarks>
     [BroadcastReceiver(Permission = "RECEIVE_BOOT_COMPLETED")]
     [IntentFilter(new string[] { Intent.ActionBootCompleted })]
     [SuppressMessage("Microsoft.Performance", "CA1812:AvoidUninstantiatedInternalClasses", Justification = "Instantiated through reflection.")]
@@ -22,13 +25,19 @@ namespace SmartTrade
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intentional, we want the popup to remain")]
         public sealed override void OnReceive(Context context, Intent intent)
         {
-            using (var service = new BtcEurTradeService())
+            var statuses = new StringBuilder();
+
+            foreach (var tickerSymbol in BitstampClient.TickerSymbols)
             {
-                service.ScheduleTrade();
-                var id = service.IsEnabled ?
-                    Resource.String.ServiceIsEnabledPopup : Resource.String.ServiceIsDisabledPopup;
-                new NotificationPopup(context, id).ToString();
+                using (var service = TradeService.Create(tickerSymbol))
+                {
+                    service.ScheduleTrade();
+                    var id = service.IsEnabled ? Resource.String.ServiceIsEnabled : Resource.String.ServiceIsDisabled;
+                    statuses.AppendFormat("{0}: {1}{2}", tickerSymbol, context.GetString(id), Environment.NewLine);
+                }
             }
+
+            new NotificationPopup(context, Resource.String.BootPopup, statuses.ToString()).ToString();
         }
     }
 }

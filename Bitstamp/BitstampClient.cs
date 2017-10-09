@@ -24,10 +24,10 @@ namespace Bitstamp
     /// <summary>Represents a client for the Bitstamp API.</summary>
     public sealed partial class BitstampClient : IDisposable
     {
-        /// <summary>Gets the BTC/EUR ticker symbol.</summary>
-        public static string BtcEurSymbol => "BTC/EUR";
+        /// <summary>The BTC/EUR ticker symbol.</summary>
+        public const string BtcEurSymbol = "BTC/EUR";
 
-        /// <summary>Gets the ticker symbol for BTC/EUR.</summary>
+        /// <summary>Gets all supported ticker symbols.</summary>
         public static IReadOnlyList<string> TickerSymbols { get; } = new[] { BtcEurSymbol };
 
         /// <summary>Initializes a new instance of the <see cref="BitstampClient"/> class.</summary>

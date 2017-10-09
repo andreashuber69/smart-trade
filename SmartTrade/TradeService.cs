@@ -21,11 +21,22 @@ namespace SmartTrade
 
     /// <summary>Buys or sells according to the configured schedule.</summary>
     /// <remarks>Reschedules itself after each buy/sell attempt.</remarks>
-    internal abstract class TradeService : IntentService, INotifyPropertyChanged
+    internal abstract partial class TradeService : IntentService, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        internal static TradeService Create(string tickerSymbol)
+        {
+            switch (tickerSymbol)
+            {
+                case BitstampClient.BtcEurSymbol:
+                    return new BtcEurTradeService();
+                default:
+                    throw new ArgumentException("Unsupported symbol.", nameof(tickerSymbol));
+            }
+        }
 
         internal bool IsEnabled
         {
