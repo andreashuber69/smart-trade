@@ -20,8 +20,11 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        internal NotificationPopup(Context context, int contentFormatId, params object[] args)
+        internal NotificationPopup(
+            Context context, Type activityType, Action<Intent> addArguments, int contentFormatId, params object[] args)
         {
+            this.activityType = activityType;
+            this.addArguments = addArguments;
             this.manager = NotificationManager.FromContext(context);
             this.id = (int)(Java.Lang.JavaSystem.CurrentTimeMillis() & int.MaxValue);
             this.Update(context, contentFormatId, args);
@@ -38,12 +41,10 @@ namespace SmartTrade
             this.ContentText = args.Length > 0 ? string.Format(CurrentCulture, contentFormat, args) : contentFormat;
 
             using (var builder = new Notification.Builder(context))
-            using (var intent = new Intent(context, typeof(StatusActivity)))
+            using (var intent = new Intent(context, this.activityType))
             using (var style = new Notification.BigTextStyle())
             {
-                // TODO: The symbol should be passed in as a parameter. Moreover, the intent that the popup is expected
-                // to start when touched, should also be a parameter, as the boot activity should go to the main screen.
-                new StatusActivity.Data(BitstampClient.BtcEurSymbol).Put(intent);
+                this.addArguments(intent);
                 builder
                     .SetSmallIcon(Resource.Drawable.ic_stat_name)
                     .SetContentTitle(context.Resources.GetString(Resource.String.AppName))
@@ -59,6 +60,8 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        private readonly Type activityType;
+        private readonly Action<Intent> addArguments;
         private readonly NotificationManager manager;
         private readonly int id;
     }

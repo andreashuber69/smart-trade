@@ -115,7 +115,9 @@ namespace SmartTrade
                 return;
             }
 
-            var popup = new NotificationPopup(this, Resource.String.CheckingPopup);
+            Action<Intent> addArguments = i => new StatusActivity.Data(this.tickerSymbol).Put(i);
+            var popup =
+                new NotificationPopup(this, typeof(StatusActivity), addArguments, Resource.String.CheckingPopup);
             var intervalMilliseconds = (long)(await this.TradeAsync(popup)).GetValueOrDefault().TotalMilliseconds;
             this.ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
                 Math.Max(this.Settings.RetryIntervalMilliseconds, intervalMilliseconds));
