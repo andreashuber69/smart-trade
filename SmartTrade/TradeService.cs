@@ -85,17 +85,15 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        protected TradeService(string tickerSymbol)
+        protected TradeService(string tickerSymbol, decimal minTradeAmount, decimal feeStep)
         {
             this.tickerSymbol = tickerSymbol;
+            this.minTradeAmount = minTradeAmount;
+            this.feeStep = feeStep;
             this.Settings = new Settings(this.tickerSymbol);
             this.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
             this.client = new BitstampClient(this.Settings.CustomerId, this.Settings.ApiKey, this.Settings.ApiSecret);
         }
-
-        protected abstract decimal MinTradeAmount { get; }
-
-        protected abstract decimal FeeStep { get; }
 
         protected sealed override async void OnHandleIntent(Intent intent)
         {
@@ -160,6 +158,8 @@ namespace SmartTrade
         }
 
         private readonly string tickerSymbol;
+        private readonly decimal minTradeAmount;
+        private readonly decimal feeStep;
         private readonly BitstampClient client;
 
         private ICurrencyExchange Exchange => this.client.Exchanges[this.tickerSymbol];
@@ -266,7 +266,7 @@ namespace SmartTrade
 
                 var ticker = await this.Exchange.GetTickerAsync();
                 var minSpendable =
-                    UnitCostAveragingCalculator.GetMinSpendableAmount(this.MinTradeAmount, fee, this.FeeStep);
+                    UnitCostAveragingCalculator.GetMinSpendableAmount(this.minTradeAmount, fee, this.feeStep);
 
                 if ((buy ? secondBalance : firstBalance * ticker.Bid) < minSpendable)
                 {
@@ -276,7 +276,7 @@ namespace SmartTrade
                 }
 
                 var calculator = new UnitCostAveragingCalculator(
-                    this.Settings.PeriodEnd.Value, this.MinTradeAmount, fee, this.FeeStep);
+                    this.Settings.PeriodEnd.Value, this.minTradeAmount, fee, this.feeStep);
                 var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);

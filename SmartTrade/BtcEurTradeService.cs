@@ -15,15 +15,9 @@ namespace SmartTrade
         private sealed class BtcEurTradeService : TradeService
         {
             public BtcEurTradeService()
-                : base(BitstampClient.BtcEurSymbol)
+                : base(BitstampClient.BtcEurSymbol, 5m, 0.01m)
             {
             }
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            protected sealed override decimal MinTradeAmount => 5m;
-
-            protected sealed override decimal FeeStep => 0.01m;
         }
     }
 }
