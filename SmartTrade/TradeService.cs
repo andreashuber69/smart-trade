@@ -92,9 +92,6 @@ namespace SmartTrade
             this.feeStep = feeStep;
             this.Settings = new Settings(this.tickerSymbol);
             this.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
-
-            // TODO: Maybe it's better to only create the client in the TradeAsync method.
-            this.client = new BitstampClient(this.Settings.CustomerId, this.Settings.ApiKey, this.Settings.ApiSecret);
         }
 
         protected sealed override async void OnHandleIntent(Intent intent)
@@ -128,7 +125,6 @@ namespace SmartTrade
         {
             if (disposing)
             {
-                this.client.Dispose();
                 this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
                 this.Settings.Dispose();
             }
@@ -162,9 +158,6 @@ namespace SmartTrade
         private readonly string tickerSymbol;
         private readonly decimal minTradeAmount;
         private readonly decimal feeStep;
-        private readonly BitstampClient client;
-
-        private ICurrencyExchange Exchange => this.client.Exchanges[this.tickerSymbol];
 
         private void OnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -240,15 +233,18 @@ namespace SmartTrade
         /// balance is insufficient or if there was a temporary error.</returns>
         private async Task<TimeSpan?> TradeAsync(NotificationPopup popup)
         {
+            var client = new BitstampClient(this.Settings.CustomerId, this.Settings.ApiKey, this.Settings.ApiSecret);
+
             try
             {
+                var exchange = client.Exchanges[this.tickerSymbol];
                 this.Settings.LastTradeTime = DateTime.UtcNow;
-                var balance = await this.Exchange.GetBalanceAsync();
+                var balance = await exchange.GetBalanceAsync();
                 var firstBalance = balance.FirstCurrency;
                 var secondBalance = balance.SecondCurrency;
                 this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
                 this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
-                var transactions = await this.GetTransactions(this.Exchange);
+                var transactions = await this.GetTransactions(exchange);
                 var buy = this.Settings.Buy;
                 this.SetPeriod(transactions, buy);
 
@@ -264,7 +260,7 @@ namespace SmartTrade
                     buy ? this.Settings.SecondCurrency : this.Settings.FirstCurrency,
                     buy ? secondBalance : firstBalance);
 
-                var ticker = await this.Exchange.GetTickerAsync();
+                var ticker = await exchange.GetTickerAsync();
                 var calculator = new UnitCostAveragingCalculator(
                     this.Settings.PeriodEnd.Value, this.minTradeAmount, balance.Fee, this.feeStep);
 
@@ -308,7 +304,7 @@ namespace SmartTrade
                     if (buy)
                     {
                         var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Ask, 8);
-                        var result = await this.Exchange.CreateBuyOrderAsync(firstAmountToTrade);
+                        var result = await exchange.CreateBuyOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance += result.Amount;
                         var bought = result.Amount * result.Price;
@@ -326,7 +322,7 @@ namespace SmartTrade
                     else
                     {
                         var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Bid, 8);
-                        var result = await this.Exchange.CreateSellOrderAsync(firstAmountToTrade);
+                        var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance -= result.Amount;
                         var sold = result.Amount * result.Price;
@@ -383,6 +379,7 @@ namespace SmartTrade
                 this.Settings.RetryIntervalMilliseconds = Math.Max(
                     MinRetryIntervalMilliseconds,
                     Math.Min(MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
+                client.Dispose();
             }
         }
     }
