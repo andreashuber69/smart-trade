@@ -257,31 +257,27 @@ namespace SmartTrade
                     return null;
                 }
 
-                var fee = balance.Fee;
-
                 Info(
                     "Current balance is {0} {1}.",
                     buy ? this.Settings.SecondCurrency : this.Settings.FirstCurrency,
                     buy ? secondBalance : firstBalance);
 
                 var ticker = await this.Exchange.GetTickerAsync();
-                var minSpendable =
-                    UnitCostAveragingCalculator.GetMinSpendableAmount(this.minTradeAmount, fee, this.feeStep);
+                var calculator = new UnitCostAveragingCalculator(
+                    this.Settings.PeriodEnd.Value, this.minTradeAmount, balance.Fee, this.feeStep);
 
-                if ((buy ? secondBalance : firstBalance * ticker.Bid) < minSpendable)
+                if ((buy ? secondBalance : firstBalance * ticker.Bid) < calculator.MinOptimalTradeAmount)
                 {
                     this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
                     popup.Update(this, Resource.String.InsufficientBalancePopup);
                     return null;
                 }
 
-                var calculator = new UnitCostAveragingCalculator(
-                    this.Settings.PeriodEnd.Value, this.minTradeAmount, fee, this.feeStep);
                 var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);
                 var startBalance = buy ? secondBalance : firstBalance * ticker.Bid;
-                var secondAmount = calculator.GetAmount(start, startBalance, startBalance);
+                var secondAmount = calculator.GetTradeAmount(start, startBalance, startBalance);
 
                 if (secondAmount > 0)
                 {
@@ -304,6 +300,7 @@ namespace SmartTrade
                     // that reduced the number of trades going over the threshold to 20%, we'd get 200 trades paying 3
                     // cents in fees and 801 trades paying 2 cents in fees. We'd therefore pay ~EUR 8022 for EUR 8000
                     // worth of BTC.
+                    // For now we roll with 0.2% and later analyze how many trades ended up paying higher fees.
                     var secondAmountToTrade = secondAmount * 0.998m;
 
                     if (buy)
