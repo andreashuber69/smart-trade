@@ -150,18 +150,20 @@ namespace SmartTrade
             result.Click +=
                 (s, e) =>
                 {
-                    var settings = this.service.Settings;
-                    var intent = new Intent(this, typeof(SettingsActivity));
-                    var data = new SettingsActivity.Data(
-                        settings.FirstCurrency,
-                        settings.SecondCurrency,
-                        settings.CustomerId,
-                        settings.ApiKey,
-                        settings.ApiSecret,
-                        settings.Buy,
-                        settings.TradePeriod);
-                    data.Put(intent);
-                    this.StartActivityForResult(intent, 0);
+                    using (var intent = new Intent(this, typeof(SettingsActivity)))
+                    {
+                        var settings = this.service.Settings;
+                        var data = new SettingsActivity.Data(
+                            settings.FirstCurrency,
+                            settings.SecondCurrency,
+                            settings.CustomerId,
+                            settings.ApiKey,
+                            settings.ApiSecret,
+                            settings.Buy,
+                            settings.TradePeriod);
+                        data.Put(intent);
+                        this.StartActivityForResult(intent, 0);
+                    }
                 };
             return result;
         }

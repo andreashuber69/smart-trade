@@ -162,17 +162,19 @@ namespace SmartTrade
 
         private void SaveChanges()
         {
-            var intent = new Intent(this, typeof(StatusActivity));
-            this.data = new Data(
-                this.data.FirstCurrency,
-                this.data.SecondCurrency,
-                this.GetCustomerId(),
-                this.apiKeyEditText.Text,
-                this.apiSecretEditText.Text,
-                this.modeSpinner.SelectedItemPosition == 1,
-                this.GetTradePeriod());
-            this.data.Put(intent);
-            this.SetResult(Result.Ok, intent);
+            using (var intent = new Intent(this, typeof(StatusActivity)))
+            {
+                this.data = new Data(
+                    this.data.FirstCurrency,
+                    this.data.SecondCurrency,
+                    this.GetCustomerId(),
+                    this.apiKeyEditText.Text,
+                    this.apiSecretEditText.Text,
+                    this.modeSpinner.SelectedItemPosition == 1,
+                    this.GetTradePeriod());
+                this.data.Put(intent);
+                this.SetResult(Result.Ok, intent);
+            }
         }
 
         private int GetCustomerId() => int.TryParse(

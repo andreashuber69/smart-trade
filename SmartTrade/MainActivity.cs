@@ -26,9 +26,11 @@ namespace SmartTrade
     {
         public void OnItemClick(AdapterView parent, View view, int position, long id)
         {
-            var intent = new Intent(this, typeof(StatusActivity));
-            new StatusActivity.Data(BitstampClient.TickerSymbols[position]).Put(intent);
-            this.StartActivity(intent);
+            using (var intent = new Intent(this, typeof(StatusActivity)))
+            {
+                new StatusActivity.Data(BitstampClient.TickerSymbols[position]).Put(intent);
+                this.StartActivity(intent);
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
