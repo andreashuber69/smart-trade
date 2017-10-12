@@ -307,6 +307,13 @@ namespace SmartTrade
 
                     if (buy)
                     {
+                        // If we're going to spend the whole second balance, we need to subtract the fee first, as the
+                        // exchange will do the same.
+                        if (secondAmount.Value == secondBalance)
+                        {
+                            secondAmountToTrade -= calculator.GetFee(secondAmountToTrade);
+                        }
+
                         var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Ask, 8);
                         var result = await exchange.CreateBuyOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
