@@ -41,16 +41,10 @@ namespace Bitstamp
             }
 
             this.periodEnd = periodEnd;
-            this.minTradeAmount = minTradeAmount;
-            this.feeStepsPerUnit = feePercent / 100m / feeStep;
             this.feeStep = feeStep;
+            this.feeStepsPerUnit = feePercent / 100m / feeStep;
+            this.minOptimalTradeAmount = Ceiling(minTradeAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit;
         }
-
-        /// <summary>Gets the minimal optimal trade amount.</summary>
-        /// <returns>The smallest value greater than or equal to the minimal trade amount such that the fee amounts
-        /// to a whole number of fee steps.</returns>
-        public decimal MinOptimalTradeAmount =>
-            Ceiling(this.minTradeAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit;
 
         /// <summary>Gets the amount to trade right now.</summary>
         /// <param name="startTime">The UTC time where unit cost averaging should start.</param>
@@ -64,7 +58,7 @@ namespace Bitstamp
         /// time.</exception>
         public decimal? GetTradeAmount(DateTime startTime, decimal startBalance, decimal maxTradeAmount)
         {
-            if (startBalance < this.MinOptimalTradeAmount)
+            if (startBalance < this.minOptimalTradeAmount)
             {
                 return null;
             }
@@ -81,13 +75,13 @@ namespace Bitstamp
             var targetAmount = Min(startBalance - targetBalance, Min(maxTradeAmount, startBalance));
             var tradeAmount = Floor(targetAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit;
 
-            if (tradeAmount < this.MinOptimalTradeAmount)
+            if (tradeAmount < this.minOptimalTradeAmount)
             {
                 tradeAmount = 0m;
             }
             else
             {
-                if ((startBalance - tradeAmount) < this.MinOptimalTradeAmount)
+                if ((startBalance - tradeAmount) < this.minOptimalTradeAmount)
                 {
                     tradeAmount = startBalance;
                 }
@@ -106,9 +100,9 @@ namespace Bitstamp
         /// point exists (e.g. if the current balance is already below the minimal amount).</returns>
         public DateTime? GetNextTime(DateTime lastTradeTime, decimal currentBalance)
         {
-            if (currentBalance >= this.MinOptimalTradeAmount)
+            if (currentBalance >= this.minOptimalTradeAmount)
             {
-                var targetBalance = currentBalance - this.MinOptimalTradeAmount;
+                var targetBalance = currentBalance - this.minOptimalTradeAmount;
                 var duration = this.periodEnd - lastTradeTime;
                 var durationTarget = new TimeSpan((long)((1M - (targetBalance / currentBalance)) * duration.Ticks));
                 return lastTradeTime + durationTarget;
@@ -120,8 +114,8 @@ namespace Bitstamp
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private readonly DateTime periodEnd;
-        private readonly decimal minTradeAmount;
-        private readonly decimal feeStepsPerUnit;
         private readonly decimal feeStep;
+        private readonly decimal feeStepsPerUnit;
+        private readonly decimal minOptimalTradeAmount;
     }
 }

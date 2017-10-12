@@ -282,10 +282,8 @@ namespace SmartTrade
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);
 
-                if (secondAmount > 0m)
+                if (secondAmount.Value > 0m)
                 {
-                    Info("Amount to trade is {0} {1}.", this.Settings.SecondCurrency, secondAmount);
-
                     // When we trade on Bitstamp, the fee is calculated as implemented in
                     // UnitCostAveragingCalculator.GetFee. The fee is charged in discrete steps (e.g. 0.01 for fiat and
                     // 0.00001 for BTC) and always rounded up to the next step. We therefore always want to sell a bit
@@ -304,7 +302,8 @@ namespace SmartTrade
                     // cents in fees and 801 trades paying 2 cents in fees. We'd therefore pay ~EUR 8022 for EUR 8000
                     // worth of BTC.
                     // For now we roll with 0.2% and later analyze how many trades ended up paying higher fees.
-                    var secondAmountToTrade = secondAmount * 0.998m;
+                    var secondAmountToTrade = secondAmount.Value * 0.998m;
+                    Info("Amount to trade is {0} {1}.", this.Settings.SecondCurrency, secondAmountToTrade);
 
                     if (buy)
                     {
@@ -321,8 +320,7 @@ namespace SmartTrade
                             this.Settings.FirstCurrency);
 
                         start = result.DateTime;
-                        secondAmount = bought + calculator.GetFee(bought);
-                        secondBalance -= secondAmount;
+                        secondBalance -= bought + calculator.GetFee(bought);
                     }
                     else
                     {
@@ -339,8 +337,7 @@ namespace SmartTrade
                             this.Settings.FirstCurrency);
 
                         start = result.DateTime;
-                        secondAmount = sold - calculator.GetFee(sold);
-                        secondBalance += secondAmount;
+                        secondBalance += sold - calculator.GetFee(sold);
                     }
 
                     this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
