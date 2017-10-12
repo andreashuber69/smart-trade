@@ -268,7 +268,9 @@ namespace SmartTrade
                 var calculator = new UnitCostAveragingCalculator(
                     this.Settings.PeriodEnd.Value, this.minTradeAmount, balance.Fee, this.feeStep);
 
-                if ((buy ? secondBalance : firstBalance * ticker.Bid) < calculator.MinOptimalTradeAmount)
+                var startBalance = buy ? secondBalance : firstBalance * ticker.Bid;
+
+                if (startBalance < calculator.MinOptimalTradeAmount)
                 {
                     this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
                     popup.Update(this, Resource.String.InsufficientBalancePopup);
@@ -278,7 +280,6 @@ namespace SmartTrade
                 var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);
-                var startBalance = buy ? secondBalance : firstBalance * ticker.Bid;
                 var secondAmount = calculator.GetTradeAmount(start, startBalance, startBalance);
 
                 if (secondAmount > 0)
