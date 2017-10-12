@@ -269,20 +269,20 @@ namespace SmartTrade
                     this.Settings.PeriodEnd.Value, this.minTradeAmount, balance.Fee, this.feeStep);
 
                 var startBalance = buy ? secondBalance : firstBalance * ticker.Bid;
+                var start = this.GetStart(transactions);
+                var secondAmount = calculator.GetTradeAmount(start, startBalance, startBalance);
 
-                if (startBalance < calculator.MinOptimalTradeAmount)
+                if (!secondAmount.HasValue)
                 {
                     this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
                     popup.Update(this, Resource.String.InsufficientBalancePopup);
                     return null;
                 }
 
-                var start = this.GetStart(transactions);
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);
-                var secondAmount = calculator.GetTradeAmount(start, startBalance, startBalance);
 
-                if (secondAmount > 0)
+                if (secondAmount > 0m)
                 {
                     Info("Amount to trade is {0} {1}.", this.Settings.SecondCurrency, secondAmount);
 

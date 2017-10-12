@@ -57,10 +57,18 @@ namespace Bitstamp
         /// <param name="startBalance">The balance at the point in time represented by <paramref name="startTime"/>.
         /// </param>
         /// <param name="maxTradeAmount">The maximum amount to trade.</param>
+        /// <returns>The amount to trade right now. The amount is <c>null</c>, if <paramref name="startBalance"/> is
+        /// smaller than the minimal optimal trade amount. The amount is <c>0</c>, if there's nothing to trade yet, but
+        /// there will be something to trade later.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="startTime"/> is greater than the current
         /// time.</exception>
-        public decimal GetTradeAmount(DateTime startTime, decimal startBalance, decimal maxTradeAmount)
+        public decimal? GetTradeAmount(DateTime startTime, decimal startBalance, decimal maxTradeAmount)
         {
+            if (startBalance < this.MinOptimalTradeAmount)
+            {
+                return null;
+            }
+
             var elapsed = DateTime.UtcNow - startTime;
 
             if (elapsed < TimeSpan.Zero)
