@@ -291,8 +291,9 @@ namespace SmartTrade
                     // step more than necessary.
                     // Since the market can move between the time we query the price and the time our trade is executed,
                     // we cannot just subtract a constant amount (like e.g. 0.001, as we did in tests). In general we
-                    // need to lower the amount such that the average total paid to trade a given amount is equal to the
-                    // total we pay due to lower than optimal amounts.
+                    // need to lower the amount such that the average total paid to trade a given amount is as low as
+                    // possible. The average total is higher than optimal because a) additional trades need to be made
+                    // due to the lowered trade amount and b) occasionly the amount traded goes over the fee threshold.
                     // If we lowered the trade amount by just one satoshi, we would expect that roughly half of the
                     // trades pay higher fees than intended. With a 0.25% fee, for a goal of buying EUR 8000 worth of
                     // BTC we'd thus end up with 500 EUR 8 trades paying 3 cents in fees and 500 EUR 8 trades paying 2
