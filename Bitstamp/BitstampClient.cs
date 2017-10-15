@@ -157,7 +157,7 @@ namespace Bitstamp
                 }
 
                 memoryStream.Position = 0;
-                var data = JsonValue.Load(memoryStream);
+                var data = ParseJson(memoryStream);
                 const string StatusName = "status";
 
                 if ((data is JsonObject) && data.ContainsKey(StatusName) && (data[StatusName] == "error"))
@@ -167,6 +167,18 @@ namespace Bitstamp
 
                 response.EnsureSuccessStatusCode();
                 return createResult(data);
+            }
+        }
+
+        private static JsonValue ParseJson(Stream stream)
+        {
+            try
+            {
+                return JsonValue.Load(stream);
+            }
+            catch (ArgumentException ex)
+            {
+                throw new HttpRequestException("Incomplete response.", ex);
             }
         }
 
