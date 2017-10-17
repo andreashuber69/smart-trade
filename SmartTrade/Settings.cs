@@ -137,7 +137,7 @@ namespace SmartTrade
         {
             this.LogCurrentValue(nameof(this.CustomerId), this.CustomerId);
             this.LogCurrentValue(nameof(this.ApiKey), this.ApiKey);
-            this.LogCurrentValue(nameof(this.ApiSecret), "<secret>");
+            this.LogCurrentValue(nameof(this.ApiSecret), this.ApiSecret, ":");
             this.LogCurrentValue(nameof(this.Buy), this.Buy);
             this.LogCurrentValue(nameof(this.TradePeriod), this.TradePeriod);
             this.LogCurrentValue(nameof(this.LastTradeTime), this.LastTradeTime, ":o");
@@ -310,7 +310,7 @@ namespace SmartTrade
                 return;
             }
 
-            this.SetValue((p, k, v) => p.PutString(k, v), key, null, this.Encrypt(value));
+            this.SetValue((p, k, v) => p.PutString(k, v), key, null, this.Encrypt(value), ":");
         }
 
         private string Decrypt(string encryptedValue) =>
@@ -365,8 +365,11 @@ namespace SmartTrade
         private void LogCurrentValue<T>(string key, T value, string valueFormat = null) =>
             this.LogValue("Current Value", key, value, valueFormat);
 
-        private void LogValue<T>(string prefix, string key, T value, string valueFormat = null) =>
-            Info("{0} {1}.{2}{3} = {4" + valueFormat + "}.", prefix, nameof(Settings), this.groupName, key, value);
+        private void LogValue<T>(string prefix, string key, T value, string valueFormat = null)
+        {
+            var format = valueFormat == ":" ? "{0} {1}.{2}{3} = <secret>." : "{0} {1}.{2}{3} = {4" + valueFormat + "}.";
+            Info(format, prefix, nameof(Settings), this.groupName, key, value);
+        }
 
         private string GetGroupedKey(string key) => this.groupName + key;
     }
