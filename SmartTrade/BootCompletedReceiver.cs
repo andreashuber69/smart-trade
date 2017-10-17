@@ -38,7 +38,12 @@ namespace SmartTrade
             }
 
             new NotificationPopup(
-                context, typeof(MainActivity), i => { }, Resource.String.BootPopup, statuses.ToString()).ToString();
+                context,
+                typeof(MainActivity),
+                i => { },
+                Resource.String.AppName,
+                Resource.String.BootPopup,
+                statuses.ToString()).ToString();
         }
     }
 }

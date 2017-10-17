@@ -20,12 +20,30 @@ namespace SmartTrade
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         internal NotificationPopup(
-            Context context, Type activityType, Action<Intent> addArguments, int contentFormatId, params object[] args)
+            Context context,
+            Type activityType,
+            Action<Intent> addArguments,
+            int titleFormatId,
+            int contentFormatId,
+            params object[] args)
+            : this(context, activityType, addArguments, titleFormatId, null, contentFormatId, args)
+        {
+        }
+
+        internal NotificationPopup(
+            Context context,
+            Type activityType,
+            Action<Intent> addArguments,
+            int titleFormatId,
+            string titleArgument,
+            int contentFormatId,
+            params object[] args)
         {
             this.activityType = activityType;
             this.addArguments = addArguments;
             this.manager = NotificationManager.FromContext(context);
             this.id = (int)(Java.Lang.JavaSystem.CurrentTimeMillis() & int.MaxValue);
+            this.title = string.Format(CurrentCulture, context.Resources.GetString(titleFormatId), titleArgument);
             this.Update(context, contentFormatId, args);
         }
 
@@ -50,7 +68,7 @@ namespace SmartTrade
                 this.addArguments(intent);
                 builder
                     .SetSmallIcon(Resource.Drawable.ic_stat_name)
-                    .SetContentTitle(context.Resources.GetString(Resource.String.AppName))
+                    .SetContentTitle(this.title)
                     .SetContentText(this.ContentText)
                     .SetContentIntent(PendingIntent.GetActivity(context, 0, intent, 0))
                     .SetStyle(style.BigText(this.ContentText))
@@ -67,5 +85,6 @@ namespace SmartTrade
         private readonly Action<Intent> addArguments;
         private readonly NotificationManager manager;
         private readonly int id;
+        private readonly string title;
     }
 }
