@@ -9,7 +9,6 @@ namespace SmartTrade
     using System;
     using Android.App;
     using Android.Content;
-    using Bitstamp;
 
     using static Logger;
     using static System.Globalization.CultureInfo;
@@ -44,6 +43,10 @@ namespace SmartTrade
             using (var intent = new Intent(context, this.activityType))
             using (var style = new Notification.BigTextStyle())
             {
+                // This is necessary so that the intent object is going to be interpreted as a new intent rather than
+                // an update to an existing intent.
+                intent.SetAction(this.id.ToString());
+
                 this.addArguments(intent);
                 builder
                     .SetSmallIcon(Resource.Drawable.ic_stat_name)
