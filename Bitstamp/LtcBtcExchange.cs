@@ -6,8 +6,6 @@
 
 namespace Bitstamp
 {
-    using System;
-
     /// <summary>Represents a client for the Bitstamp API.</summary>
     public sealed partial class BitstampClient
     {
@@ -20,61 +18,16 @@ namespace Bitstamp
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            protected sealed override IBalance CreateBalance(Balance balance) => new LtcBtcBalance(balance);
+            protected sealed override IBalance CreateBalance(Balance b) =>
+                CreateBalance(b.LtcAvailable, b.BtcAvailable, b.LtcBtcFee);
 
-            protected sealed override bool IsRelevantDepositOrWithdrawal(Transaction transaction) =>
-                (transaction.Ltc != 0m) || (transaction.Btc != 0m);
+            protected sealed override bool IsRelevantDepositOrWithdrawal(Transaction t) =>
+                (t.Ltc != 0m) || (t.Btc != 0m);
 
-            protected sealed override bool IsRelevantTrade(Transaction transaction) => transaction.LtcBtc.HasValue;
+            protected sealed override bool IsRelevantTrade(Transaction t) => t.LtcBtc.HasValue;
 
-            protected sealed override ITransaction CreateTransaction(Transaction transaction) =>
-                new LtcBtcTransaction(transaction);
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            private sealed class LtcBtcBalance : IBalance
-            {
-                public decimal FirstCurrency => this.balance.LtcAvailable;
-
-                public decimal SecondCurrency => this.balance.BtcAvailable;
-
-                public decimal Fee => this.balance.LtcBtcFee;
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                internal LtcBtcBalance(Balance balance) => this.balance = balance;
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                private readonly Balance balance;
-            }
-
-            private sealed class LtcBtcTransaction : ITransaction
-            {
-                public int Id => this.transaction.Id;
-
-                public DateTime DateTime => this.transaction.DateTime;
-
-                public TransactionType TransactionType => this.transaction.TransactionType;
-
-                public decimal FirstAmount => this.transaction.Ltc.Value;
-
-                public decimal SecondAmount => this.transaction.Btc;
-
-                public decimal? Price => this.transaction.LtcBtc;
-
-                public decimal Fee => this.transaction.Fee;
-
-                public int? OrderId => this.transaction.OrderId;
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                internal LtcBtcTransaction(Transaction transaction) => this.transaction = transaction;
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                private readonly Transaction transaction;
-            }
+            protected sealed override ITransaction CreateTransaction(Transaction t) =>
+                CreateTransaction(t.Id, t.DateTime, t.TransactionType, t.Ltc, t.Btc, t.LtcBtc, t.Fee, t.OrderId);
         }
     }
 }

@@ -6,6 +6,7 @@
 
 namespace Bitstamp
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -43,19 +44,35 @@ namespace Bitstamp
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            protected static IBalance CreateBalance(decimal firstCurrency, decimal secondCurrency, decimal fee) =>
+                new BalanceImpl(firstCurrency, secondCurrency, fee);
+
+            protected static ITransaction CreateTransaction(
+                int id,
+                DateTime dateTime,
+                TransactionType transactionType,
+                decimal? firstAmount,
+                decimal? secondAmount,
+                decimal? price,
+                decimal fee,
+                int? orderId)
+            {
+                return new TransactionImpl(id, dateTime, transactionType, firstAmount, secondAmount, price, fee, orderId);
+            }
+
             protected CurrencyExchange(BitstampClient client, string tickerSymbol)
             {
                 this.client = client;
                 this.TickerSymbol = tickerSymbol;
             }
 
-            protected abstract IBalance CreateBalance(Balance balance);
+            protected abstract IBalance CreateBalance(Balance b);
 
-            protected abstract bool IsRelevantDepositOrWithdrawal(Transaction transaction);
+            protected abstract bool IsRelevantDepositOrWithdrawal(Transaction t);
 
-            protected abstract bool IsRelevantTrade(Transaction transaction);
+            protected abstract bool IsRelevantTrade(Transaction t);
 
-            protected abstract ITransaction CreateTransaction(Transaction transaction);
+            protected abstract ITransaction CreateTransaction(Transaction t);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,6 +92,65 @@ namespace Bitstamp
                         return this.IsRelevantTrade(transaction);
                     default:
                         return false;
+                }
+            }
+
+            private sealed class BalanceImpl : IBalance
+            {
+                public decimal FirstCurrency { get; }
+
+                public decimal SecondCurrency { get; }
+
+                public decimal Fee { get; }
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                internal BalanceImpl(decimal firstCurrency, decimal secondCurrency, decimal fee)
+                {
+                    this.FirstCurrency = firstCurrency;
+                    this.SecondCurrency = secondCurrency;
+                    this.Fee = fee;
+                }
+            }
+
+            private sealed class TransactionImpl : ITransaction
+            {
+                public int Id { get; }
+
+                public DateTime DateTime { get; }
+
+                public TransactionType TransactionType { get; }
+
+                public decimal? FirstAmount { get; }
+
+                public decimal? SecondAmount { get; }
+
+                public decimal? Price { get; }
+
+                public decimal Fee { get; }
+
+                public int? OrderId { get; }
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                internal TransactionImpl(
+                    int id,
+                    DateTime dateTime,
+                    TransactionType transactionType,
+                    decimal? firstAmount,
+                    decimal? secondAmount,
+                    decimal? price,
+                    decimal fee,
+                    int? orderId)
+                {
+                    this.Id = id;
+                    this.DateTime = dateTime;
+                    this.TransactionType = transactionType;
+                    this.FirstAmount = firstAmount;
+                    this.SecondAmount = secondAmount;
+                    this.Price = price;
+                    this.Fee = fee;
+                    this.OrderId = orderId;
                 }
             }
         }

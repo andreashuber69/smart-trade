@@ -6,8 +6,6 @@
 
 namespace Bitstamp
 {
-    using System;
-
     /// <summary>Represents a client for the Bitstamp API.</summary>
     public sealed partial class BitstampClient
     {
@@ -20,61 +18,15 @@ namespace Bitstamp
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            protected sealed override IBalance CreateBalance(Balance balance) => new BtcEurBalance(balance);
+            protected sealed override IBalance CreateBalance(Balance b) =>
+                CreateBalance(b.BtcAvailable, b.EurAvailable, b.BtcEurFee);
 
-            protected sealed override bool IsRelevantDepositOrWithdrawal(Transaction transaction) =>
-                (transaction.Btc != 0m) || (transaction.Eur != 0m);
+            protected sealed override bool IsRelevantDepositOrWithdrawal(Transaction t) => (t.Btc != 0m) || (t.Eur != 0m);
 
-            protected sealed override bool IsRelevantTrade(Transaction transaction) => transaction.BtcEur.HasValue;
+            protected sealed override bool IsRelevantTrade(Transaction t) => t.BtcEur.HasValue;
 
-            protected sealed override ITransaction CreateTransaction(Transaction transaction) =>
-                new BtcEurTransaction(transaction);
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            private sealed class BtcEurBalance : IBalance
-            {
-                public decimal FirstCurrency => this.balance.BtcAvailable;
-
-                public decimal SecondCurrency => this.balance.EurAvailable;
-
-                public decimal Fee => this.balance.BtcEurFee;
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                internal BtcEurBalance(Balance balance) => this.balance = balance;
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                private readonly Balance balance;
-            }
-
-            private sealed class BtcEurTransaction : ITransaction
-            {
-                public int Id => this.transaction.Id;
-
-                public DateTime DateTime => this.transaction.DateTime;
-
-                public TransactionType TransactionType => this.transaction.TransactionType;
-
-                public decimal FirstAmount => this.transaction.Btc;
-
-                public decimal SecondAmount => this.transaction.Eur;
-
-                public decimal? Price => this.transaction.BtcEur;
-
-                public decimal Fee => this.transaction.Fee;
-
-                public int? OrderId => this.transaction.OrderId;
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                internal BtcEurTransaction(Transaction transaction) => this.transaction = transaction;
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                private readonly Transaction transaction;
-            }
+            protected sealed override ITransaction CreateTransaction(Transaction t) =>
+                CreateTransaction(t.Id, t.DateTime, t.TransactionType, t.Btc, t.Eur, t.BtcEur, t.Fee, t.OrderId);
         }
     }
 }

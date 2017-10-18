@@ -21,10 +21,10 @@ namespace Bitstamp
         TransactionType TransactionType { get; }
 
         /// <summary>Gets the amount in the first currency.</summary>
-        decimal FirstAmount { get; }
+        decimal? FirstAmount { get; }
 
         /// <summary>Gets the amount in the second currency.</summary>
-        decimal SecondAmount { get; }
+        decimal? SecondAmount { get; }
 
         /// <summary>Gets the price denominated in the second currency.</summary>
         /// <remarks>Equals <c>null</c> if <see cref="TransactionType"/> is not equal to
