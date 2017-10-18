@@ -22,7 +22,7 @@ namespace Bitstamp
             public async Task<IEnumerable<ITransaction>> GetTransactionsAsync(int offset, int limit)
             {
                 var transactions = await this.client.GetTransactionsAsync(offset, limit);
-                return transactions.Select(t => this.CreateTransaction(t)).Where(t => t != null);
+                return transactions.Where(t => this.IsRelevant(t)).Select(t => this.CreateTransaction(t));
             }
 
             public Task<Ticker> GetTickerAsync() => this.client.GetTickerAsync(this.CurrencyPair);
@@ -45,6 +45,10 @@ namespace Bitstamp
 
             internal abstract IBalance CreateBalance(Balance balance);
 
+            internal abstract bool IsRelevantDepositOrWithdrawal(Transaction transaction);
+
+            internal abstract bool IsRelevantTrade(Transaction transaction);
+
             internal abstract ITransaction CreateTransaction(Transaction transaction);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,6 +64,21 @@ namespace Bitstamp
             private readonly BitstampClient client;
 
             private string CurrencyPair => this.TickerSymbol.Replace("/", string.Empty).ToLowerInvariant();
+
+            private bool IsRelevant(Transaction transaction)
+            {
+                switch (transaction.TransactionType)
+                {
+                    case TransactionType.Deposit:
+                    case TransactionType.Withdrawal:
+                    case TransactionType.SubaccountTransfer:
+                        return this.IsRelevantDepositOrWithdrawal(transaction);
+                    case TransactionType.MarketTrade:
+                        return this.IsRelevantTrade(transaction);
+                    default:
+                        return false;
+                }
+            }
         }
     }
 }

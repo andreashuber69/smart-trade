@@ -20,25 +20,15 @@ namespace Bitstamp
 
             internal sealed override IBalance CreateBalance(Balance balance) => new LtcBtcBalance(balance);
 
+            internal sealed override bool IsRelevantDepositOrWithdrawal(Transaction transaction) =>
+                (transaction.Ltc != 0m) || (transaction.Btc != 0m);
+
+            internal sealed override bool IsRelevantTrade(Transaction transaction) => transaction.LtcBtc.HasValue;
+
             internal sealed override ITransaction CreateTransaction(Transaction transaction) =>
-                IsRelevant(transaction) ? new LtcBtcTransaction(transaction) : null;
+                new LtcBtcTransaction(transaction);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            private static bool IsRelevant(Transaction transaction)
-            {
-                switch (transaction.TransactionType)
-                {
-                    case TransactionType.Deposit:
-                    case TransactionType.Withdrawal:
-                    case TransactionType.SubaccountTransfer:
-                        return (transaction.Ltc != 0m) || (transaction.Btc != 0m);
-                    case TransactionType.MarketTrade:
-                        return transaction.LtcBtc.HasValue;
-                    default:
-                        return false;
-                }
-            }
 
             private sealed class LtcBtcBalance : IBalance
             {

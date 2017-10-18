@@ -20,25 +20,15 @@ namespace Bitstamp
 
             internal sealed override IBalance CreateBalance(Balance balance) => new BtcEurBalance(balance);
 
+            internal sealed override bool IsRelevantDepositOrWithdrawal(Transaction transaction) =>
+                (transaction.Btc != 0m) || (transaction.Eur != 0m);
+
+            internal sealed override bool IsRelevantTrade(Transaction transaction) => transaction.BtcEur.HasValue;
+
             internal sealed override ITransaction CreateTransaction(Transaction transaction) =>
-                IsRelevant(transaction) ? new BtcEurTransaction(transaction) : null;
+                new BtcEurTransaction(transaction);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            private static bool IsRelevant(Transaction transaction)
-            {
-                switch (transaction.TransactionType)
-                {
-                    case TransactionType.Deposit:
-                    case TransactionType.Withdrawal:
-                    case TransactionType.SubaccountTransfer:
-                        return (transaction.Btc != 0m) || (transaction.Eur != 0m);
-                    case TransactionType.MarketTrade:
-                        return transaction.BtcEur.HasValue;
-                    default:
-                        return false;
-                }
-            }
 
             private sealed class BtcEurBalance : IBalance
             {
