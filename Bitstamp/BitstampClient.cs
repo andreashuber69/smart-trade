@@ -37,12 +37,8 @@ namespace Bitstamp
         /// <remarks>An instance initialized with this constructor can be used to access the public API only.</remarks>
         public BitstampClient()
         {
-            this.Exchanges =
-                new Dictionary<string, ICurrencyExchange>()
-                {
-                    { BtcEurSymbol, new BtcEurExchange(this) },
-                    { LtcBtcSymbol, new LtcBtcExchange(this) }
-                };
+            var exchanges = new ICurrencyExchange[] { new BtcEurExchange(this), new LtcBtcExchange(this) };
+            this.Exchanges = exchanges.ToDictionary(e => e.TickerSymbol, e => e);
         }
 
         /// <summary>Initializes a new instance of the <see cref="BitstampClient"/> class.</summary>
