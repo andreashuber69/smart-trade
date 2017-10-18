@@ -43,21 +43,19 @@ namespace Bitstamp
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            internal abstract IBalance CreateBalance(Balance balance);
-
-            internal abstract bool IsRelevantDepositOrWithdrawal(Transaction transaction);
-
-            internal abstract bool IsRelevantTrade(Transaction transaction);
-
-            internal abstract ITransaction CreateTransaction(Transaction transaction);
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
             protected CurrencyExchange(BitstampClient client, string tickerSymbol)
             {
                 this.client = client;
                 this.TickerSymbol = tickerSymbol;
             }
+
+            protected abstract IBalance CreateBalance(Balance balance);
+
+            protected abstract bool IsRelevantDepositOrWithdrawal(Transaction transaction);
+
+            protected abstract bool IsRelevantTrade(Transaction transaction);
+
+            protected abstract ITransaction CreateTransaction(Transaction transaction);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

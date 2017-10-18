@@ -18,14 +18,16 @@ namespace Bitstamp
             {
             }
 
-            internal sealed override IBalance CreateBalance(Balance balance) => new LtcBtcBalance(balance);
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            internal sealed override bool IsRelevantDepositOrWithdrawal(Transaction transaction) =>
+            protected sealed override IBalance CreateBalance(Balance balance) => new LtcBtcBalance(balance);
+
+            protected sealed override bool IsRelevantDepositOrWithdrawal(Transaction transaction) =>
                 (transaction.Ltc != 0m) || (transaction.Btc != 0m);
 
-            internal sealed override bool IsRelevantTrade(Transaction transaction) => transaction.LtcBtc.HasValue;
+            protected sealed override bool IsRelevantTrade(Transaction transaction) => transaction.LtcBtc.HasValue;
 
-            internal sealed override ITransaction CreateTransaction(Transaction transaction) =>
+            protected sealed override ITransaction CreateTransaction(Transaction transaction) =>
                 new LtcBtcTransaction(transaction);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
