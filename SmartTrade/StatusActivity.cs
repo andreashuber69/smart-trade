@@ -82,15 +82,20 @@ namespace SmartTrade
 
         protected sealed override void Dispose(bool disposing)
         {
-            if (disposing)
+            try
             {
-                this.currentTimeUpdateId = 0;
-                this.service.Settings.PropertyChanged -= this.OnPropertyChanged;
-                this.service.PropertyChanged -= this.OnPropertyChanged;
-                this.service.Dispose();
+                if (disposing)
+                {
+                    this.currentTimeUpdateId = 0;
+                    this.service.Settings.PropertyChanged -= this.OnPropertyChanged;
+                    this.service.PropertyChanged -= this.OnPropertyChanged;
+                    this.service.Dispose();
+                }
             }
-
-            base.Dispose(disposing);
+            finally
+            {
+                base.Dispose(disposing);
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

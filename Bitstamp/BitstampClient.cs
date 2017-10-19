@@ -71,17 +71,10 @@ namespace Bitstamp
         public IReadOnlyDictionary<string, ICurrencyExchange> Exchanges { get; }
 
         /// <summary>Releases all resources used by the <see cref="BitstampClient"/>.</summary>
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Dispose must never throw.")]
         public void Dispose()
         {
-            try
-            {
-                this.sha256?.Dispose();
-                this.httpClient.Dispose();
-            }
-            catch
-            {
-            }
+            this.sha256?.Dispose();
+            this.httpClient.Dispose();
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

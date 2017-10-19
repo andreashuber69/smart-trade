@@ -132,13 +132,18 @@ namespace SmartTrade
 
         protected sealed override void Dispose(bool disposing)
         {
-            if (disposing)
+            try
             {
-                this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
-                this.Settings.Dispose();
+                if (disposing)
+                {
+                    this.Settings.PropertyChanged -= this.OnSettingsPropertyChanged;
+                    this.Settings.Dispose();
+                }
             }
-
-            base.Dispose(disposing);
+            finally
+            {
+                base.Dispose(disposing);
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
