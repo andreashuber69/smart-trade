@@ -24,20 +24,33 @@ namespace Bitstamp
     /// <summary>Represents a client for the Bitstamp API.</summary>
     public sealed partial class BitstampClient : IDisposable
     {
+        /// <summary>The BTC/USD ticker symbol.</summary>
+        public const string BtcUsdSymbol = "BTC/USD";
+
         /// <summary>The BTC/EUR ticker symbol.</summary>
         public const string BtcEurSymbol = "BTC/EUR";
+
+        /// <summary>The EUR/USD ticker symbol.</summary>
+        public const string EurUsdSymbol = "EUR/USD";
 
         /// <summary>The LTC/BTC ticker symbol.</summary>
         public const string LtcBtcSymbol = "LTC/BTC";
 
         /// <summary>Gets all supported ticker symbols.</summary>
-        public static IReadOnlyList<string> TickerSymbols { get; } = new[] { BtcEurSymbol, LtcBtcSymbol };
+        public static IReadOnlyList<string> TickerSymbols { get; } = new[] { BtcUsdSymbol, BtcEurSymbol, EurUsdSymbol, LtcBtcSymbol };
 
         /// <summary>Initializes a new instance of the <see cref="BitstampClient"/> class.</summary>
         /// <remarks>An instance initialized with this constructor can be used to access the public API only.</remarks>
         public BitstampClient()
         {
-            var exchanges = new ICurrencyExchange[] { new BtcEurExchange(this), new LtcBtcExchange(this) };
+            var exchanges =
+                new ICurrencyExchange[]
+                {
+                    new BtcUsdExchange(this),
+                    new BtcEurExchange(this),
+                    new EurUsdExchange(this),
+                    new LtcBtcExchange(this)
+                };
             this.Exchanges = exchanges.ToDictionary(e => e.TickerSymbol, e => e);
         }
 

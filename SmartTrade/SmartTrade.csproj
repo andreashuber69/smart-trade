@@ -65,6 +65,8 @@
     </Compile>
     <Compile Include="ActivityBase.cs" />
     <Compile Include="BootCompletedReceiver.cs" />
+    <Compile Include="EurUsdTradeService.cs" />
+    <Compile Include="BtcUsdTradeService.cs" />
     <Compile Include="LtcBtcTradeService.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="Logger.cs" />

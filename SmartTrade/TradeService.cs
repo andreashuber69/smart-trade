@@ -31,8 +31,12 @@ namespace SmartTrade
         {
             switch (tickerSymbol)
             {
+                case BitstampClient.BtcUsdSymbol:
+                    return new BtcUsdTradeService();
                 case BitstampClient.BtcEurSymbol:
                     return new BtcEurTradeService();
+                case BitstampClient.EurUsdSymbol:
+                    return new EurUsdTradeService();
                 case BitstampClient.LtcBtcSymbol:
                     return new LtcBtcTradeService();
                 default:
