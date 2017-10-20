@@ -43,6 +43,10 @@ namespace SmartTrade
                     return new XrpEurTradeService();
                 case BitstampClient.XrpBtcSymbol:
                     return new XrpBtcTradeService();
+                case BitstampClient.LtcUsdSymbol:
+                    return new LtcUsdTradeService();
+                case BitstampClient.LtcEurSymbol:
+                    return new LtcEurTradeService();
                 case BitstampClient.LtcBtcSymbol:
                     return new LtcBtcTradeService();
                 default:

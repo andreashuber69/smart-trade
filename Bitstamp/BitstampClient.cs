@@ -42,6 +42,12 @@ namespace Bitstamp
         /// <summary>The XRP/BTC ticker symbol.</summary>
         public const string XrpBtcSymbol = "XRP/BTC";
 
+        /// <summary>The LTC/USD ticker symbol.</summary>
+        public const string LtcUsdSymbol = "LTC/USD";
+
+        /// <summary>The LTC/EUR ticker symbol.</summary>
+        public const string LtcEurSymbol = "LTC/EUR";
+
         /// <summary>The LTC/BTC ticker symbol.</summary>
         public const string LtcBtcSymbol = "LTC/BTC";
 
@@ -55,6 +61,8 @@ namespace Bitstamp
                 XrpUsdSymbol,
                 XrpEurSymbol,
                 XrpBtcSymbol,
+                LtcUsdSymbol,
+                LtcEurSymbol,
                 LtcBtcSymbol
             };
 
@@ -71,6 +79,8 @@ namespace Bitstamp
                     new XrpUsdExchange(this),
                     new XrpEurExchange(this),
                     new XrpBtcExchange(this),
+                    new LtcUsdExchange(this),
+                    new LtcEurExchange(this),
                     new LtcBtcExchange(this)
                 };
             this.Exchanges = exchanges.ToDictionary(e => e.TickerSymbol, e => e);
