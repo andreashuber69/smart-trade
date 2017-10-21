@@ -57,6 +57,9 @@
     <Compile Include="Balance.cs" />
     <Compile Include="BitstampClient.cs" />
     <Compile Include="BitstampException.cs" />
+    <Compile Include="EthBtcExchange.cs" />
+    <Compile Include="EthEurExchange.cs" />
+    <Compile Include="EthUsdExchange.cs" />
     <Compile Include="XrpBtcExchange.cs" />
     <Compile Include="LtcEurExchange.cs" />
     <Compile Include="XrpEurExchange.cs" />
