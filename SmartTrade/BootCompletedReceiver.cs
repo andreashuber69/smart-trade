@@ -32,18 +32,19 @@ namespace SmartTrade
                 using (var service = TradeService.Create(tickerSymbol))
                 {
                     service.ScheduleTrade();
-                    var id = service.IsEnabled ? Resource.String.ServiceIsEnabled : Resource.String.ServiceIsDisabled;
-                    statuses.AppendFormat("{0}: {1}{2}", tickerSymbol, context.GetString(id), Environment.NewLine);
+
+                    if (service.IsEnabled)
+                    {
+                        var message = context.GetString(Resource.String.ServiceIsEnabled);
+                        statuses.AppendFormat("{0}: {1}{2}", tickerSymbol, message, Environment.NewLine);
+                    }
                 }
             }
 
+            var id = statuses.Length == 0 ? Resource.String.BootNoServiceEnabledPopup : Resource.String.BootPopup;
+
             new NotificationPopup(
-                context,
-                typeof(MainActivity),
-                i => { },
-                Resource.String.AppName,
-                Resource.String.BootPopup,
-                statuses.ToString()).ToString();
+                context, typeof(MainActivity), i => { }, Resource.String.AppName, id, statuses.ToString()).ToString();
         }
     }
 }
