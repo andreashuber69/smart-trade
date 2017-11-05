@@ -42,6 +42,9 @@ namespace Bitstamp
             public Task<PrivateOrder> CreateSellOrderAsync(decimal amount, decimal price) =>
                 this.client.CreateSellOrderAsync(this.CurrencyPair, amount, price);
 
+            public Task TransferToMainAccount(bool firstCurrency, decimal amount) =>
+                this.client.TransferToMainAccount(firstCurrency ? this.FirstCurrency : this.SecondCurrency, amount);
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             protected static IBalance CreateBalance(decimal firstCurrency, decimal secondCurrency, decimal fee) =>
@@ -77,6 +80,12 @@ namespace Bitstamp
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             private readonly BitstampClient client;
+
+            // TODO: This duplicates code in the Settings class.
+            private string FirstCurrency => this.TickerSymbol.Substring(0, this.TickerSymbol.IndexOf('/'));
+
+            // TODO: This duplicates code in the Settings class.
+            private string SecondCurrency => this.TickerSymbol.Substring(this.TickerSymbol.IndexOf('/') + 1);
 
             private string CurrencyPair => this.TickerSymbol.Replace("/", string.Empty).ToLowerInvariant();
 

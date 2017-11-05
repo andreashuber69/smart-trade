@@ -102,5 +102,10 @@ namespace Bitstamp
         /// </exception>
         /// <exception cref="ObjectDisposedException"><see cref="IDisposable.Dispose"/> has been called.</exception>
         Task<PrivateOrder> CreateSellOrderAsync(decimal amount, decimal price);
+
+        /// <summary>Transfers to main account.</summary>
+        /// <param name="firstCurrency"><c>true</c> to transfer the first currency, <c>false</c> to transfer the second currency.</param>
+        /// <param name="amount">The amount to transfer.</param>
+        Task TransferToMainAccount(bool firstCurrency, decimal amount);
     }
 }

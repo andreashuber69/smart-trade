@@ -181,6 +181,12 @@ namespace Bitstamp
         internal Task<PrivateOrder> CreateSellOrderAsync(string currencyPair, decimal amount) =>
             this.CreateOrderAsync("sell", currencyPair, amount);
 
+        internal Task TransferToMainAccount(string currency, decimal amount)
+        {
+            var args = new Dictionary<string, string>() { { "amount", ToString(amount) }, { "currency", currency } };
+            return this.ExecutePostAsync(Invariant($"api/v2/transfer-to-main/"), args, d => false);
+        }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private const string BaseUri = "https://www.bitstamp.net";
