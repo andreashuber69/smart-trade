@@ -9,6 +9,15 @@ namespace SmartTrade
     using System;
     using System.ComponentModel;
 
+    internal enum TransferToMainAccount
+    {
+        Never,
+        TradePeriodEnd,
+        EveryHundredthTrade,
+        EveryTenthTrade,
+        EveryTrade
+    }
+
     /// <summary>Represents the settings that need to be made persistent.</summary>
     internal interface ISettings : INotifyPropertyChanged, IDisposable
     {
@@ -37,6 +46,11 @@ namespace SmartTrade
         /// <summary>Gets or sets the trade period.</summary>
         float TradePeriod { get; set; }
 
+        /// <summary>Gets or sets a value indicating at what points acquired currency should be transferred back to the
+        /// main account.</summary>
+        /// <remarks>This setting is ignored when <see cref="ApiKey"/> is associated with the main account.</remarks>
+        TransferToMainAccount TransferToMainAccount { get; set; }
+
         /// <summary>Gets or sets the time of the last trade.</summary>
         /// <value>The time of the last trade attempt; or <c>null</c> if no trade has been made yet.</value>
         DateTime? LastTradeTime { get; set; }
@@ -55,6 +69,10 @@ namespace SmartTrade
         /// </value>
         long NextTradeTime { get; set; }
 
+        /// <summary>Gets or sets a value indicating whether this is a subaccount.</summary>
+        /// <value><c>true</c> if this is a subaccount; otherwise, <c>false</c>.</value>
+        bool IsSubaccount { get; set; }
+
         /// <summary>Gets or sets the start of the current section.</summary>
         /// <value>The start of the current section; or <c>null</c> if no section has begun yet.</value>
         /// <remarks>A section is a part of a period. The current section always runs from <see cref="SectionStart"/>
@@ -72,6 +90,9 @@ namespace SmartTrade
         /// <value>The timestamp of the last known transaction; or, <see cref="DateTime.MinValue"/> if no transaction
         /// has ever been seen.</value>
         DateTime LastTransactionTimestamp { get; set; }
+
+        /// <summary>Gets or sets the number of trades performed since the last transfer to the main account.</summary>
+        int TradeCountSinceLastTransfer { get; set; }
 
         /// <summary>Gets or sets the interval between retries.</summary>
         long RetryIntervalMilliseconds { get; set; }

@@ -67,6 +67,12 @@ namespace SmartTrade
             set { this.SetFloat(value); }
         }
 
+        public TransferToMainAccount TransferToMainAccount
+        {
+            get { return (TransferToMainAccount)this.GetLong(); }
+            set { this.SetLong((long)value); }
+        }
+
         public DateTime? LastTradeTime
         {
             get { return this.GetDateTime(); }
@@ -109,6 +115,12 @@ namespace SmartTrade
             }
         }
 
+        public bool IsSubaccount
+        {
+            get { return this.GetLong() != 0; }
+            set { this.SetLong(value ? 1 : 0); }
+        }
+
         public DateTime? SectionStart
         {
             get { return this.GetDateTime(); }
@@ -127,6 +139,12 @@ namespace SmartTrade
             set { this.SetDateTime(value); }
         }
 
+        public int TradeCountSinceLastTransfer
+        {
+            get { return (int)this.GetLong(); }
+            set { this.SetLong(value); }
+        }
+
         public long RetryIntervalMilliseconds
         {
             get { return this.GetLong(); }
@@ -140,14 +158,17 @@ namespace SmartTrade
             this.LogCurrentValue(nameof(this.ApiSecret), this.ApiSecret, ":");
             this.LogCurrentValue(nameof(this.Buy), this.Buy);
             this.LogCurrentValue(nameof(this.TradePeriod), this.TradePeriod);
+            this.LogCurrentValue(nameof(this.TransferToMainAccount), this.TransferToMainAccount);
             this.LogCurrentValue(nameof(this.LastTradeTime), this.LastTradeTime, ":o");
             this.LogCurrentValue(nameof(this.LastResult), this.LastResult);
             this.LogCurrentValue(nameof(this.LastBalanceFirstCurrency), this.LastBalanceFirstCurrency, ":f8");
             this.LogCurrentValue(nameof(this.LastBalanceSecondCurrency), this.LastBalanceSecondCurrency, ":f8");
             this.LogCurrentValue(nameof(this.NextTradeTime), this.NextTradeTime);
+            this.LogCurrentValue(nameof(this.IsSubaccount), this.IsSubaccount);
             this.LogCurrentValue(nameof(this.SectionStart), this.SectionStart, ":o");
             this.LogCurrentValue(nameof(this.PeriodEnd), this.PeriodEnd, ":o");
             this.LogCurrentValue(nameof(this.LastTransactionTimestamp), this.LastTransactionTimestamp, ":o");
+            this.LogCurrentValue(nameof(this.TradeCountSinceLastTransfer), this.TradeCountSinceLastTransfer);
             this.LogCurrentValue(nameof(this.RetryIntervalMilliseconds), this.RetryIntervalMilliseconds);
         }
 
@@ -274,9 +295,14 @@ namespace SmartTrade
             this.SetString(string.Empty, nameof(this.LastResult));
             this.SetFloat(0.0f, nameof(this.LastBalanceFirstCurrency));
             this.SetFloat(0.0f, nameof(this.LastBalanceSecondCurrency));
+            this.SetLong(0, nameof(this.IsSubaccount));
             this.SetLong(0, nameof(this.SectionStart));
+
+            // Note: Clearing this setting means that SectionStart will be reset to the time of the last deposit when
+            // the service is enabled the next time.
             this.SetLong(0, nameof(this.PeriodEnd));
             this.SetLong(0, nameof(this.LastTransactionTimestamp));
+            this.SetLong(0, nameof(this.TradeCountSinceLastTransfer));
             this.SetLong(0, nameof(this.RetryIntervalMilliseconds));
         }
 

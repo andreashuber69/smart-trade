@@ -106,6 +106,6 @@ namespace Bitstamp
         /// <summary>Transfers to main account.</summary>
         /// <param name="firstCurrency"><c>true</c> to transfer the first currency, <c>false</c> to transfer the second currency.</param>
         /// <param name="amount">The amount to transfer.</param>
-        Task TransferToMainAccount(bool firstCurrency, decimal amount);
+        Task TransferToMainAccountAsync(bool firstCurrency, decimal amount);
     }
 }

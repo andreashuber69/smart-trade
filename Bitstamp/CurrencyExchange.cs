@@ -42,8 +42,8 @@ namespace Bitstamp
             public Task<PrivateOrder> CreateSellOrderAsync(decimal amount, decimal price) =>
                 this.client.CreateSellOrderAsync(this.CurrencyPair, amount, price);
 
-            public Task TransferToMainAccount(bool firstCurrency, decimal amount) =>
-                this.client.TransferToMainAccount(firstCurrency ? this.FirstCurrency : this.SecondCurrency, amount);
+            public Task TransferToMainAccountAsync(bool firstCurrency, decimal amount) =>
+                this.client.TransferToMainAccountAsync(firstCurrency ? this.FirstCurrency : this.SecondCurrency, amount);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

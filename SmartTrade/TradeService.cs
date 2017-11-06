@@ -207,7 +207,7 @@ namespace SmartTrade
             this.ScheduleTrade();
         }
 
-        private async Task<List<ITransaction>> GetTransactions(ICurrencyExchange exchange)
+        private async Task<List<ITransaction>> GetTransactionsAsync(ICurrencyExchange exchange)
         {
             var lastTradeTime = this.Settings.LastTransactionTimestamp;
             var result = new List<ITransaction>();
@@ -230,21 +230,25 @@ namespace SmartTrade
             return result;
         }
 
-        private void SetPeriod(List<ITransaction> transactions, bool buy)
+        private bool SetPeriod(List<ITransaction> transactions, bool buy)
         {
             var lastDepositIndex = transactions.FindIndex(t => IsRelevantDeposit(t, buy));
 
             if (lastDepositIndex >= 0)
             {
                 var deposit = transactions[lastDepositIndex];
+                this.Settings.IsSubaccount = deposit.TransactionType == TransactionType.SubaccountTransfer;
                 var lastDepositTime = deposit.DateTime;
 
                 if (!this.Settings.SectionStart.HasValue || (lastDepositTime > this.Settings.SectionStart))
                 {
                     this.Settings.SectionStart = lastDepositTime;
                     this.Settings.PeriodEnd = lastDepositTime + TimeSpan.FromDays(this.Settings.TradePeriod);
+                    return true;
                 }
             }
+
+            return false;
         }
 
         private DateTime GetStart(List<ITransaction> transactions)
@@ -278,9 +282,9 @@ namespace SmartTrade
                 var secondBalance = balance.SecondCurrency;
                 this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
                 this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
-                var transactions = await this.GetTransactions(exchange);
+                var transactions = await this.GetTransactionsAsync(exchange);
                 var buy = this.Settings.Buy;
-                this.SetPeriod(transactions, buy);
+                var hasTradePeriodEnded = this.SetPeriod(transactions, buy);
 
                 if (!this.Settings.PeriodEnd.HasValue)
                 {
@@ -383,6 +387,7 @@ namespace SmartTrade
                         secondBalance += sold - calculator.GetFee(sold);
                     }
 
+                    ++this.Settings.TradeCountSinceLastTransfer;
                     this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
                     this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
                 }
@@ -399,6 +404,12 @@ namespace SmartTrade
                 if (!nextTradeTime.HasValue)
                 {
                     this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
+                    hasTradePeriodEnded = true;
+                }
+
+                if (secondAmount.Value > 0m)
+                {
+                    await this.TransferAsync(exchange, hasTradePeriodEnded, buy ? firstBalance : secondBalance);
                 }
 
                 return nextTradeTime;
@@ -425,6 +436,40 @@ namespace SmartTrade
                     MinRetryIntervalMilliseconds,
                     Math.Min(MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
                 client.Dispose();
+            }
+        }
+
+        private async Task TransferAsync(ICurrencyExchange exchange, bool hasTradePeriodEnded, decimal amount)
+        {
+            try
+            {
+                if (this.Settings.IsSubaccount && this.MakeTransfer(hasTradePeriodEnded))
+                {
+                    await exchange.TransferToMainAccountAsync(this.Settings.Buy, amount);
+                    this.Settings.TradeCountSinceLastTransfer = 0;
+                }
+            }
+            catch (Exception ex) when (ex is BitstampException ||
+                ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
+            {
+                // Deliberately ignore these exceptions, we'll transfer to main after the next trade
+            }
+        }
+
+        private bool MakeTransfer(bool hasTradePeriodEnded)
+        {
+            switch (this.Settings.TransferToMainAccount)
+            {
+                case TransferToMainAccount.TradePeriodEnd:
+                    return hasTradePeriodEnded;
+                case TransferToMainAccount.EveryHundredthTrade:
+                    return this.Settings.TradeCountSinceLastTransfer >= 100;
+                case TransferToMainAccount.EveryTenthTrade:
+                    return this.Settings.TradeCountSinceLastTransfer >= 10;
+                case TransferToMainAccount.EveryTrade:
+                    return this.Settings.TradeCountSinceLastTransfer >= 1;
+                default:
+                    return false;
             }
         }
     }

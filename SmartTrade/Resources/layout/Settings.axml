@@ -39,4 +39,10 @@
     android:layout_height="wrap_content"
     android:inputType="numberDecimal"
     android:textSize="15sp" />
+  <Spinner
+    android:id="@+id/TransferToMainAccount"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:spinnerMode="dialog"
+    android:prompt="@string/TransferToMainAccount"/>
 </LinearLayout>

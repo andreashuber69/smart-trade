@@ -77,6 +77,7 @@ namespace SmartTrade
                 this.service.Settings.ApiSecret = data.ApiSecret;
                 this.service.Settings.Buy = data.Buy;
                 this.service.Settings.TradePeriod = data.TradePeriod;
+                this.service.Settings.TransferToMainAccount = data.TransferToMainAccount;
             }
         }
 
@@ -165,7 +166,8 @@ namespace SmartTrade
                             settings.ApiKey,
                             settings.ApiSecret,
                             settings.Buy,
-                            settings.TradePeriod);
+                            settings.TradePeriod,
+                            settings.TransferToMainAccount);
                         data.Put(intent);
                         this.StartActivityForResult(intent, 0);
                     }

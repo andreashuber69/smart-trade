@@ -30,6 +30,12 @@
   <string name="Buy">Buy {0}</string>
   <string name="Sell">Sell {0}</string>
   <string name="TradePeriod">Trade Period (days)</string>
+  <string name="TransferToMainAccount">Transfer to Main Account</string>
+  <string name="NeverTransfer">Never Transfer</string>
+  <string name="TransferAfterEveryTradePeriodEnd">Transfer After Every Trade Period End</string>
+  <string name="TransferAfterEveryHundredthTrade">Transfer After Every Hundredth Trade</string>
+  <string name="TransferAfterEveryTenthTrade">Transfer After Every Tenth Trade</string>
+  <string name="TransferAfterEveryTrade">Transfer After Every Trade</string>
   <string name="BootPopup">{0}Automatic trading for all enabled services will continue according to schedule.</string>
   <string name="BootNoServiceEnabledPopup">No service is currently enabled. No automatic trading will occur.</string>
   <string name="CheckingPopup">Checking balance...</string>
