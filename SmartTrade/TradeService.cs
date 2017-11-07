@@ -107,9 +107,12 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        protected TradeService(string tickerSymbol, decimal minTradeAmount, decimal feeStep)
+        protected TradeService(
+            string tickerSymbol, int firstDecimals, int secondDecimals, decimal minTradeAmount, decimal feeStep)
         {
             this.tickerSymbol = tickerSymbol;
+            this.firstDecimals = firstDecimals;
+            this.secondDecimals = secondDecimals;
             this.minTradeAmount = minTradeAmount;
             this.feeStep = feeStep;
             this.Settings = new Settings(this.tickerSymbol);
@@ -190,6 +193,8 @@ namespace SmartTrade
         }
 
         private readonly string tickerSymbol;
+        private readonly int firstDecimals;
+        private readonly int secondDecimals;
         private readonly decimal minTradeAmount;
         private readonly decimal feeStep;
 
@@ -407,9 +412,24 @@ namespace SmartTrade
                     hasTradePeriodEnded = true;
                 }
 
-                if (secondAmount.Value > 0m)
+                if ((secondAmount.Value > 0m) && this.Settings.IsSubaccount && this.MakeTransfer(hasTradePeriodEnded))
                 {
-                    await this.TransferAsync(exchange, hasTradePeriodEnded, buy ? firstBalance : secondBalance);
+                    // Apparently, after getting confirmation for a successful trade, the traded currency is not yet
+                    // credited to the balance. Waiting for a few seconds takes care of that...
+                    await Task.Delay(5000);
+                    var factor = (decimal)Math.Pow(10, buy ? this.firstDecimals : this.secondDecimals);
+                    await exchange.TransferToMainAccountAsync(
+                        this.Settings.Buy, Math.Floor((buy ? firstBalance : secondBalance) * factor) / factor);
+                    this.Settings.TradeCountSinceLastTransfer = 0;
+
+                    if (buy)
+                    {
+                        this.Settings.LastBalanceFirstCurrency = 0.0f;
+                    }
+                    else
+                    {
+                        this.Settings.LastBalanceSecondCurrency = 0.0f;
+                    }
                 }
 
                 return nextTradeTime;
@@ -436,23 +456,6 @@ namespace SmartTrade
                     MinRetryIntervalMilliseconds,
                     Math.Min(MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
                 client.Dispose();
-            }
-        }
-
-        private async Task TransferAsync(ICurrencyExchange exchange, bool hasTradePeriodEnded, decimal amount)
-        {
-            try
-            {
-                if (this.Settings.IsSubaccount && this.MakeTransfer(hasTradePeriodEnded))
-                {
-                    await exchange.TransferToMainAccountAsync(this.Settings.Buy, amount);
-                    this.Settings.TradeCountSinceLastTransfer = 0;
-                }
-            }
-            catch (Exception ex) when (ex is BitstampException ||
-                ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
-            {
-                // Deliberately ignore these exceptions, we'll transfer to main after the next trade
             }
         }
 

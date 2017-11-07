@@ -15,7 +15,7 @@ namespace SmartTrade
         private sealed class XrpBtcTradeService : TradeService
         {
             public XrpBtcTradeService()
-                : base(BitstampClient.XrpBtcSymbol, 0.002m, 0.00001m)
+                : base(BitstampClient.XrpBtcSymbol, 6, 8, 0.002m, 0.00001m)
             {
             }
         }

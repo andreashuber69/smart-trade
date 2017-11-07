@@ -15,7 +15,7 @@ namespace SmartTrade
         private sealed class EurUsdTradeService : TradeService
         {
             public EurUsdTradeService()
-                : base(BitstampClient.EurUsdSymbol, 5m, 0.01m)
+                : base(BitstampClient.EurUsdSymbol, 5, 5, 5m, 0.01m)
             {
             }
         }

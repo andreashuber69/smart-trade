@@ -15,7 +15,7 @@ namespace SmartTrade
         private sealed class EthEurTradeService : TradeService
         {
             public EthEurTradeService()
-                : base(BitstampClient.EthEurSymbol, 5m, 0.01m)
+                : base(BitstampClient.EthEurSymbol, 18, 5, 5m, 0.01m)
             {
             }
         }

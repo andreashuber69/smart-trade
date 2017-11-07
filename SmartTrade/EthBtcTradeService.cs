@@ -15,7 +15,7 @@ namespace SmartTrade
         private sealed class EthBtcTradeService : TradeService
         {
             public EthBtcTradeService()
-                : base(BitstampClient.EthBtcSymbol, 0.002m, 0.00001m)
+                : base(BitstampClient.EthBtcSymbol, 18, 8, 0.002m, 0.00001m)
             {
             }
         }
