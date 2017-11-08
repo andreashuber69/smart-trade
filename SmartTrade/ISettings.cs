@@ -18,6 +18,14 @@ namespace SmartTrade
         EveryTrade
     }
 
+    internal enum NotifyEvents
+    {
+        TradesTransfersWarningsErrors,
+        TransfersWarningsErrors,
+        WarningsErrors,
+        Errors
+    }
+
     /// <summary>Represents the settings that need to be made persistent.</summary>
     internal interface ISettings : INotifyPropertyChanged, IDisposable
     {
@@ -50,6 +58,9 @@ namespace SmartTrade
         /// main account.</summary>
         /// <remarks>This setting is ignored when <see cref="ApiKey"/> is associated with the main account.</remarks>
         TransferToMainAccount TransferToMainAccount { get; set; }
+
+        /// <summary>Gets or sets a value indicating about what events the user should be notified.</summary>
+        NotifyEvents NotifyEvents { get; set; }
 
         /// <summary>Gets or sets the time of the last trade.</summary>
         /// <value>The time of the last trade attempt; or <c>null</c> if no trade has been made yet.</value>

@@ -45,4 +45,10 @@
     android:layout_height="wrap_content"
     android:spinnerMode="dialog"
     android:prompt="@string/TransferToMainAccount"/>
+  <Spinner
+    android:id="@+id/NotifyEvents"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:spinnerMode="dialog"
+    android:prompt="@string/NotifyEvents"/>
 </LinearLayout>

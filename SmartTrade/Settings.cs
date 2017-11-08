@@ -73,6 +73,12 @@ namespace SmartTrade
             set { this.SetLong((long)value); }
         }
 
+        public NotifyEvents NotifyEvents
+        {
+            get { return (NotifyEvents)this.GetLong(); }
+            set { this.SetLong((long)value); }
+        }
+
         public DateTime? LastTradeTime
         {
             get { return this.GetDateTime(); }

@@ -38,7 +38,8 @@ namespace SmartTrade
                     intent.GetStringExtra(nameof(ApiSecret)),
                     intent.GetBooleanExtra(nameof(Buy), false),
                     intent.GetFloatExtra(nameof(TradePeriod), 0.0f),
-                    (TransferToMainAccount)intent.GetIntExtra(nameof(TransferToMainAccount), 0));
+                    (TransferToMainAccount)intent.GetIntExtra(nameof(TransferToMainAccount), 0),
+                    (NotifyEvents)intent.GetIntExtra(nameof(NotifyEvents), 0));
             }
 
             internal Data(
@@ -49,7 +50,8 @@ namespace SmartTrade
                 string apiSecret,
                 bool buy,
                 float tradePeriod,
-                TransferToMainAccount transferToMainAccount)
+                TransferToMainAccount transferToMainAccount,
+                NotifyEvents notifyEvents)
             {
                 this.FirstCurrency = firstCurrency;
                 this.SecondCurrency = secondCurrency;
@@ -59,6 +61,7 @@ namespace SmartTrade
                 this.Buy = buy;
                 this.TradePeriod = tradePeriod;
                 this.TransferToMainAccount = transferToMainAccount;
+                this.NotifyEvents = notifyEvents;
             }
 
             internal string FirstCurrency { get; }
@@ -77,6 +80,8 @@ namespace SmartTrade
 
             internal TransferToMainAccount TransferToMainAccount { get; }
 
+            internal NotifyEvents NotifyEvents { get; }
+
             internal void Put(Intent intent)
             {
                 intent.PutExtra(nameof(this.FirstCurrency), this.FirstCurrency);
@@ -87,6 +92,7 @@ namespace SmartTrade
                 intent.PutExtra(nameof(this.Buy), this.Buy);
                 intent.PutExtra(nameof(this.TradePeriod), this.TradePeriod);
                 intent.PutExtra(nameof(this.TransferToMainAccount), (int)this.TransferToMainAccount);
+                intent.PutExtra(nameof(this.NotifyEvents), (int)this.NotifyEvents);
             }
         }
 
@@ -109,6 +115,7 @@ namespace SmartTrade
             this.modeSpinner = this.GetModeSpinner();
             this.tradePeriodEditText = this.GetTradePeriodEditText();
             this.transferToMainAccountSpinner = this.GetTransferToMainAccountSpinner();
+            this.notifyEventsSpinner = this.GetNotifyEventsSpinner();
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +130,7 @@ namespace SmartTrade
         private Spinner modeSpinner;
         private EditText tradePeriodEditText;
         private Spinner transferToMainAccountSpinner;
+        private Spinner notifyEventsSpinner;
 
         private EditText GetCustomerIdEditText()
         {
@@ -187,6 +195,24 @@ namespace SmartTrade
             return result;
         }
 
+        private Spinner GetNotifyEventsSpinner()
+        {
+            var items =
+                new[]
+                {
+                    this.GetString(Resource.String.NotifyTradesTransfersWarningsErrors),
+                    this.GetString(Resource.String.NotifyTransfersWarningsErrors),
+                    this.GetString(Resource.String.NotifyWarningsErrors),
+                    this.GetString(Resource.String.NotifyErrors)
+                };
+
+            var adapter = new ArrayAdapter<string>(this, Resource.Layout.SimpleSpinnerDropDownItem, items);
+            var result = this.FindViewById<Spinner>(Resource.Id.NotifyEvents);
+            result.Adapter = adapter;
+            result.SetSelection((int)this.data.NotifyEvents);
+            return result;
+        }
+
         private void SaveChanges()
         {
             using (var intent = new Intent(this, typeof(StatusActivity)))
@@ -199,7 +225,8 @@ namespace SmartTrade
                     this.apiSecretEditText.Text,
                     this.modeSpinner.SelectedItemPosition == 1,
                     this.GetTradePeriod(),
-                    (TransferToMainAccount)this.transferToMainAccountSpinner.SelectedItemPosition);
+                    (TransferToMainAccount)this.transferToMainAccountSpinner.SelectedItemPosition,
+                    (NotifyEvents)this.notifyEventsSpinner.SelectedItemPosition);
                 this.data.Put(intent);
                 this.SetResult(Result.Ok, intent);
             }
