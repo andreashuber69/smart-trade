@@ -38,7 +38,6 @@
   <string name="TransferAfterEveryTrade">Transfer After Every Trade</string>
   <string name="BootPopup">{0}Automatic trading for all enabled services will continue according to schedule.</string>
   <string name="BootNoServiceEnabledPopup">No service is currently enabled. No automatic trading will occur.</string>
-  <string name="CheckingPopup">Checking balance...</string>
   <string name="NothingToTradePopup">Nothing to trade yet.</string>
   <string name="BoughtPopup">Bought {0} {1:F5} worth of {2}.</string>
   <string name="SoldPopup">Sold {0} {1:F5} worth of {2}.</string>

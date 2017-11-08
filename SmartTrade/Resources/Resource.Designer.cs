@@ -208,14 +208,11 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060024
 			public const int BootPopup = 2131099684;
 			
-			// aapt resource value: 0x7f060028
-			public const int BoughtPopup = 2131099688;
+			// aapt resource value: 0x7f060027
+			public const int BoughtPopup = 2131099687;
 			
 			// aapt resource value: 0x7f06001b
 			public const int Buy = 2131099675;
-			
-			// aapt resource value: 0x7f060026
-			public const int CheckingPopup = 2131099686;
 			
 			// aapt resource value: 0x7f06000e
 			public const int Days = 2131099662;
@@ -229,8 +226,8 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06000f
 			public const int Hours = 2131099663;
 			
-			// aapt resource value: 0x7f06002c
-			public const int InsufficientBalancePopup = 2131099692;
+			// aapt resource value: 0x7f06002b
+			public const int InsufficientBalancePopup = 2131099691;
 			
 			// aapt resource value: 0x7f060012
 			public const int JustNow = 2131099666;
@@ -253,11 +250,11 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06000a
 			public const int NextTrade = 2131099658;
 			
-			// aapt resource value: 0x7f06002b
-			public const int NoDepositPopup = 2131099691;
+			// aapt resource value: 0x7f06002a
+			public const int NoDepositPopup = 2131099690;
 			
-			// aapt resource value: 0x7f060027
-			public const int NothingToTradePopup = 2131099687;
+			// aapt resource value: 0x7f060026
+			public const int NothingToTradePopup = 2131099686;
 			
 			// aapt resource value: 0x7f060015
 			public const int PastFix = 2131099669;
@@ -286,8 +283,8 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060016
 			public const int SettingsTitle = 2131099670;
 			
-			// aapt resource value: 0x7f060029
-			public const int SoldPopup = 2131099689;
+			// aapt resource value: 0x7f060028
+			public const int SoldPopup = 2131099688;
 			
 			// aapt resource value: 0x7f06000c
 			public const int Start = 2131099660;
@@ -316,11 +313,11 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06001e
 			public const int TransferToMainAccount = 2131099678;
 			
-			// aapt resource value: 0x7f06002a
-			public const int TransferredPopup = 2131099690;
+			// aapt resource value: 0x7f060029
+			public const int TransferredPopup = 2131099689;
 			
-			// aapt resource value: 0x7f06002d
-			public const int UnexpectedErrorPopup = 2131099693;
+			// aapt resource value: 0x7f06002c
+			public const int UnexpectedErrorPopup = 2131099692;
 			
 			// aapt resource value: 0x7f060017
 			public const int UserId = 2131099671;

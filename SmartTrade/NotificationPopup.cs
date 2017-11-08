@@ -20,31 +20,19 @@ namespace SmartTrade
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         internal NotificationPopup(
-            Context context,
-            Type activityType,
-            Action<Intent> addArguments,
-            int titleFormatId,
-            int contentFormatId,
-            params object[] args)
-            : this(context, activityType, addArguments, titleFormatId, null, contentFormatId, args)
+            Context context, Type activityType, Action<Intent> addArguments, int titleFormatId)
+            : this(context, activityType, addArguments, titleFormatId, null)
         {
         }
 
         internal NotificationPopup(
-            Context context,
-            Type activityType,
-            Action<Intent> addArguments,
-            int titleFormatId,
-            string titleArgument,
-            int contentFormatId,
-            params object[] args)
+            Context context, Type activityType, Action<Intent> addArguments, int titleFormatId, string titleArgument)
         {
             this.activityType = activityType;
             this.addArguments = addArguments;
             this.manager = NotificationManager.FromContext(context);
             this.id = (int)(Java.Lang.JavaSystem.CurrentTimeMillis() & int.MaxValue);
             this.title = string.Format(CurrentCulture, context.Resources.GetString(titleFormatId), titleArgument);
-            this.Update(context, contentFormatId, args);
         }
 
         internal string ContentText { get; private set; }
