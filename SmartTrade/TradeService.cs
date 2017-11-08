@@ -418,8 +418,13 @@ namespace SmartTrade
                     // credited to the balance. Waiting for a few seconds takes care of that...
                     await Task.Delay(5000);
                     var factor = (decimal)Math.Pow(10, buy ? this.firstDecimals : this.secondDecimals);
-                    await exchange.TransferToMainAccountAsync(
-                        this.Settings.Buy, Math.Floor((buy ? firstBalance : secondBalance) * factor) / factor);
+                    var amount = Math.Floor((buy ? firstBalance : secondBalance) * factor) / factor;
+                    await exchange.TransferToMainAccountAsync(this.Settings.Buy, amount);
+                    popup.Append(
+                        this,
+                        Resource.String.TransferredPopup,
+                        buy ? this.Settings.FirstCurrency : this.Settings.SecondCurrency,
+                        amount);
                     this.Settings.TradeCountSinceLastTransfer = 0;
 
                     if (buy)

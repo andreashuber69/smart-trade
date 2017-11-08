@@ -79,6 +79,12 @@ namespace SmartTrade
             Info("Popup: {0}", this.ContentText);
         }
 
+        internal void Append(Context context, int contentFormatId, params object[] args) =>
+            this.Append(context, context.Resources.GetString(contentFormatId), args);
+
+        internal void Append(Context context, string contentFormat, params object[] args) =>
+            this.Update(context, this.ContentText + Environment.NewLine + contentFormat, args);
+
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         private readonly Type activityType;

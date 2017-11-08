@@ -42,6 +42,7 @@
   <string name="NothingToTradePopup">Nothing to trade yet.</string>
   <string name="BoughtPopup">Bought {0} {1:F5} worth of {2}.</string>
   <string name="SoldPopup">Sold {0} {1:F5} worth of {2}.</string>
+  <string name="TransferredPopup">Transferred {0} {1} to the main account.</string>
   <string name="NoDepositPopup">No deposit found.</string>
   <string name="InsufficientBalancePopup">Insufficient balance.</string>
   <string name="UnexpectedErrorPopup">Unexpected error: {0}, {1}. Service is now disabled.</string>
