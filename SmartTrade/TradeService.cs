@@ -141,9 +141,10 @@ namespace SmartTrade
             }
 
             Action<Intent> addArguments = i => new StatusActivity.Data(this.tickerSymbol).Put(i);
-            var popup = new NotificationPopup(
+            var notification = new Notification(
                 this, typeof(StatusActivity), addArguments, Resource.String.StatusTitle, this.tickerSymbol);
-            var intervalMilliseconds = (long)(await this.TradeAsync(popup)).GetValueOrDefault().TotalMilliseconds;
+            var intervalMilliseconds =
+                (long)(await this.TradeAsync(notification)).GetValueOrDefault().TotalMilliseconds;
             this.ScheduleTrade(Java.Lang.JavaSystem.CurrentTimeMillis() +
                 Math.Max(this.Settings.RetryIntervalMilliseconds, intervalMilliseconds));
         }
@@ -269,7 +270,7 @@ namespace SmartTrade
         /// <summary>Trades on the exchange.</summary>
         /// <returns>The time to wait before buying the next time. Is <c>null</c> if no deposit could be found, the
         /// balance is insufficient or if there was a temporary error.</returns>
-        private async Task<TimeSpan?> TradeAsync(NotificationPopup popup)
+        private async Task<TimeSpan?> TradeAsync(Notification notification)
         {
             var client = new BitstampClient(this.Settings.CustomerId, this.Settings.ApiKey, this.Settings.ApiSecret);
 
@@ -289,7 +290,8 @@ namespace SmartTrade
                 if (!this.Settings.PeriodEnd.HasValue)
                 {
                     this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
-                    popup.Update(this, Resource.String.NoDepositPopup);
+                    notification.Update(
+                        this, Kind.Warning, this.Settings.NotifyEvents, Resource.String.NoDepositNotification);
                     return null;
                 }
 
@@ -309,7 +311,11 @@ namespace SmartTrade
                 if (!secondAmount.HasValue)
                 {
                     this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
-                    popup.Update(this, Resource.String.InsufficientBalancePopup);
+                    notification.Update(
+                        this,
+                        Kind.Warning,
+                        this.Settings.NotifyEvents,
+                        Resource.String.InsufficientBalanceNotification);
                     return null;
                 }
 
@@ -359,9 +365,11 @@ namespace SmartTrade
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance += result.Amount;
                         var bought = result.Amount * result.Price;
-                        popup.Update(
+                        notification.Update(
                             this,
-                            Resource.String.BoughtPopup,
+                            Kind.Trade,
+                            this.Settings.NotifyEvents,
+                            Resource.String.BoughtNotification,
                             this.Settings.SecondCurrency,
                             bought,
                             this.Settings.FirstCurrency);
@@ -376,9 +384,11 @@ namespace SmartTrade
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance -= result.Amount;
                         var sold = result.Amount * result.Price;
-                        popup.Update(
+                        notification.Update(
                             this,
-                            Resource.String.SoldPopup,
+                            Kind.Trade,
+                            this.Settings.NotifyEvents,
+                            Resource.String.SoldNotification,
                             this.Settings.SecondCurrency,
                             sold,
                             this.Settings.FirstCurrency);
@@ -393,8 +403,9 @@ namespace SmartTrade
                 }
                 else
                 {
-                    popup.Update(this, Resource.String.NothingToTradePopup);
-                    popup.Dispose();
+                    notification.Update(
+                        this, Kind.NoPopup, this.Settings.NotifyEvents, Resource.String.NothingToTradeNotification);
+                    notification.Dispose();
                 }
 
                 this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
@@ -415,11 +426,14 @@ namespace SmartTrade
                     var factor = (decimal)Math.Pow(10, buy ? this.firstDecimals : this.secondDecimals);
                     var amount = Math.Floor((buy ? firstBalance : secondBalance) * factor) / factor;
                     await exchange.TransferToMainAccountAsync(this.Settings.Buy, amount);
-                    popup.Append(
+                    notification.Append(
                         this,
-                        Resource.String.TransferredPopup,
+                        Kind.Transfer,
+                        this.Settings.NotifyEvents,
+                        Resource.String.TransferredNotification,
                         buy ? this.Settings.FirstCurrency : this.Settings.SecondCurrency,
                         amount);
+
                     this.Settings.TradeCountSinceLastTransfer = 0;
 
                     if (buy)
@@ -438,12 +452,18 @@ namespace SmartTrade
                 ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
             {
                 this.Settings.RetryIntervalMilliseconds = this.Settings.RetryIntervalMilliseconds * 2;
-                popup.Update(this, ex.Message);
+                notification.Update(this, Kind.Warning, this.Settings.NotifyEvents, ex.Message);
                 return null;
             }
             catch (Exception ex)
             {
-                popup.Update(this, Resource.String.UnexpectedErrorPopup, ex.GetType().Name, ex.Message);
+                notification.Update(
+                    this,
+                    Kind.Error,
+                    this.Settings.NotifyEvents,
+                    Resource.String.UnexpectedErrorNotification,
+                    ex.GetType().Name,
+                    ex.Message);
                 this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
                 this.IsEnabled = false;
                 Warn("The service has been disabled due to an unexpected error: {0}", ex);
@@ -451,7 +471,7 @@ namespace SmartTrade
             }
             finally
             {
-                this.Settings.LastResult = popup.ContentText;
+                this.Settings.LastResult = notification.ContentText;
                 this.Settings.RetryIntervalMilliseconds = Math.Max(
                     MinRetryIntervalMilliseconds,
                     Math.Min(MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
@@ -466,9 +486,9 @@ namespace SmartTrade
                 case TransferToMainAccount.TradePeriodEnd:
                     return hasTradePeriodEnded;
                 case TransferToMainAccount.EveryHundredthTrade:
-                    return this.Settings.TradeCountSinceLastTransfer >= 100;
+                    return hasTradePeriodEnded || (this.Settings.TradeCountSinceLastTransfer >= 100);
                 case TransferToMainAccount.EveryTenthTrade:
-                    return this.Settings.TradeCountSinceLastTransfer >= 10;
+                    return hasTradePeriodEnded || (this.Settings.TradeCountSinceLastTransfer >= 10);
                 case TransferToMainAccount.EveryTrade:
                     return this.Settings.TradeCountSinceLastTransfer >= 1;
                 default:

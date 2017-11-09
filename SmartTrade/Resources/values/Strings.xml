@@ -41,13 +41,13 @@
   <string name="NotifyTransfersWarningsErrors">Notify Transfers and Issues</string>
   <string name="NotifyWarningsErrors">Notify Warnings and Errors</string>
   <string name="NotifyErrors">Notify Errors Only</string>
-  <string name="BootPopup">{0}Automatic trading for all enabled services will continue according to schedule.</string>
-  <string name="BootNoServiceEnabledPopup">No service is currently enabled. No automatic trading will occur.</string>
-  <string name="NothingToTradePopup">Nothing to trade yet.</string>
-  <string name="BoughtPopup">Bought {0} {1:F5} worth of {2}.</string>
-  <string name="SoldPopup">Sold {0} {1:F5} worth of {2}.</string>
-  <string name="TransferredPopup">Transferred {0} {1} to the main account.</string>
-  <string name="NoDepositPopup">No deposit found.</string>
-  <string name="InsufficientBalancePopup">Insufficient balance.</string>
-  <string name="UnexpectedErrorPopup">Unexpected error: {0}, {1}. Service is now disabled.</string>
+  <string name="BootNotification">{0}Automatic trading for all enabled services will continue according to schedule.</string>
+  <string name="BootNoServiceEnabledNotification">No service is currently enabled. No automatic trading will occur.</string>
+  <string name="NothingToTradeNotification">Nothing to trade yet.</string>
+  <string name="BoughtNotification">Bought {0} {1:F5} worth of {2}.</string>
+  <string name="SoldNotification">Sold {0} {1:F5} worth of {2}.</string>
+  <string name="TransferredNotification">Transferred {0} {1} to the main account.</string>
+  <string name="NoDepositNotification">No deposit found.</string>
+  <string name="InsufficientBalanceNotification">Insufficient balance.</string>
+  <string name="UnexpectedErrorNotification">Unexpected error: {0}, {1}. Service is now disabled.</string>
 </resources>

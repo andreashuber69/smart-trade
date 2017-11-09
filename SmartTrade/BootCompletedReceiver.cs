@@ -41,9 +41,10 @@ namespace SmartTrade
                 }
             }
 
-            var id = statuses.Length == 0 ? Resource.String.BootNoServiceEnabledPopup : Resource.String.BootPopup;
-            new NotificationPopup(context, typeof(MainActivity), i => { }, Resource.String.AppName).Update(
-                context, id, statuses.ToString());
+            var id = statuses.Length == 0 ?
+                Resource.String.BootNoServiceEnabledNotification : Resource.String.BootNotification;
+            new Notification(context, typeof(MainActivity), i => { }, Resource.String.AppName).Update(
+                context, Kind.Trade, NotifyEvents.TradesTransfersWarningsErrors, id, statuses.ToString());
         }
     }
 }

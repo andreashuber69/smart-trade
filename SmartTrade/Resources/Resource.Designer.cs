@@ -206,13 +206,13 @@ namespace SmartTrade
 			public const int Balance = 2131099656;
 			
 			// aapt resource value: 0x7f06002a
-			public const int BootNoServiceEnabledPopup = 2131099690;
+			public const int BootNoServiceEnabledNotification = 2131099690;
 			
 			// aapt resource value: 0x7f060029
-			public const int BootPopup = 2131099689;
+			public const int BootNotification = 2131099689;
 			
 			// aapt resource value: 0x7f06002c
-			public const int BoughtPopup = 2131099692;
+			public const int BoughtNotification = 2131099692;
 			
 			// aapt resource value: 0x7f06001b
 			public const int Buy = 2131099675;
@@ -230,7 +230,7 @@ namespace SmartTrade
 			public const int Hours = 2131099663;
 			
 			// aapt resource value: 0x7f060030
-			public const int InsufficientBalancePopup = 2131099696;
+			public const int InsufficientBalanceNotification = 2131099696;
 			
 			// aapt resource value: 0x7f060012
 			public const int JustNow = 2131099666;
@@ -254,10 +254,10 @@ namespace SmartTrade
 			public const int NextTrade = 2131099658;
 			
 			// aapt resource value: 0x7f06002f
-			public const int NoDepositPopup = 2131099695;
+			public const int NoDepositNotification = 2131099695;
 			
 			// aapt resource value: 0x7f06002b
-			public const int NothingToTradePopup = 2131099691;
+			public const int NothingToTradeNotification = 2131099691;
 			
 			// aapt resource value: 0x7f060028
 			public const int NotifyErrors = 2131099688;
@@ -302,7 +302,7 @@ namespace SmartTrade
 			public const int SettingsTitle = 2131099670;
 			
 			// aapt resource value: 0x7f06002d
-			public const int SoldPopup = 2131099693;
+			public const int SoldNotification = 2131099693;
 			
 			// aapt resource value: 0x7f06000c
 			public const int Start = 2131099660;
@@ -332,10 +332,10 @@ namespace SmartTrade
 			public const int TransferToMainAccount = 2131099678;
 			
 			// aapt resource value: 0x7f06002e
-			public const int TransferredPopup = 2131099694;
+			public const int TransferredNotification = 2131099694;
 			
 			// aapt resource value: 0x7f060031
-			public const int UnexpectedErrorPopup = 2131099697;
+			public const int UnexpectedErrorNotification = 2131099697;
 			
 			// aapt resource value: 0x7f060017
 			public const int UserId = 2131099671;
