@@ -9,6 +9,7 @@ namespace SmartTrade
     using System;
     using Android.App;
     using Android.Content;
+    using Android.Graphics;
 
     using static Logger;
     using static System.Globalization.CultureInfo;
@@ -98,10 +99,10 @@ namespace SmartTrade
             switch (kind)
             {
                 case Kind.Error:
-                    builder.SetLights(unchecked((int)0xFFFF0000), 2000, 2000);
+                    builder.SetLights(Color.ParseColor("red"), 2000, 2000);
                     break;
                 case Kind.Warning:
-                    builder.SetLights(unchecked((int)0xFF00FFFF), 2000, 2000);
+                    builder.SetLights(Color.ParseColor("yellow"), 2000, 2000);
                     break;
             }
         }
