@@ -308,7 +308,6 @@ namespace SmartTrade
             // the service is enabled the next time.
             this.SetLong(0, nameof(this.PeriodEnd));
             this.SetLong(0, nameof(this.LastTransactionTimestamp));
-            this.SetLong(0, nameof(this.TradeCountSinceLastTransfer));
             this.SetLong(0, nameof(this.RetryIntervalMilliseconds));
         }
 
