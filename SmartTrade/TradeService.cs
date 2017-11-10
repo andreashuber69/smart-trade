@@ -285,7 +285,8 @@ namespace SmartTrade
                 this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
                 var transactions = await this.GetTransactionsAsync(exchange);
                 var buy = this.Settings.Buy;
-                var hasTradePeriodEnded = this.SetPeriod(transactions, buy);
+                var hasTradePeriodEnded =
+                    this.SetPeriod(transactions, buy) && ((buy ? firstBalance : secondBalance) > 0m);
 
                 if (!this.Settings.PeriodEnd.HasValue)
                 {
