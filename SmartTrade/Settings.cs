@@ -165,6 +165,7 @@ namespace SmartTrade
             this.LogCurrentValue(nameof(this.Buy), this.Buy);
             this.LogCurrentValue(nameof(this.TradePeriod), this.TradePeriod);
             this.LogCurrentValue(nameof(this.TransferToMainAccount), this.TransferToMainAccount);
+            this.LogCurrentValue(nameof(this.NotifyEvents), this.NotifyEvents);
             this.LogCurrentValue(nameof(this.LastTradeTime), this.LastTradeTime, ":o");
             this.LogCurrentValue(nameof(this.LastResult), this.LastResult);
             this.LogCurrentValue(nameof(this.LastBalanceFirstCurrency), this.LastBalanceFirstCurrency, ":f8");
