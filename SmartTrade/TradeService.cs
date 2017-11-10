@@ -405,7 +405,6 @@ namespace SmartTrade
                 {
                     notification.Update(
                         this, Kind.NoPopup, this.Settings.NotifyEvents, Resource.String.NothingToTradeNotification);
-                    notification.Dispose();
                 }
 
                 this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
@@ -423,15 +422,17 @@ namespace SmartTrade
                     // Apparently, after getting confirmation for a successful trade, the traded currency is not yet
                     // credited to the balance. Waiting for a few seconds takes care of that...
                     await Task.Delay(5000);
+                    var currency = buy ? this.Settings.FirstCurrency : this.Settings.SecondCurrency;
                     var factor = (decimal)Math.Pow(10, buy ? this.firstDecimals : this.secondDecimals);
                     var amount = Math.Floor((buy ? firstBalance : secondBalance) * factor) / factor;
+                    Info("Amount to transfer is {0} {1}.", currency, amount);
                     await exchange.TransferToMainAccountAsync(this.Settings.Buy, amount);
                     notification.Append(
                         this,
                         Kind.Transfer,
                         this.Settings.NotifyEvents,
                         Resource.String.TransferredNotification,
-                        buy ? this.Settings.FirstCurrency : this.Settings.SecondCurrency,
+                        currency,
                         amount);
 
                     this.Settings.TradeCountSinceLastTransfer = 0;
@@ -452,12 +453,12 @@ namespace SmartTrade
                 ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
             {
                 this.Settings.RetryIntervalMilliseconds = this.Settings.RetryIntervalMilliseconds * 2;
-                notification.Update(this, Kind.Warning, this.Settings.NotifyEvents, ex.Message);
+                notification.Append(this, Kind.Warning, this.Settings.NotifyEvents, ex.Message);
                 return null;
             }
             catch (Exception ex)
             {
-                notification.Update(
+                notification.Append(
                     this,
                     Kind.Error,
                     this.Settings.NotifyEvents,

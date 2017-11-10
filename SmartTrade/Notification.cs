@@ -89,8 +89,11 @@ namespace SmartTrade
             this.Append(context, kind, notifyEvents, context.Resources.GetString(contentFormatId), args);
 
         internal void Append(
-            Context context, Kind kind, NotifyEvents notifyEvents, string contentFormat, params object[] args) =>
-            this.Update(context, kind, notifyEvents, this.ContentText + Environment.NewLine + contentFormat, args);
+            Context context, Kind kind, NotifyEvents notifyEvents, string contentFormat, params object[] args)
+        {
+            var previousContent = this.ContentText.Length > 0 ? this.ContentText + Environment.NewLine : string.Empty;
+            this.Update(context, kind, notifyEvents, previousContent + contentFormat, args);
+        }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
