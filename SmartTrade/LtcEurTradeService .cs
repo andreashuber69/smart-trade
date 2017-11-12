@@ -15,7 +15,7 @@ namespace SmartTrade
         private sealed class LtcEurTradeService : TradeService
         {
             public LtcEurTradeService()
-                : base(BitstampClient.LtcEurSymbol, 8, 5, 5m, 0.01m)
+                : base(BitstampClient.LtcEurSymbol, 8, 2, 5m, 0.01m)
             {
             }
         }

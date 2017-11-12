@@ -15,7 +15,7 @@ namespace SmartTrade
         private sealed class XrpEurTradeService : TradeService
         {
             public XrpEurTradeService()
-                : base(BitstampClient.XrpEurSymbol, 6, 5, 5m, 0.01m)
+                : base(BitstampClient.XrpEurSymbol, 6, 2, 5m, 0.01m)
             {
             }
         }
