@@ -361,7 +361,7 @@ namespace SmartTrade
                             secondAmountToTrade -= calculator.GetFee(secondAmountToTrade);
                         }
 
-                        var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Ask, 8);
+                        var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Ask, this.firstDecimals);
                         var result = await exchange.CreateBuyOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance += result.Amount;
@@ -380,7 +380,7 @@ namespace SmartTrade
                     }
                     else
                     {
-                        var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Bid, 8);
+                        var firstAmountToTrade = Math.Round(secondAmountToTrade / ticker.Bid, this.firstDecimals);
                         var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
                         this.Settings.LastTradeTime = result.DateTime;
                         firstBalance -= result.Amount;
