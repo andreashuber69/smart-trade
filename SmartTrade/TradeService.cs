@@ -418,7 +418,8 @@ namespace SmartTrade
                     hasTradePeriodEnded = true;
                 }
 
-                if ((secondAmount.Value > 0m) && this.Settings.IsSubaccount && this.MakeTransfer(hasTradePeriodEnded))
+                if (((secondAmount.Value > 0m) || hasTradePeriodEnded) &&
+                    this.Settings.IsSubaccount && this.MakeTransfer(hasTradePeriodEnded))
                 {
                     // Apparently, after getting confirmation for a successful trade, the traded currency is not yet
                     // credited to the balance. Waiting for a few seconds takes care of that...
