@@ -240,12 +240,13 @@ namespace SmartTrade
                 var deposit = transactions[lastDepositIndex];
                 this.Settings.IsSubaccount = deposit.TransactionType == TransactionType.SubaccountTransfer;
                 var lastDepositTime = deposit.DateTime;
+                var result = this.Settings.SectionStart.HasValue;
 
-                if (!this.Settings.SectionStart.HasValue || (lastDepositTime > this.Settings.SectionStart))
+                if (!result || (lastDepositTime > this.Settings.SectionStart))
                 {
                     this.Settings.SectionStart = lastDepositTime;
                     this.Settings.PeriodEnd = lastDepositTime + TimeSpan.FromDays(this.Settings.TradePeriod);
-                    return true;
+                    return result;
                 }
             }
 
