@@ -140,8 +140,15 @@ namespace Bitstamp
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Long-running operation.")]
-        internal Task<Balance> GetBalanceAsync() => this.ExecutePostAsync(
-            "/api/v2/balance/", Enumerable.Empty<KeyValuePair<string, string>>(), d => new Balance(d));
+        internal Task<Balance> GetBalanceAsync(string firstCurrency, string secondCurrency)
+        {
+            var first = firstCurrency.ToLowerInvariant();
+            var second = secondCurrency.ToLowerInvariant();
+            var empty = Enumerable.Empty<KeyValuePair<string, string>>();
+
+            return this.ExecutePostAsync(
+                Invariant($"/api/v2/balance/{first}{second}/"), empty, d => new Balance(first, second, d));
+        }
 
         internal async Task<IReadOnlyList<Transaction>> GetTransactionsAsync(int offset, int limit)
         {

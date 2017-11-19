@@ -18,7 +18,8 @@ namespace Bitstamp
         {
             public string TickerSymbol { get; }
 
-            public async Task<IBalance> GetBalanceAsync() => this.CreateBalance(await this.client.GetBalanceAsync());
+            public async Task<IBalance> GetBalanceAsync() =>
+                this.CreateBalance(await this.client.GetBalanceAsync(this.FirstCurrency, this.SecondCurrency));
 
             public async Task<IEnumerable<ITransaction>> GetTransactionsAsync(int offset, int limit)
             {
@@ -47,9 +48,6 @@ namespace Bitstamp
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            protected static IBalance CreateBalance(decimal firstCurrency, decimal secondCurrency, decimal fee) =>
-                new BalanceImpl(firstCurrency, secondCurrency, fee);
-
             protected static ITransaction CreateTransaction(
                 int id,
                 DateTime dateTime,
@@ -69,8 +67,6 @@ namespace Bitstamp
                 this.TickerSymbol = tickerSymbol;
             }
 
-            protected abstract IBalance CreateBalance(Balance b);
-
             protected abstract bool IsRelevantDepositOrWithdrawal(Transaction t);
 
             protected abstract bool IsRelevantTrade(Transaction t);
@@ -88,6 +84,8 @@ namespace Bitstamp
             private string SecondCurrency => this.TickerSymbol.Substring(this.TickerSymbol.IndexOf('/') + 1);
 
             private string CurrencyPair => this.TickerSymbol.Replace("/", string.Empty).ToLowerInvariant();
+
+            private IBalance CreateBalance(Balance b) => new BalanceImpl(b.FirstAvailable, b.SecondAvailable, b.Fee);
 
             private bool IsRelevant(Transaction transaction)
             {

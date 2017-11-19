@@ -18,9 +18,6 @@ namespace Bitstamp
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            protected sealed override IBalance CreateBalance(Balance b) =>
-                CreateBalance(b.EthAvailable, b.EurAvailable, b.EthEurFee);
-
             protected sealed override bool IsRelevantDepositOrWithdrawal(Transaction t) => (t.Eth != 0m) || (t.Eur != 0m);
 
             protected sealed override bool IsRelevantTrade(Transaction t) => t.EthEur.HasValue;
