@@ -81,7 +81,7 @@ namespace SmartTrade
                 }
             }
 
-            Info("Notification{0}: {1}", showPopup ? string.Empty : " (shown in popup)", this.ContentText);
+            Info("Notification{0}: {1}", showPopup ? " (shown in popup)" : string.Empty, this.ContentText);
         }
 
         internal void Append(
