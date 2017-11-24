@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingStart="@dimen/LeftPadding"
+  android:paddingEnd="@dimen/RightPadding"
+  android:paddingTop="@dimen/TopPadding">
+  <TextView
+    android:id="@+id/TickerSymbol"
+    android:layout_width="50dp"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceSmall" />
+  <TextView
+    android:id="@+id/FirstBalance"
+    android:layout_width="50dp"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceSmall" />
+  <TextView
+    android:id="@+id/SecondBalance"
+    android:layout_width="50dp"
+    android:layout_height="wrap_content"
+    android:textAppearance="?android:attr/textAppearanceSmall" />
+</LinearLayout>

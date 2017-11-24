@@ -7,6 +7,7 @@
 namespace SmartTrade
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ namespace SmartTrade
         {
             using (var intent = new Intent(this, typeof(StatusActivity)))
             {
-                new StatusActivity.Data(BitstampClient.TickerSymbols[position]).Put(intent);
+                new StatusActivity.Data(this.settings[position].TickerSymbol).Put(intent);
                 this.StartActivity(intent);
             }
         }
@@ -47,14 +48,67 @@ namespace SmartTrade
 
             this.SetContentView(Resource.Layout.Main);
 
+            this.settings =
+                BitstampClient.TickerSymbols.Select(s => new Settings(s)).OrderBy(s => s.NextTradeTime == 0).ToArray();
+
             this.tickersListView = this.FindViewById<ListView>(Resource.Id.TickersListView);
-            this.tickersListView.Adapter = new ArrayAdapter<string>(
-                this, Android.Resource.Layout.SimpleListItem1, BitstampClient.TickerSymbols.ToArray());
+            this.tickersListView.Adapter = new Adapter(this, this.LayoutInflater, this.settings);
             this.tickersListView.OnItemClickListener = this;
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        private Settings[] settings;
         private ListView tickersListView;
+
+        private sealed class Adapter : ArrayAdapter<Settings>
+        {
+            public sealed override View GetView(int position, View convertView, ViewGroup parent)
+            {
+                if (convertView == null)
+                {
+                    convertView = this.inflater.Inflate(Resource.Layout.OverviewItem, null, false);
+                    convertView.Tag = new ViewHolder(convertView);
+                }
+
+                var holder = (ViewHolder)convertView.Tag;
+                var settings = this.GetItem(position);
+                holder.TickerSymbolTextView.Text = settings.TickerSymbol;
+                holder.FirstBalanceTextView.Text = settings.FirstCurrency + " " + settings.LastBalanceFirstCurrency;
+                holder.SecondBalanceTextView.Text = settings.SecondCurrency + " " + settings.LastBalanceSecondCurrency;
+                return convertView;
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            internal Adapter(Context context, LayoutInflater inflater, IEnumerable<Settings> settings)
+                : base(context, Resource.Layout.OverviewItem, settings.ToArray())
+            {
+                this.inflater = inflater;
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            private readonly LayoutInflater inflater;
+
+            private sealed class ViewHolder : Java.Lang.Object
+            {
+                internal ViewHolder(View row) => this.row = row;
+
+                internal TextView TickerSymbolTextView => this.tickerSymbolTextView ??
+                    (this.tickerSymbolTextView = (TextView)this.row.FindViewById(Resource.Id.TickerSymbol));
+
+                internal TextView FirstBalanceTextView => this.firstBalanceTextView ??
+                    (this.firstBalanceTextView = (TextView)this.row.FindViewById(Resource.Id.FirstBalance));
+
+                internal TextView SecondBalanceTextView => this.secondBalanceTextView ??
+                    (this.secondBalanceTextView = (TextView)this.row.FindViewById(Resource.Id.SecondBalance));
+
+                private readonly View row;
+                private TextView tickerSymbolTextView;
+                private TextView firstBalanceTextView;
+                private TextView secondBalanceTextView;
+            }
+        }
     }
 }
