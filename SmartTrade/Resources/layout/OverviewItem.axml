@@ -3,22 +3,26 @@
   android:orientation="horizontal"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:paddingStart="@dimen/LeftPadding"
-  android:paddingEnd="@dimen/RightPadding"
-  android:paddingTop="@dimen/TopPadding">
+  android:paddingTop="8dp"
+  android:paddingBottom="8dp">
   <TextView
     android:id="@+id/TickerSymbol"
-    android:layout_width="50dp"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceSmall" />
+    android:layout_weight="5"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
   <TextView
     android:id="@+id/FirstBalance"
-    android:layout_width="50dp"
-    android:layout_height="wrap_content"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="6"
+    android:gravity="center_vertical"
     android:textAppearance="?android:attr/textAppearanceSmall" />
   <TextView
     android:id="@+id/SecondBalance"
-    android:layout_width="50dp"
-    android:layout_height="wrap_content"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="6"
+    android:gravity="center_vertical"
     android:textAppearance="?android:attr/textAppearanceSmall" />
 </LinearLayout>
