@@ -117,13 +117,26 @@ namespace SmartTrade
                         case nameof(Settings.LastBalanceFirstCurrency):
                         case nameof(Settings.SecondCurrency):
                         case nameof(Settings.LastBalanceSecondCurrency):
+                        case nameof(Settings.NextTradeTime):
                             this.tickerSymbolTextView.Text = settings.TickerSymbol;
-                            this.firstCurrencyTextView.Text = settings.FirstCurrency;
-                            this.firstBalanceTextView.Text =
-                                settings.LastBalanceFirstCurrency.ToString("f5", CultureInfo.CurrentCulture);
-                            this.secondCurrencyTextView.Text = settings.SecondCurrency;
-                            this.secondBalanceTextView.Text =
-                                settings.LastBalanceSecondCurrency.ToString("f5", CultureInfo.CurrentCulture);
+
+                            if (settings.NextTradeTime == 0)
+                            {
+                                this.firstCurrencyTextView.Text = null;
+                                this.firstBalanceTextView.Text = null;
+                                this.secondCurrencyTextView.Text = null;
+                                this.secondBalanceTextView.Text = null;
+                            }
+                            else
+                            {
+                                this.firstCurrencyTextView.Text = settings.FirstCurrency;
+                                this.firstBalanceTextView.Text =
+                                    settings.LastBalanceFirstCurrency.ToString("f5", CultureInfo.CurrentCulture);
+                                this.secondCurrencyTextView.Text = settings.SecondCurrency;
+                                this.secondBalanceTextView.Text =
+                                    settings.LastBalanceSecondCurrency.ToString("f5", CultureInfo.CurrentCulture);
+                            }
+
                             break;
                     }
                 }
