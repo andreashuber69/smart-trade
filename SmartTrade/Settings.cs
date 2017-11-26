@@ -179,16 +179,16 @@ namespace SmartTrade
             this.LogCurrentValue(nameof(this.RetryIntervalMilliseconds), this.RetryIntervalMilliseconds);
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1062:Validate arguments of public methods", Justification = "Method is not extrenally visible, CA bug?")]
-        public void OnSharedPreferenceChanged(ISharedPreferences sharedPreferences, string key)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        void ISharedPreferencesOnSharedPreferenceChangeListener.OnSharedPreferenceChanged(
+            ISharedPreferences sharedPreferences, string key)
         {
             if (key.StartsWith(this.groupName, StringComparison.Ordinal))
             {
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(key.Substring(this.groupName.Length)));
             }
         }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         internal Settings(string tickerSymbol)
         {

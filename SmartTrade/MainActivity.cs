@@ -8,6 +8,7 @@ namespace SmartTrade
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -68,14 +69,9 @@ namespace SmartTrade
                 if (convertView == null)
                 {
                     convertView = this.inflater.Inflate(Resource.Layout.OverviewItem, null, false);
-                    convertView.Tag = new ViewHolder(convertView);
+                    convertView.Tag = new ViewHolder(convertView, this.GetItem(position));
                 }
 
-                var holder = (ViewHolder)convertView.Tag;
-                var settings = this.GetItem(position);
-                holder.TickerSymbolTextView.Text = settings.TickerSymbol;
-                holder.FirstBalanceTextView.Text = settings.FirstCurrency + " " + settings.LastBalanceFirstCurrency;
-                holder.SecondBalanceTextView.Text = settings.SecondCurrency + " " + settings.LastBalanceSecondCurrency;
                 return convertView;
             }
 
@@ -93,18 +89,44 @@ namespace SmartTrade
 
             private sealed class ViewHolder : Java.Lang.Object
             {
-                internal ViewHolder(View row)
+                internal ViewHolder(View row, Settings settings)
                 {
-                    this.TickerSymbolTextView = (TextView)row.FindViewById(Resource.Id.TickerSymbol);
-                    this.FirstBalanceTextView = (TextView)row.FindViewById(Resource.Id.FirstBalance);
-                    this.SecondBalanceTextView = (TextView)row.FindViewById(Resource.Id.SecondBalance);
+                    this.tickerSymbolTextView = (TextView)row.FindViewById(Resource.Id.TickerSymbol);
+                    this.firstCurrencyTextView = (TextView)row.FindViewById(Resource.Id.FirstCurrency);
+                    this.firstBalanceTextView = (TextView)row.FindViewById(Resource.Id.FirstBalance);
+                    this.secondCurrencyTextView = (TextView)row.FindViewById(Resource.Id.SecondCurrency);
+                    this.secondBalanceTextView = (TextView)row.FindViewById(Resource.Id.SecondBalance);
+                    settings.PropertyChanged += (s, e) => this.Update((Settings)s, e.PropertyName);
+                    this.Update(settings, nameof(Settings.TickerSymbol));
                 }
 
-                internal TextView TickerSymbolTextView { get; }
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                internal TextView FirstBalanceTextView { get; }
+                private readonly TextView tickerSymbolTextView;
+                private readonly TextView firstCurrencyTextView;
+                private readonly TextView firstBalanceTextView;
+                private readonly TextView secondCurrencyTextView;
+                private readonly TextView secondBalanceTextView;
 
-                internal TextView SecondBalanceTextView { get; }
+                private void Update(Settings settings, string propertyName)
+                {
+                    switch (propertyName)
+                    {
+                        case nameof(Settings.TickerSymbol):
+                        case nameof(Settings.FirstCurrency):
+                        case nameof(Settings.LastBalanceFirstCurrency):
+                        case nameof(Settings.SecondCurrency):
+                        case nameof(Settings.LastBalanceSecondCurrency):
+                            this.tickerSymbolTextView.Text = settings.TickerSymbol;
+                            this.firstCurrencyTextView.Text = settings.FirstCurrency;
+                            this.firstBalanceTextView.Text =
+                                settings.LastBalanceFirstCurrency.ToString("F5", CultureInfo.CurrentCulture);
+                            this.secondCurrencyTextView.Text = settings.SecondCurrency;
+                            this.secondBalanceTextView.Text =
+                                settings.LastBalanceSecondCurrency.ToString("F5", CultureInfo.CurrentCulture);
+                            break;
+                    }
+                }
             }
         }
     }
