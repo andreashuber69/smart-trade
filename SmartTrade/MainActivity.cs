@@ -93,21 +93,18 @@ namespace SmartTrade
 
             private sealed class ViewHolder : Java.Lang.Object
             {
-                internal ViewHolder(View row) => this.row = row;
+                internal ViewHolder(View row)
+                {
+                    this.TickerSymbolTextView = (TextView)row.FindViewById(Resource.Id.TickerSymbol);
+                    this.FirstBalanceTextView = (TextView)row.FindViewById(Resource.Id.FirstBalance);
+                    this.SecondBalanceTextView = (TextView)row.FindViewById(Resource.Id.SecondBalance);
+                }
 
-                internal TextView TickerSymbolTextView => this.tickerSymbolTextView ??
-                    (this.tickerSymbolTextView = (TextView)this.row.FindViewById(Resource.Id.TickerSymbol));
+                internal TextView TickerSymbolTextView { get; }
 
-                internal TextView FirstBalanceTextView => this.firstBalanceTextView ??
-                    (this.firstBalanceTextView = (TextView)this.row.FindViewById(Resource.Id.FirstBalance));
+                internal TextView FirstBalanceTextView { get; }
 
-                internal TextView SecondBalanceTextView => this.secondBalanceTextView ??
-                    (this.secondBalanceTextView = (TextView)this.row.FindViewById(Resource.Id.SecondBalance));
-
-                private readonly View row;
-                private TextView tickerSymbolTextView;
-                private TextView firstBalanceTextView;
-                private TextView secondBalanceTextView;
+                internal TextView SecondBalanceTextView { get; }
             }
         }
     }
