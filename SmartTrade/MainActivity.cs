@@ -120,10 +120,10 @@ namespace SmartTrade
                             this.tickerSymbolTextView.Text = settings.TickerSymbol;
                             this.firstCurrencyTextView.Text = settings.FirstCurrency;
                             this.firstBalanceTextView.Text =
-                                settings.LastBalanceFirstCurrency.ToString("F5", CultureInfo.CurrentCulture);
+                                settings.LastBalanceFirstCurrency.ToString("f5", CultureInfo.CurrentCulture);
                             this.secondCurrencyTextView.Text = settings.SecondCurrency;
                             this.secondBalanceTextView.Text =
-                                settings.LastBalanceSecondCurrency.ToString("F5", CultureInfo.CurrentCulture);
+                                settings.LastBalanceSecondCurrency.ToString("f5", CultureInfo.CurrentCulture);
                             break;
                     }
                 }

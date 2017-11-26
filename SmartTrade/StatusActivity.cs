@@ -210,9 +210,9 @@ namespace SmartTrade
                 (settings.TradePeriod != 0.0f);
             this.lastTradeResultTextView.Text = settings.LastResult;
             this.lastTradeBalance1TextView.Text =
-                Invariant($"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:F8}");
+                Invariant($"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:f5}");
             this.lastTradeBalance2TextView.Text =
-                Invariant($"{settings.SecondCurrency} {settings.LastBalanceSecondCurrency:F8}");
+                Invariant($"{settings.SecondCurrency} {settings.LastBalanceSecondCurrency:f5}");
         }
 
         private void UpdateTimesPeriodically() => this.UpdateTimesPeriodicallyImpl(++this.currentTimeUpdateId);
