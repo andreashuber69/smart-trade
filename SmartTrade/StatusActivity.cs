@@ -47,7 +47,7 @@ namespace SmartTrade
             this.settingsButton = this.GetSettingsButton();
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton();
             this.lastTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.LastTradeTimeTextView);
-            this.lastTradeResultTextView = this.FindViewById<TextView>(Resource.Id.LastTradeResultTextView);
+            this.lastTradeResultTextView = this.FindViewById<TextView>(Resource.Id.LastTradeStatusTextView);
             this.lastTradeBalance1TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance1TextView);
             this.lastTradeBalance2TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance2TextView);
             this.nextTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.NextTradeTimeTextView);
@@ -208,7 +208,7 @@ namespace SmartTrade
             this.enableDisableServiceButton.Enabled = (settings.CustomerId != 0) &&
                 !string.IsNullOrEmpty(settings.ApiKey) && !string.IsNullOrEmpty(settings.ApiSecret) &&
                 (settings.TradePeriod != 0.0f);
-            this.lastTradeResultTextView.Text = settings.LastResult;
+            this.lastTradeResultTextView.Text = settings.LastStatus;
             this.lastTradeBalance1TextView.Text =
                 $"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:f5}";
             this.lastTradeBalance2TextView.Text =

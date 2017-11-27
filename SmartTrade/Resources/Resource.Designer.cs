@@ -107,7 +107,7 @@ namespace SmartTrade
 			public const int LastTradeBalance2TextView = 2131165202;
 			
 			// aapt resource value: 0x7f070013
-			public const int LastTradeResultTextView = 2131165203;
+			public const int LastTradeStatusTextView = 2131165203;
 			
 			// aapt resource value: 0x7f070010
 			public const int LastTradeTimeTextView = 2131165200;
@@ -229,8 +229,8 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060029
 			public const int BootNotification = 2131099689;
 			
-			// aapt resource value: 0x7f06002c
-			public const int BoughtNotification = 2131099692;
+			// aapt resource value: 0x7f06002d
+			public const int BoughtNotification = 2131099693;
 			
 			// aapt resource value: 0x7f06001b
 			public const int Buy = 2131099675;
@@ -247,8 +247,8 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06000f
 			public const int Hours = 2131099663;
 			
-			// aapt resource value: 0x7f060030
-			public const int InsufficientBalanceNotification = 2131099696;
+			// aapt resource value: 0x7f060031
+			public const int InsufficientBalanceNotification = 2131099697;
 			
 			// aapt resource value: 0x7f060012
 			public const int JustNow = 2131099666;
@@ -271,11 +271,11 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06000a
 			public const int NextTrade = 2131099658;
 			
-			// aapt resource value: 0x7f06002f
-			public const int NoDepositNotification = 2131099695;
+			// aapt resource value: 0x7f060030
+			public const int NoDepositNotification = 2131099696;
 			
-			// aapt resource value: 0x7f06002b
-			public const int NothingToTradeNotification = 2131099691;
+			// aapt resource value: 0x7f06002c
+			public const int NothingToTradeNotification = 2131099692;
 			
 			// aapt resource value: 0x7f060028
 			public const int NotifyErrors = 2131099688;
@@ -298,9 +298,6 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06000b
 			public const int Period = 2131099659;
 			
-			// aapt resource value: 0x7f060009
-			public const int Result = 2131099657;
-			
 			// aapt resource value: 0x7f060011
 			public const int Seconds = 2131099665;
 			
@@ -319,17 +316,23 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060016
 			public const int SettingsTitle = 2131099670;
 			
-			// aapt resource value: 0x7f06002d
-			public const int SoldNotification = 2131099693;
+			// aapt resource value: 0x7f06002e
+			public const int SoldNotification = 2131099694;
 			
 			// aapt resource value: 0x7f06000c
 			public const int Start = 2131099660;
+			
+			// aapt resource value: 0x7f060009
+			public const int Status = 2131099657;
 			
 			// aapt resource value: 0x7f060002
 			public const int StatusTitle = 2131099650;
 			
 			// aapt resource value: 0x7f060007
 			public const int Time = 2131099655;
+			
+			// aapt resource value: 0x7f06002b
+			public const int TradeInProgressStatus = 2131099691;
 			
 			// aapt resource value: 0x7f06001d
 			public const int TradePeriod = 2131099677;
@@ -349,11 +352,11 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06001e
 			public const int TransferToMainAccount = 2131099678;
 			
-			// aapt resource value: 0x7f06002e
-			public const int TransferredNotification = 2131099694;
+			// aapt resource value: 0x7f06002f
+			public const int TransferredNotification = 2131099695;
 			
-			// aapt resource value: 0x7f060031
-			public const int UnexpectedErrorNotification = 2131099697;
+			// aapt resource value: 0x7f060032
+			public const int UnexpectedErrorNotification = 2131099698;
 			
 			// aapt resource value: 0x7f060017
 			public const int UserId = 2131099671;

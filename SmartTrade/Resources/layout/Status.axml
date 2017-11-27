@@ -112,9 +112,9 @@
       android:layout_height="wrap_content"
       android:layout_weight="5"
       android:textAppearance="?android:attr/textAppearanceSmall"
-      android:text="@string/Result" />
+      android:text="@string/Status" />
     <TextView
-      android:id="@+id/LastTradeResultTextView"
+      android:id="@+id/LastTradeStatusTextView"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="14"

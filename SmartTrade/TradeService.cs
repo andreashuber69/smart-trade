@@ -277,6 +277,7 @@ namespace SmartTrade
 
             try
             {
+                this.Settings.LastStatus = this.GetString(Resource.String.TradeInProgressStatus);
                 var exchange = client.Exchanges[this.tickerSymbol];
                 this.Settings.LastTradeTime = DateTime.UtcNow;
                 var balance = await exchange.GetBalanceAsync();
@@ -475,7 +476,7 @@ namespace SmartTrade
             }
             finally
             {
-                this.Settings.LastResult = notification.ContentText;
+                this.Settings.LastStatus = notification.ContentText;
                 this.Settings.RetryIntervalMilliseconds = Math.Max(
                     MinRetryIntervalMilliseconds,
                     Math.Min(MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));

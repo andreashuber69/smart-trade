@@ -66,8 +66,8 @@ namespace SmartTrade
         /// <value>The time of the last trade attempt; or <c>null</c> if no trade has been made yet.</value>
         DateTime? LastTradeTime { get; set; }
 
-        /// <summary>Gets or sets the result of the last trade attempt.</summary>
-        string LastResult { get; set; }
+        /// <summary>Gets or sets the status of the last trade attempt.</summary>
+        string LastStatus { get; set; }
 
         /// <summary>Gets or sets the balance of the first currency after the last trade attempt.</summary>
         float LastBalanceFirstCurrency { get; set; }

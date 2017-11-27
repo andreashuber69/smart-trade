@@ -9,7 +9,7 @@
   <string name="LastTrade">Last Trade</string>
   <string name="Time">Time:</string>
   <string name="Balance">Balance:</string>
-  <string name="Result">Result:</string>
+  <string name="Status">Status:</string>
   <string name="NextTrade">Next Trade</string>
   <string name="Period">Trade Period</string>
   <string name="Start">Start:</string>
@@ -43,6 +43,7 @@
   <string name="NotifyErrors">Notify Errors Only</string>
   <string name="BootNotification">{0}Automatic trading for all enabled services will continue according to schedule.</string>
   <string name="BootNoServiceEnabledNotification">No service is currently enabled. No automatic trading will occur.</string>
+  <string name="TradeInProgressStatus">Trade in Progress...</string>
   <string name="NothingToTradeNotification">Nothing to trade yet.</string>
   <string name="BoughtNotification">Bought {0} {1:f5} worth of {2}.</string>
   <string name="SoldNotification">Sold {0} {1:f5} worth of {2}.</string>

@@ -85,7 +85,7 @@ namespace SmartTrade
             set { this.SetDateTime(value); }
         }
 
-        public string LastResult
+        public string LastStatus
         {
             get { return this.GetString(); }
             set { this.SetString(value); }
@@ -167,7 +167,7 @@ namespace SmartTrade
             this.LogCurrentValue(nameof(this.TransferToMainAccount), this.TransferToMainAccount);
             this.LogCurrentValue(nameof(this.NotifyEvents), this.NotifyEvents);
             this.LogCurrentValue(nameof(this.LastTradeTime), this.LastTradeTime, ":o");
-            this.LogCurrentValue(nameof(this.LastResult), this.LastResult);
+            this.LogCurrentValue(nameof(this.LastStatus), this.LastStatus);
             this.LogCurrentValue(nameof(this.LastBalanceFirstCurrency), this.LastBalanceFirstCurrency, ":f8");
             this.LogCurrentValue(nameof(this.LastBalanceSecondCurrency), this.LastBalanceSecondCurrency, ":f8");
             this.LogCurrentValue(nameof(this.NextTradeTime), this.NextTradeTime);
@@ -299,7 +299,7 @@ namespace SmartTrade
         private void ClearSettings()
         {
             this.SetLong(0, nameof(this.LastTradeTime));
-            this.SetString(string.Empty, nameof(this.LastResult));
+            this.SetString(string.Empty, nameof(this.LastStatus));
             this.SetFloat(0.0f, nameof(this.LastBalanceFirstCurrency));
             this.SetFloat(0.0f, nameof(this.LastBalanceSecondCurrency));
             this.SetLong(0, nameof(this.IsSubaccount));
