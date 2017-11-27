@@ -210,9 +210,9 @@ namespace SmartTrade
                 (settings.TradePeriod != 0.0f);
             this.lastTradeResultTextView.Text = settings.LastResult;
             this.lastTradeBalance1TextView.Text =
-                Invariant($"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:f5}");
+                $"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:f5}";
             this.lastTradeBalance2TextView.Text =
-                Invariant($"{settings.SecondCurrency} {settings.LastBalanceSecondCurrency:f5}");
+                $"{settings.SecondCurrency} {settings.LastBalanceSecondCurrency:f5}";
         }
 
         private void UpdateTimesPeriodically() => this.UpdateTimesPeriodicallyImpl(++this.currentTimeUpdateId);
@@ -283,7 +283,7 @@ namespace SmartTrade
             else
             {
                 return string.Format(
-                    InvariantCulture,
+                    CurrentCulture,
                     this.GetString(amount > 0.0 ? Resource.String.PastFix : Resource.String.FutureFix),
                     string.Format(InvariantCulture, unitFormat, Floor(absoluteAmount)));
             }

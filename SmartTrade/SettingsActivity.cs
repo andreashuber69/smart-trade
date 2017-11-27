@@ -135,7 +135,7 @@ namespace SmartTrade
         private EditText GetCustomerIdEditText()
         {
             var result = this.FindViewById<EditText>(Resource.Id.UserId);
-            result.Text = this.data.CustomerId == 0 ? string.Empty : this.data.CustomerId.ToString(InvariantCulture);
+            result.Text = this.data.CustomerId == 0 ? string.Empty : this.data.CustomerId.ToString(CurrentCulture);
             return result;
         }
 
@@ -172,7 +172,7 @@ namespace SmartTrade
         private EditText GetTradePeriodEditText()
         {
             var result = this.FindViewById<EditText>(Resource.Id.TradePeriod);
-            result.Text = this.data.TradePeriod == 0 ? string.Empty : this.data.TradePeriod.ToString(InvariantCulture);
+            result.Text = this.data.TradePeriod == 0 ? string.Empty : this.data.TradePeriod.ToString(CurrentCulture);
             return result;
         }
 
@@ -233,9 +233,9 @@ namespace SmartTrade
         }
 
         private int GetCustomerId() => int.TryParse(
-            this.customerIdEditText.Text, None, InvariantCulture, out var customerId) ? customerId : 0;
+            this.customerIdEditText.Text, None, CurrentCulture, out var customerId) ? customerId : 0;
 
         private float GetTradePeriod() => float.TryParse(
-            this.tradePeriodEditText.Text, AllowDecimalPoint, InvariantCulture, out var tradePeriod) ? tradePeriod : 0.0f;
+            this.tradePeriodEditText.Text, AllowDecimalPoint, CurrentCulture, out var tradePeriod) ? tradePeriod : 0.0f;
     }
 }
