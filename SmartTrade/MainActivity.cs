@@ -114,8 +114,8 @@ namespace SmartTrade
                     {
                         case nameof(Settings.TickerSymbol):
                         case nameof(Settings.FirstCurrency):
-                        case nameof(Settings.LastBalanceFirstCurrency):
                         case nameof(Settings.SecondCurrency):
+                        case nameof(Settings.LastBalanceFirstCurrency):
                         case nameof(Settings.LastBalanceSecondCurrency):
                         case nameof(Settings.NextTradeTime):
                             this.tickerSymbolTextView.Text = settings.TickerSymbol;

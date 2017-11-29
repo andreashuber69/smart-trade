@@ -108,6 +108,12 @@ namespace SmartTrade
         /// <summary>Gets or sets the interval between retries.</summary>
         long RetryIntervalMilliseconds { get; set; }
 
+        /// <summary>Gets the mimimum interval between retries.</summary>
+        long MinRetryIntervalMilliseconds { get; }
+
+        /// <summary>Gets the maximum interval between retries.</summary>
+        long MaxRetryIntervalMilliseconds { get; }
+
         /// <summary>Logs all current values.</summary>
         void LogCurrentValues();
     }

@@ -157,8 +157,13 @@ namespace SmartTrade
             set { this.SetLong(value); }
         }
 
+        public long MinRetryIntervalMilliseconds => 2 * 60 * 1000;
+
+        public long MaxRetryIntervalMilliseconds => 64 * 60 * 1000;
+
         public void LogCurrentValues()
         {
+            this.LogCurrentValue(nameof(this.TickerSymbol), this.TickerSymbol);
             this.LogCurrentValue(nameof(this.CustomerId), this.CustomerId);
             this.LogCurrentValue(nameof(this.ApiKey), this.ApiKey);
             this.LogCurrentValue(nameof(this.ApiSecret), this.ApiSecret, ":");

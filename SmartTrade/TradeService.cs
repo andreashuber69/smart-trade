@@ -129,7 +129,7 @@ namespace SmartTrade
             // this would lead to a race condition with the trade that we're executing next. This is due to the fact
             // that the default timeout for HTTP requests is 100 seconds. Since we're typically executing 3 requests, we
             // could very well still be executing a trade when the min interval ends.
-            this.ScheduleTrade(calendar.TimeInMillis + MaxRetryIntervalMilliseconds);
+            this.ScheduleTrade(calendar.TimeInMillis + this.Settings.MaxRetryIntervalMilliseconds);
             this.Settings.LogCurrentValues();
 
             if (calendar.Get(Java.Util.CalendarField.Year) < 2017)
@@ -166,9 +166,6 @@ namespace SmartTrade
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        private const long MinRetryIntervalMilliseconds = 2 * 60 * 1000;
-        private const long MaxRetryIntervalMilliseconds = 64 * 60 * 1000;
 
         private static long GetEarliestTradeTime() => Java.Lang.JavaSystem.CurrentTimeMillis() + 5000;
 
@@ -292,7 +289,7 @@ namespace SmartTrade
 
                 if (!this.Settings.PeriodEnd.HasValue)
                 {
-                    this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
+                    this.Settings.RetryIntervalMilliseconds = this.Settings.MaxRetryIntervalMilliseconds;
                     notification.Update(
                         this, Kind.Warning, this.Settings.NotifyEvents, Resource.String.NoDepositNotification);
                     return null;
@@ -313,7 +310,7 @@ namespace SmartTrade
 
                 if (!secondAmount.HasValue)
                 {
-                    this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
+                    this.Settings.RetryIntervalMilliseconds = this.Settings.MaxRetryIntervalMilliseconds;
                     notification.Update(
                         this,
                         Kind.Warning,
@@ -410,13 +407,13 @@ namespace SmartTrade
                         this, Kind.NoPopup, this.Settings.NotifyEvents, Resource.String.NothingToTradeNotification);
                 }
 
-                this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
+                this.Settings.RetryIntervalMilliseconds = this.Settings.MinRetryIntervalMilliseconds;
                 var nextTradeTime =
                     calculator.GetNextTime(start, buy ? secondBalance : firstBalance * ticker.Bid) - DateTime.UtcNow;
 
                 if (!nextTradeTime.HasValue)
                 {
-                    this.Settings.RetryIntervalMilliseconds = MaxRetryIntervalMilliseconds;
+                    this.Settings.RetryIntervalMilliseconds = this.Settings.MaxRetryIntervalMilliseconds;
                     hasTradePeriodEnded = true;
                 }
 
@@ -456,7 +453,7 @@ namespace SmartTrade
             catch (Exception ex) when (ex is BitstampException ||
                 ex is HttpRequestException || ex is WebException || ex is TaskCanceledException)
             {
-                this.Settings.RetryIntervalMilliseconds = this.Settings.RetryIntervalMilliseconds * 2;
+                this.Settings.RetryIntervalMilliseconds *= 2;
                 notification.Append(this, Kind.Warning, this.Settings.NotifyEvents, ex.Message);
                 return null;
             }
@@ -469,7 +466,7 @@ namespace SmartTrade
                     Resource.String.UnexpectedErrorNotification,
                     ex.GetType().Name,
                     ex.Message);
-                this.Settings.RetryIntervalMilliseconds = MinRetryIntervalMilliseconds;
+                this.Settings.RetryIntervalMilliseconds = this.Settings.MinRetryIntervalMilliseconds;
                 this.IsEnabled = false;
                 Warn("The service has been disabled due to an unexpected error: {0}", ex);
                 throw;
@@ -478,8 +475,8 @@ namespace SmartTrade
             {
                 this.Settings.LastStatus = notification.ContentText;
                 this.Settings.RetryIntervalMilliseconds = Math.Max(
-                    MinRetryIntervalMilliseconds,
-                    Math.Min(MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
+                    this.Settings.MinRetryIntervalMilliseconds,
+                    Math.Min(this.Settings.MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
                 client.Dispose();
             }
         }
