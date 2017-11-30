@@ -49,8 +49,8 @@ namespace SmartTrade
 
             this.SetContentView(Resource.Layout.Main);
 
-            this.settings =
-                BitstampClient.TickerSymbols.Select(s => new Settings(s)).OrderBy(s => s.NextTradeTime == 0).ToArray();
+            this.settings = BitstampClient.TickerSymbols.Select(s => Settings.Create(s)).OrderBy(
+                s => s.NextTradeTime == 0).ToArray();
 
             this.tickersListView = this.FindViewById<ListView>(Resource.Id.TickersListView);
             this.tickersListView.Adapter = new Adapter(this, this.LayoutInflater, this.settings);
@@ -59,10 +59,10 @@ namespace SmartTrade
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        private Settings[] settings;
+        private ISettings[] settings;
         private ListView tickersListView;
 
-        private sealed class Adapter : ArrayAdapter<Settings>
+        private sealed class Adapter : ArrayAdapter<ISettings>
         {
             public sealed override View GetView(int position, View convertView, ViewGroup parent)
             {
@@ -77,7 +77,7 @@ namespace SmartTrade
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            internal Adapter(Context context, LayoutInflater inflater, IEnumerable<Settings> settings)
+            internal Adapter(Context context, LayoutInflater inflater, IEnumerable<ISettings> settings)
                 : base(context, Resource.Layout.OverviewItem, settings.ToArray())
             {
                 this.inflater = inflater;
@@ -89,15 +89,15 @@ namespace SmartTrade
 
             private sealed class ViewHolder : Java.Lang.Object
             {
-                internal ViewHolder(View row, Settings settings)
+                internal ViewHolder(View row, ISettings settings)
                 {
                     this.tickerSymbolTextView = (TextView)row.FindViewById(Resource.Id.TickerSymbol);
                     this.firstCurrencyTextView = (TextView)row.FindViewById(Resource.Id.FirstCurrency);
                     this.firstBalanceTextView = (TextView)row.FindViewById(Resource.Id.FirstBalance);
                     this.secondCurrencyTextView = (TextView)row.FindViewById(Resource.Id.SecondCurrency);
                     this.secondBalanceTextView = (TextView)row.FindViewById(Resource.Id.SecondBalance);
-                    settings.PropertyChanged += (s, e) => this.Update((Settings)s, e.PropertyName);
-                    this.Update(settings, nameof(Settings.TickerSymbol));
+                    settings.PropertyChanged += (s, e) => this.Update((ISettings)s, e.PropertyName);
+                    this.Update(settings, nameof(ISettings.TickerSymbol));
                 }
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,16 +108,16 @@ namespace SmartTrade
                 private readonly TextView secondCurrencyTextView;
                 private readonly TextView secondBalanceTextView;
 
-                private void Update(Settings settings, string propertyName)
+                private void Update(ISettings settings, string propertyName)
                 {
                     switch (propertyName)
                     {
-                        case nameof(Settings.TickerSymbol):
-                        case nameof(Settings.FirstCurrency):
-                        case nameof(Settings.SecondCurrency):
-                        case nameof(Settings.LastBalanceFirstCurrency):
-                        case nameof(Settings.LastBalanceSecondCurrency):
-                        case nameof(Settings.NextTradeTime):
+                        case nameof(ISettings.TickerSymbol):
+                        case nameof(ISettings.FirstCurrency):
+                        case nameof(ISettings.SecondCurrency):
+                        case nameof(ISettings.LastBalanceFirstCurrency):
+                        case nameof(ISettings.LastBalanceSecondCurrency):
+                        case nameof(ISettings.NextTradeTime):
                             this.tickerSymbolTextView.Text = settings.TickerSymbol;
 
                             if (settings.NextTradeTime == 0)

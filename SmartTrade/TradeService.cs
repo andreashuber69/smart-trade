@@ -115,7 +115,7 @@ namespace SmartTrade
             this.secondDecimals = secondDecimals;
             this.minTradeAmount = minTradeAmount;
             this.feeStep = feeStep;
-            this.Settings = new Settings(this.tickerSymbol);
+            this.Settings = SmartTrade.Settings.Create(this.tickerSymbol);
             this.Settings.PropertyChanged += this.OnSettingsPropertyChanged;
         }
 

@@ -194,17 +194,7 @@ namespace SmartTrade
             }
         }
 
-        internal Settings(string tickerSymbol)
-        {
-            this.TickerSymbol = tickerSymbol;
-            var slashPosition = tickerSymbol.IndexOf('/');
-            this.groupName = CamelCase(tickerSymbol.Substring(0, slashPosition)) +
-                CamelCase(tickerSymbol.Substring(slashPosition + 1));
-            this.preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
-            this.preferences.RegisterOnSharedPreferenceChangeListener(this);
-            this.keyStore = KeyStore.GetInstance(KeyStoreName);
-            this.keyStore.Load(null);
-        }
+        internal static ISettings Create(string tickerSymbol) => new Settings(tickerSymbol);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -265,6 +255,18 @@ namespace SmartTrade
         private readonly string groupName;
         private readonly ISharedPreferences preferences;
         private readonly KeyStore keyStore;
+
+        private Settings(string tickerSymbol)
+        {
+            this.TickerSymbol = tickerSymbol;
+            var slashPosition = tickerSymbol.IndexOf('/');
+            this.groupName = CamelCase(tickerSymbol.Substring(0, slashPosition)) +
+                CamelCase(tickerSymbol.Substring(slashPosition + 1));
+            this.preferences = PreferenceManager.GetDefaultSharedPreferences(Application.Context);
+            this.preferences.RegisterOnSharedPreferenceChangeListener(this);
+            this.keyStore = KeyStore.GetInstance(KeyStoreName);
+            this.keyStore.Load(null);
+        }
 
         private DateTime? GetDateTime([CallerMemberName] string key = null)
         {
