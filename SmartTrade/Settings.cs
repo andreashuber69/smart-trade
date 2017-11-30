@@ -39,76 +39,73 @@ namespace SmartTrade
 
         public int CustomerId
         {
-            get { return (int)this.GetLong(); }
-            set { this.SetLong(value); }
+            get => (int)this.GetLong();
+            set => this.SetLong(value);
         }
 
         public string ApiKey
         {
-            get { return this.GetString(); }
-            set { this.SetString(value); }
+            get => this.GetString();
+            set => this.SetString(value);
         }
 
         public string ApiSecret
         {
-            get { return this.GetPrivateString(); }
-            set { this.SetPrivateString(value); }
+            get => this.GetPrivateString();
+            set => this.SetPrivateString(value);
         }
 
         public bool Buy
         {
-            get { return this.GetLong() != 0; }
-            set { this.SetLong(value ? 1 : 0); }
+            get => this.GetLong() != 0;
+            set => this.SetLong(value ? 1 : 0);
         }
 
         public float TradePeriod
         {
-            get { return this.GetFloat(); }
-            set { this.SetFloat(value); }
+            get => this.GetFloat();
+            set => this.SetFloat(value);
         }
 
         public TransferToMainAccount TransferToMainAccount
         {
-            get { return (TransferToMainAccount)this.GetLong(); }
-            set { this.SetLong((long)value); }
+            get => (TransferToMainAccount)this.GetLong();
+            set => this.SetLong((long)value);
         }
 
         public NotifyEvents NotifyEvents
         {
-            get { return (NotifyEvents)this.GetLong(); }
-            set { this.SetLong((long)value); }
+            get => (NotifyEvents)this.GetLong();
+            set => this.SetLong((long)value);
         }
 
         public DateTime? LastTradeTime
         {
-            get { return this.GetDateTime(); }
-            set { this.SetDateTime(value); }
+            get => this.GetDateTime();
+            set => this.SetDateTime(value);
         }
 
         public string LastStatus
         {
-            get { return this.GetString(); }
-            set { this.SetString(value); }
+            get => this.GetString();
+            set => this.SetString(value);
         }
 
         public float LastBalanceFirstCurrency
         {
-            get { return this.GetFloat(); }
-            set { this.SetFloat(value); }
+            get => this.GetFloat();
+            set => this.SetFloat(value);
         }
 
         public float LastBalanceSecondCurrency
         {
-            get { return this.GetFloat(); }
-            set { this.SetFloat(value); }
+            get => this.GetFloat();
+            set => this.SetFloat(value);
         }
 
         public long NextTradeTime
         {
-            get
-            {
-                return this.GetLong();
-            }
+            get => this.GetLong();
 
             set
             {
@@ -123,32 +120,32 @@ namespace SmartTrade
 
         public bool IsSubaccount
         {
-            get { return this.GetLong() != 0; }
-            set { this.SetLong(value ? 1 : 0); }
+            get => this.GetLong() != 0;
+            set => this.SetLong(value ? 1 : 0);
         }
 
         public DateTime? SectionStart
         {
-            get { return this.GetDateTime(); }
-            set { this.SetDateTime(value); }
+            get => this.GetDateTime();
+            set => this.SetDateTime(value);
         }
 
         public DateTime? PeriodEnd
         {
-            get { return this.GetDateTime(); }
-            set { this.SetDateTime(value); }
+            get => this.GetDateTime();
+            set => this.SetDateTime(value);
         }
 
         public DateTime LastTransactionTimestamp
         {
-            get { return this.GetDateTime() ?? DateTime.MinValue; }
-            set { this.SetDateTime(value); }
+            get => this.GetDateTime() ?? DateTime.MinValue;
+            set => this.SetDateTime(value);
         }
 
         public int TradeCountSinceLastTransfer
         {
-            get { return (int)this.GetLong(); }
-            set { this.SetLong(value); }
+            get => (int)this.GetLong();
+            set => this.SetLong(value);
         }
 
         public long RetryIntervalMilliseconds
