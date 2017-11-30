@@ -153,8 +153,10 @@ namespace SmartTrade
 
         public long RetryIntervalMilliseconds
         {
-            get { return this.GetLong(); }
-            set { this.SetLong(value); }
+            get => this.GetLong();
+
+            set => this.SetLong(
+                Math.Max(this.MinRetryIntervalMilliseconds, Math.Min(this.MaxRetryIntervalMilliseconds, value)));
         }
 
         public long MinRetryIntervalMilliseconds => 2 * 60 * 1000;

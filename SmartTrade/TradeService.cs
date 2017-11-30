@@ -474,9 +474,6 @@ namespace SmartTrade
             finally
             {
                 this.Settings.LastStatus = notification.ContentText;
-                this.Settings.RetryIntervalMilliseconds = Math.Max(
-                    this.Settings.MinRetryIntervalMilliseconds,
-                    Math.Min(this.Settings.MaxRetryIntervalMilliseconds, this.Settings.RetryIntervalMilliseconds));
                 client.Dispose();
             }
         }
