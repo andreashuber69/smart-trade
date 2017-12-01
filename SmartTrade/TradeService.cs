@@ -69,9 +69,14 @@ namespace SmartTrade
 
             set
             {
-                if ((this.Settings.NextTradeTime == 0) && value && this.Settings.PeriodEnd.HasValue)
+                if ((this.Settings.NextTradeTime == 0) && value)
                 {
-                    this.Settings.SectionStart = DateTime.UtcNow;
+                    this.Settings.RetryIntervalMilliseconds = this.Settings.MinRetryIntervalMilliseconds;
+
+                    if (this.Settings.PeriodEnd.HasValue)
+                    {
+                        this.Settings.SectionStart = DateTime.UtcNow;
+                    }
                 }
 
                 this.ScheduleTrade(value ? GetEarliestTradeTime() : 0);
@@ -466,7 +471,7 @@ namespace SmartTrade
                     Resource.String.UnexpectedErrorNotification,
                     ex.GetType().Name,
                     ex.Message);
-                this.Settings.RetryIntervalMilliseconds = this.Settings.MinRetryIntervalMilliseconds;
+                this.Settings.RetryIntervalMilliseconds = this.Settings.MaxRetryIntervalMilliseconds;
                 this.IsEnabled = false;
                 Warn("The service has been disabled due to an unexpected error: {0}", ex);
                 throw;
