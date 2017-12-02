@@ -15,6 +15,7 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
     using Android.Content.PM;
+    using Android.Graphics;
     using Android.OS;
     using Android.Views;
     using Android.Widget;
@@ -96,6 +97,7 @@ namespace SmartTrade
                     this.firstBalanceTextView = (TextView)row.FindViewById(Resource.Id.FirstBalance);
                     this.secondCurrencyTextView = (TextView)row.FindViewById(Resource.Id.SecondCurrency);
                     this.secondBalanceTextView = (TextView)row.FindViewById(Resource.Id.SecondBalance);
+                    this.unknownColor = new Color(this.tickerSymbolTextView.TextColors.DefaultColor);
                     settings.PropertyChanged += (s, e) => this.Update((ISettings)s, e.PropertyName);
                     this.Update(settings, nameof(ISettings.TickerSymbol));
                 }
@@ -107,6 +109,7 @@ namespace SmartTrade
                 private readonly TextView firstBalanceTextView;
                 private readonly TextView secondCurrencyTextView;
                 private readonly TextView secondBalanceTextView;
+                private readonly Color unknownColor;
 
                 private void Update(ISettings settings, string propertyName)
                 {
@@ -117,8 +120,14 @@ namespace SmartTrade
                         case nameof(ISettings.SecondCurrency):
                         case nameof(ISettings.LastBalanceFirstCurrency):
                         case nameof(ISettings.LastBalanceSecondCurrency):
-                        case nameof(ISettings.NextTradeTime):
+                        case nameof(ISettings.Status):
                             this.tickerSymbolTextView.Text = settings.TickerSymbol;
+                            var statusColor = this.GetStatusColor(settings.Status);
+                            this.tickerSymbolTextView.SetTextColor(statusColor);
+                            this.firstCurrencyTextView.SetTextColor(statusColor);
+                            this.firstBalanceTextView.SetTextColor(statusColor);
+                            this.secondCurrencyTextView.SetTextColor(statusColor);
+                            this.secondBalanceTextView.SetTextColor(statusColor);
 
                             if (settings.NextTradeTime == 0)
                             {
@@ -138,6 +147,21 @@ namespace SmartTrade
                             }
 
                             break;
+                    }
+                }
+
+                private Color GetStatusColor(Status status)
+                {
+                    switch (status)
+                    {
+                        case Status.Unknown:
+                            return this.unknownColor;
+                        case Status.Ok:
+                            return Color.Green;
+                        case Status.Warning:
+                            return Color.Yellow;
+                        default:
+                            return Color.Red;
                     }
                 }
             }

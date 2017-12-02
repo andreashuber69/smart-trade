@@ -8,7 +8,6 @@ namespace SmartTrade
 {
     using System;
     using System.ComponentModel;
-    using System.Diagnostics.CodeAnalysis;
     using System.Runtime.CompilerServices;
     using System.Text;
     using Android.App;
@@ -160,6 +159,38 @@ namespace SmartTrade
 
         public long MaxRetryIntervalMilliseconds => 64 * 60 * 1000;
 
+        public Status Status
+        {
+            get
+            {
+                if (this.RetryIntervalMilliseconds >= this.MaxRetryIntervalMilliseconds)
+                {
+                    // Show an error no matter whether the service is enabled or not. This is necessary so that the user
+                    // can distinguish a service that has been disabled manually vs. one that has been disabled by an
+                    // unexpected error.
+                    return Status.Error;
+                }
+                else if (this.NextTradeTime == 0)
+                {
+                    return Status.Unknown;
+                }
+                else if (this.NextTradeTime > Java.Lang.JavaSystem.CurrentTimeMillis() - 1000)
+                {
+                    return
+                        this.RetryIntervalMilliseconds > this.MinRetryIntervalMilliseconds ? Status.Warning : Status.Ok;
+                }
+                else
+                {
+                    // This should never happen in production. It happens e.g. when a new version is deployed from
+                    // Visual Studio or when the debugger is used to restart the application.
+                    // Note: We're deliberately not updating this periodically, even though this branch being run
+                    // depends on the current time. It is expected that this branch will only run on developer
+                    // phones or when there is a bug in the application.
+                    return Status.Error;
+                }
+            }
+        }
+
         public void LogCurrentValues()
         {
             this.LogCurrentValue(nameof(this.TickerSymbol), this.TickerSymbol);
@@ -181,6 +212,7 @@ namespace SmartTrade
             this.LogCurrentValue(nameof(this.LastTransactionTimestamp), this.LastTransactionTimestamp, ":o");
             this.LogCurrentValue(nameof(this.TradeCountSinceLastTransfer), this.TradeCountSinceLastTransfer);
             this.LogCurrentValue(nameof(this.RetryIntervalMilliseconds), this.RetryIntervalMilliseconds);
+            this.LogCurrentValue(nameof(this.Status), this.Status);
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +222,7 @@ namespace SmartTrade
         {
             if (key.StartsWith(this.groupName, StringComparison.Ordinal))
             {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(key.Substring(this.groupName.Length)));
+                this.RaisePropertyChanged(key.Substring(this.groupName.Length));
             }
         }
 
@@ -340,6 +372,19 @@ namespace SmartTrade
             }
 
             this.LogSetValue(key, newValue, valueFormat);
+        }
+
+        private void RaisePropertyChanged(string propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            switch (propertyName)
+            {
+                case nameof(this.RetryIntervalMilliseconds):
+                case nameof(this.NextTradeTime):
+                    this.RaisePropertyChanged(nameof(this.Status));
+                    break;
+            }
         }
 
         private string GetPrivateString([CallerMemberName] string key = null) =>

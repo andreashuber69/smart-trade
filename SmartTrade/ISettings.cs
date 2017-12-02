@@ -26,6 +26,14 @@ namespace SmartTrade
         Errors
     }
 
+    internal enum Status
+    {
+        Unknown,
+        Ok,
+        Warning,
+        Error
+    }
+
     /// <summary>Represents the settings that need to be made persistent.</summary>
     internal interface ISettings : INotifyPropertyChanged, IDisposable
     {
@@ -113,6 +121,9 @@ namespace SmartTrade
 
         /// <summary>Gets the maximum interval between retries.</summary>
         long MaxRetryIntervalMilliseconds { get; }
+
+        /// <summary>Gets the current status of the service.</summary>
+        Status Status { get; }
 
         /// <summary>Logs all current values.</summary>
         void LogCurrentValues();
