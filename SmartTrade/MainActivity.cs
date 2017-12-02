@@ -50,8 +50,7 @@ namespace SmartTrade
 
             this.SetContentView(Resource.Layout.Main);
 
-            this.settings = BitstampClient.TickerSymbols.Select(s => Settings.Create(s)).OrderBy(
-                s => s.NextTradeTime == 0).ToArray();
+            this.settings = BitstampClient.TickerSymbols.Select(s => Settings.Create(s)).ToArray();
 
             this.tickersListView = this.FindViewById<ListView>(Resource.Id.TickersListView);
             this.tickersListView.Adapter = new Adapter(this, this.LayoutInflater, this.settings);
