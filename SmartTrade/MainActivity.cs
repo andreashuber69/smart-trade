@@ -121,7 +121,7 @@ namespace SmartTrade
                         case nameof(ISettings.LastBalanceSecondCurrency):
                         case nameof(ISettings.Status):
                             this.tickerSymbolTextView.Text = settings.TickerSymbol;
-                            var statusColor = this.GetStatusColor(settings.Status);
+                            var statusColor = Colors.GetStatusColor(settings.Status, this.unknownColor);
                             this.tickerSymbolTextView.SetTextColor(statusColor);
                             this.firstCurrencyTextView.SetTextColor(statusColor);
                             this.firstBalanceTextView.SetTextColor(statusColor);
@@ -146,21 +146,6 @@ namespace SmartTrade
                             }
 
                             break;
-                    }
-                }
-
-                private Color GetStatusColor(Status status)
-                {
-                    switch (status)
-                    {
-                        case Status.Unknown:
-                            return this.unknownColor;
-                        case Status.Ok:
-                            return Color.Green;
-                        case Status.Warning:
-                            return Color.Yellow;
-                        default:
-                            return Color.Red;
                     }
                 }
             }

@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="ActivityBase.cs" />
     <Compile Include="BootCompletedReceiver.cs" />
+    <Compile Include="Colors.cs" />
     <Compile Include="EthBtcTradeService.cs" />
     <Compile Include="EthEurTradeService.cs" />
     <Compile Include="EthUsdTradeService.cs" />
