@@ -13,10 +13,10 @@ namespace SmartTrade
     using Android.App;
     using Android.Content;
     using Android.Content.PM;
+    using Android.Graphics;
     using Android.OS;
     using Android.Widget;
 
-    using static System.FormattableString;
     using static System.Globalization.CultureInfo;
     using static System.Math;
 
@@ -47,6 +47,7 @@ namespace SmartTrade
             this.settingsButton = this.GetSettingsButton();
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton();
             this.lastTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.LastTradeTimeTextView);
+            this.unknownColor = new Color(this.lastTradeTimeTextView.TextColors.DefaultColor);
             this.lastTradeResultTextView = this.FindViewById<TextView>(Resource.Id.LastTradeStatusTextView);
             this.lastTradeBalance1TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance1TextView);
             this.lastTradeBalance2TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance2TextView);
@@ -144,6 +145,7 @@ namespace SmartTrade
         private ToggleButton enableDisableServiceButton;
         private TextView lastTradeTimeTextView;
         private TextView lastTradeResultTextView;
+        private Color unknownColor;
         private TextView lastTradeBalance1TextView;
         private TextView lastTradeBalance2TextView;
         private TextView nextTradeTimeTextView;
@@ -209,6 +211,7 @@ namespace SmartTrade
                 !string.IsNullOrEmpty(settings.ApiKey) && !string.IsNullOrEmpty(settings.ApiSecret) &&
                 (settings.TradePeriod != 0.0f);
             this.lastTradeResultTextView.Text = settings.LastStatus;
+            this.lastTradeResultTextView.SetTextColor(Colors.GetStatusColor(settings.Status, this.unknownColor));
             this.lastTradeBalance1TextView.Text =
                 $"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:f5}";
             this.lastTradeBalance2TextView.Text =
