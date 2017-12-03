@@ -23,6 +23,7 @@ namespace SmartTrade
 
     using static Logger;
     using static System.Environment;
+    using static System.Globalization.CultureInfo;
 
     [Activity(Label = "@string/AppName", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class MainActivity : ActivityBase, AdapterView.IOnItemClickListener
@@ -139,10 +140,10 @@ namespace SmartTrade
                             {
                                 this.firstCurrencyTextView.Text = settings.FirstCurrency;
                                 this.firstBalanceTextView.Text =
-                                    settings.LastBalanceFirstCurrency.ToString("f5", CultureInfo.CurrentCulture);
+                                    settings.LastBalanceFirstCurrency.ToString("f5", CurrentCulture);
                                 this.secondCurrencyTextView.Text = settings.SecondCurrency;
                                 this.secondBalanceTextView.Text =
-                                    settings.LastBalanceSecondCurrency.ToString("f5", CultureInfo.CurrentCulture);
+                                    settings.LastBalanceSecondCurrency.ToString("f5", CurrentCulture);
                             }
 
                             break;
