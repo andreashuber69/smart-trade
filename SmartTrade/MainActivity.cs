@@ -106,11 +106,13 @@ namespace SmartTrade
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                private static void SetValue(TextView integral, TextView fractional, float value)
+                private static void SetValue(
+                    TextView integral, TextView fractional, TextView currencyTextView, float value, string currency)
                 {
                     var parts = value.ToString("f5", CurrentCulture).Split('.');
                     integral.Text = parts[0];
                     fractional.Text = '.' + parts[1];
+                    currencyTextView.Text = ' ' + currency;
                 }
 
                 private readonly TextView tickerSymbolTextView;
@@ -156,13 +158,15 @@ namespace SmartTrade
                                 SetValue(
                                     this.firstBalanceIntegralTextView,
                                     this.firstBalanceFractionalTextView,
-                                    settings.LastBalanceFirstCurrency);
-                                this.firstCurrencyTextView.Text = ' ' + settings.FirstCurrency;
+                                    this.firstCurrencyTextView,
+                                    settings.LastBalanceFirstCurrency,
+                                    settings.FirstCurrency);
                                 SetValue(
                                     this.secondBalanceIntegralTextView,
                                     this.secondBalanceFractionalTextView,
-                                    settings.LastBalanceSecondCurrency);
-                                this.secondCurrencyTextView.Text = ' ' + settings.SecondCurrency;
+                                    this.secondCurrencyTextView,
+                                    settings.LastBalanceSecondCurrency,
+                                    settings.SecondCurrency);
                             }
 
                             break;
