@@ -106,15 +106,6 @@ namespace SmartTrade
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                private static void SetValue(
-                    TextView integral, TextView fractional, TextView currencyTextView, float value, string currency)
-                {
-                    var parts = value.ToString("f5", CurrentCulture).Split('.');
-                    integral.Text = parts[0];
-                    fractional.Text = '.' + parts[1];
-                    currencyTextView.Text = ' ' + currency;
-                }
-
                 private readonly TextView tickerSymbolTextView;
                 private readonly TextView firstBalanceIntegralTextView;
                 private readonly TextView firstBalanceFractionalTextView;
@@ -135,7 +126,7 @@ namespace SmartTrade
                         case nameof(ISettings.LastBalanceSecondCurrency):
                         case nameof(ISettings.Status):
                             this.tickerSymbolTextView.Text = settings.TickerSymbol;
-                            var statusColor = Colors.GetStatusColor(settings.Status, this.unknownColor);
+                            var statusColor = GuiHelper.GetStatusColor(settings.Status, this.unknownColor);
                             this.tickerSymbolTextView.SetTextColor(statusColor);
                             this.firstBalanceIntegralTextView.SetTextColor(statusColor);
                             this.firstBalanceFractionalTextView.SetTextColor(statusColor);
@@ -155,13 +146,13 @@ namespace SmartTrade
                             }
                             else
                             {
-                                SetValue(
+                                GuiHelper.SetBalance(
                                     this.firstBalanceIntegralTextView,
                                     this.firstBalanceFractionalTextView,
                                     this.firstCurrencyTextView,
                                     settings.LastBalanceFirstCurrency,
                                     settings.FirstCurrency);
-                                SetValue(
+                                GuiHelper.SetBalance(
                                     this.secondBalanceIntegralTextView,
                                     this.secondBalanceFractionalTextView,
                                     this.secondCurrencyTextView,

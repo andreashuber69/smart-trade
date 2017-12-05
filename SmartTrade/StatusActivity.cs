@@ -211,7 +211,7 @@ namespace SmartTrade
                 !string.IsNullOrEmpty(settings.ApiKey) && !string.IsNullOrEmpty(settings.ApiSecret) &&
                 (settings.TradePeriod != 0.0f);
             this.lastTradeResultTextView.Text = settings.LastStatus;
-            this.lastTradeResultTextView.SetTextColor(Colors.GetStatusColor(settings.Status, this.unknownColor));
+            this.lastTradeResultTextView.SetTextColor(GuiHelper.GetStatusColor(settings.Status, this.unknownColor));
             this.lastTradeBalance1TextView.Text =
                 $"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:f5}";
             this.lastTradeBalance2TextView.Text =

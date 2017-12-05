@@ -7,8 +7,11 @@
 namespace SmartTrade
 {
     using Android.Graphics;
+    using Android.Widget;
 
-    internal static class Colors
+    using static System.Globalization.CultureInfo;
+
+    internal static class GuiHelper
     {
         internal static Color GetStatusColor(Status status, Color unknownColor)
         {
@@ -23,6 +26,15 @@ namespace SmartTrade
                 default:
                     return Color.Red;
             }
+        }
+
+        internal static void SetBalance(
+            TextView integral, TextView fractional, TextView currencyTextView, float value, string currency)
+        {
+            var parts = value.ToString("f5", CurrentCulture).Split('.');
+            integral.Text = parts[0];
+            fractional.Text = '.' + parts[1];
+            currencyTextView.Text = ' ' + currency;
         }
     }
 }
