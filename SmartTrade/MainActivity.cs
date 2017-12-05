@@ -51,7 +51,6 @@ namespace SmartTrade
             this.SetContentView(Resource.Layout.Main);
 
             this.settings = BitstampClient.TickerSymbols.Select(s => Settings.Create(s)).ToArray();
-
             this.tickersListView = this.FindViewById<ListView>(Resource.Id.TickersListView);
             this.tickersListView.Adapter = new Adapter(this, this.LayoutInflater, this.settings);
             this.tickersListView.OnItemClickListener = this;
@@ -92,10 +91,14 @@ namespace SmartTrade
                 internal ViewHolder(View row, ISettings settings)
                 {
                     this.tickerSymbolTextView = (TextView)row.FindViewById(Resource.Id.TickerSymbol);
+                    this.firstBalanceIntegralTextView = (TextView)row.FindViewById(Resource.Id.FirstBalanceIntegral);
+                    this.firstBalanceFractionalTextView =
+                        (TextView)row.FindViewById(Resource.Id.FirstBalanceFractional);
                     this.firstCurrencyTextView = (TextView)row.FindViewById(Resource.Id.FirstCurrency);
-                    this.firstBalanceTextView = (TextView)row.FindViewById(Resource.Id.FirstBalance);
+                    this.secondBalanceIntegralTextView = (TextView)row.FindViewById(Resource.Id.SecondBalanceIntegral);
+                    this.secondBalanceFractionalTextView =
+                        (TextView)row.FindViewById(Resource.Id.SecondBalanceFractional);
                     this.secondCurrencyTextView = (TextView)row.FindViewById(Resource.Id.SecondCurrency);
-                    this.secondBalanceTextView = (TextView)row.FindViewById(Resource.Id.SecondBalance);
                     this.unknownColor = new Color(this.tickerSymbolTextView.TextColors.DefaultColor);
                     settings.PropertyChanged += (s, e) => this.Update((ISettings)s, e.PropertyName);
                     this.Update(settings, nameof(ISettings.TickerSymbol));
@@ -103,11 +106,20 @@ namespace SmartTrade
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+                private static void SetValue(TextView integral, TextView fractional, float value)
+                {
+                    var parts = value.ToString("f5", CurrentCulture).Split('.');
+                    integral.Text = parts[0];
+                    fractional.Text = '.' + parts[1];
+                }
+
                 private readonly TextView tickerSymbolTextView;
+                private readonly TextView firstBalanceIntegralTextView;
+                private readonly TextView firstBalanceFractionalTextView;
                 private readonly TextView firstCurrencyTextView;
-                private readonly TextView firstBalanceTextView;
+                private readonly TextView secondBalanceIntegralTextView;
+                private readonly TextView secondBalanceFractionalTextView;
                 private readonly TextView secondCurrencyTextView;
-                private readonly TextView secondBalanceTextView;
                 private readonly Color unknownColor;
 
                 private void Update(ISettings settings, string propertyName)
@@ -123,26 +135,34 @@ namespace SmartTrade
                             this.tickerSymbolTextView.Text = settings.TickerSymbol;
                             var statusColor = Colors.GetStatusColor(settings.Status, this.unknownColor);
                             this.tickerSymbolTextView.SetTextColor(statusColor);
+                            this.firstBalanceIntegralTextView.SetTextColor(statusColor);
+                            this.firstBalanceFractionalTextView.SetTextColor(statusColor);
                             this.firstCurrencyTextView.SetTextColor(statusColor);
-                            this.firstBalanceTextView.SetTextColor(statusColor);
+                            this.secondBalanceIntegralTextView.SetTextColor(statusColor);
+                            this.secondBalanceFractionalTextView.SetTextColor(statusColor);
                             this.secondCurrencyTextView.SetTextColor(statusColor);
-                            this.secondBalanceTextView.SetTextColor(statusColor);
 
                             if (settings.NextTradeTime == 0)
                             {
+                                this.firstBalanceIntegralTextView.Text = null;
+                                this.firstBalanceFractionalTextView.Text = null;
                                 this.firstCurrencyTextView.Text = null;
-                                this.firstBalanceTextView.Text = null;
+                                this.secondBalanceIntegralTextView.Text = null;
+                                this.secondBalanceFractionalTextView.Text = null;
                                 this.secondCurrencyTextView.Text = null;
-                                this.secondBalanceTextView.Text = null;
                             }
                             else
                             {
-                                this.firstCurrencyTextView.Text = settings.FirstCurrency;
-                                this.firstBalanceTextView.Text =
-                                    settings.LastBalanceFirstCurrency.ToString("f5", CurrentCulture);
-                                this.secondCurrencyTextView.Text = settings.SecondCurrency;
-                                this.secondBalanceTextView.Text =
-                                    settings.LastBalanceSecondCurrency.ToString("f5", CurrentCulture);
+                                SetValue(
+                                    this.firstBalanceIntegralTextView,
+                                    this.firstBalanceFractionalTextView,
+                                    settings.LastBalanceFirstCurrency);
+                                this.firstCurrencyTextView.Text = ' ' + settings.FirstCurrency;
+                                SetValue(
+                                    this.secondBalanceIntegralTextView,
+                                    this.secondBalanceFractionalTextView,
+                                    settings.LastBalanceSecondCurrency);
+                                this.secondCurrencyTextView.Text = ' ' + settings.SecondCurrency;
                             }
 
                             break;
