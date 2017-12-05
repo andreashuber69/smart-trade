@@ -47,10 +47,20 @@ namespace SmartTrade
             this.settingsButton = this.GetSettingsButton();
             this.enableDisableServiceButton = this.GetEnableDisableServiceButton();
             this.lastTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.LastTradeTimeTextView);
-            this.unknownColor = new Color(this.lastTradeTimeTextView.TextColors.DefaultColor);
+            this.lastTradeBalance1CurrencyTextView =
+                this.FindViewById<TextView>(Resource.Id.LastTradeBalance1CurrencyTextView);
+            this.lastTradeBalance1IntegralTextView =
+                this.FindViewById<TextView>(Resource.Id.LastTradeBalance1IntegralTextView);
+            this.lastTradeBalance1FractionalTextView =
+                this.FindViewById<TextView>(Resource.Id.LastTradeBalance1FractionalTextView);
+            this.lastTradeBalance2CurrencyTextView =
+                this.FindViewById<TextView>(Resource.Id.LastTradeBalance2CurrencyTextView);
+            this.lastTradeBalance2IntegralTextView =
+                this.FindViewById<TextView>(Resource.Id.LastTradeBalance2IntegralTextView);
+            this.lastTradeBalance2FractionalTextView =
+                this.FindViewById<TextView>(Resource.Id.LastTradeBalance2FractionalTextView);
             this.lastTradeResultTextView = this.FindViewById<TextView>(Resource.Id.LastTradeStatusTextView);
-            this.lastTradeBalance1TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance1TextView);
-            this.lastTradeBalance2TextView = this.FindViewById<TextView>(Resource.Id.LastTradeBalance2TextView);
+            this.unknownColor = new Color(this.lastTradeResultTextView.TextColors.DefaultColor);
             this.nextTradeTimeTextView = this.FindViewById<TextView>(Resource.Id.NextTradeTimeTextView);
             this.sectionStartTextView = this.FindViewById<TextView>(Resource.Id.SectionStartTextView);
             this.sectionEndTextView = this.FindViewById<TextView>(Resource.Id.SectionEndTextView);
@@ -146,8 +156,12 @@ namespace SmartTrade
         private TextView lastTradeTimeTextView;
         private TextView lastTradeResultTextView;
         private Color unknownColor;
-        private TextView lastTradeBalance1TextView;
-        private TextView lastTradeBalance2TextView;
+        private TextView lastTradeBalance1CurrencyTextView;
+        private TextView lastTradeBalance1IntegralTextView;
+        private TextView lastTradeBalance1FractionalTextView;
+        private TextView lastTradeBalance2CurrencyTextView;
+        private TextView lastTradeBalance2IntegralTextView;
+        private TextView lastTradeBalance2FractionalTextView;
         private TextView nextTradeTimeTextView;
         private TextView sectionStartTextView;
         private TextView sectionEndTextView;
@@ -212,10 +226,18 @@ namespace SmartTrade
                 (settings.TradePeriod != 0.0f);
             this.lastTradeResultTextView.Text = settings.LastStatus;
             this.lastTradeResultTextView.SetTextColor(GuiHelper.GetStatusColor(settings.Status, this.unknownColor));
-            this.lastTradeBalance1TextView.Text =
-                $"{settings.FirstCurrency} {settings.LastBalanceFirstCurrency:f5}";
-            this.lastTradeBalance2TextView.Text =
-                $"{settings.SecondCurrency} {settings.LastBalanceSecondCurrency:f5}";
+            GuiHelper.SetBalance(
+                this.lastTradeBalance1CurrencyTextView,
+                this.lastTradeBalance1IntegralTextView,
+                this.lastTradeBalance1FractionalTextView,
+                settings.FirstCurrency,
+                settings.LastBalanceFirstCurrency);
+            GuiHelper.SetBalance(
+                this.lastTradeBalance2CurrencyTextView,
+                this.lastTradeBalance2IntegralTextView,
+                this.lastTradeBalance2FractionalTextView,
+                settings.SecondCurrency,
+                settings.LastBalanceSecondCurrency);
         }
 
         private void UpdateTimesPeriodically() => this.UpdateTimesPeriodicallyImpl(++this.currentTimeUpdateId);
@@ -271,7 +293,7 @@ namespace SmartTrade
             }
             else
             {
-                return this.GetString(Resource.String.Never);
+                return null;
             }
         }
 

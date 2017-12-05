@@ -29,12 +29,24 @@ namespace SmartTrade
         }
 
         internal static void SetBalance(
-            TextView integral, TextView fractional, TextView currencyTextView, float value, string currency)
+            TextView currencyTextView, TextView integral, TextView fractional, string currency, float value)
         {
-            var parts = value.ToString("f5", CurrentCulture).Split('.');
-            integral.Text = parts[0];
-            fractional.Text = '.' + parts[1];
-            currencyTextView.Text = ' ' + currency;
+            if (currencyTextView != null)
+            {
+                currencyTextView.Text = currency;
+            }
+
+            if (value > 0f)
+            {
+                var parts = value.ToString("f5", CurrentCulture).Split('.');
+                integral.Text = parts[0];
+                fractional.Text = '.' + parts[1];
+            }
+            else
+            {
+                integral.Text = null;
+                fractional.Text = null;
+            }
         }
     }
 }

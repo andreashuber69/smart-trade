@@ -19,7 +19,6 @@
   <string name="Minutes">{0} minutes</string>
   <string name="Seconds">{0} seconds</string>
   <string name="JustNow">just now</string>
-  <string name="Never">never</string>
   <string name="FutureFix">in {0}</string>
   <string name="PastFix">{0} ago</string>
   <string name="SettingsTitle">{0}/{1} Settings</string>

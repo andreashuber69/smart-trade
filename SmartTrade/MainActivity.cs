@@ -22,7 +22,6 @@ namespace SmartTrade
 
     using static Logger;
     using static System.Environment;
-    using static System.Globalization.CultureInfo;
 
     [Activity(Label = "@string/AppName", MainLauncher = true, Icon = "@mipmap/icon", ScreenOrientation = ScreenOrientation.Portrait)]
     internal sealed class MainActivity : ActivityBase, AdapterView.IOnItemClickListener
@@ -91,15 +90,13 @@ namespace SmartTrade
                 internal ViewHolder(View row, ISettings settings)
                 {
                     this.tickerSymbolTextView = (TextView)row.FindViewById(Resource.Id.TickerSymbol);
+                    this.unknownColor = new Color(this.tickerSymbolTextView.TextColors.DefaultColor);
                     this.firstBalanceIntegralTextView = (TextView)row.FindViewById(Resource.Id.FirstBalanceIntegral);
                     this.firstBalanceFractionalTextView =
                         (TextView)row.FindViewById(Resource.Id.FirstBalanceFractional);
-                    this.firstCurrencyTextView = (TextView)row.FindViewById(Resource.Id.FirstCurrency);
                     this.secondBalanceIntegralTextView = (TextView)row.FindViewById(Resource.Id.SecondBalanceIntegral);
                     this.secondBalanceFractionalTextView =
                         (TextView)row.FindViewById(Resource.Id.SecondBalanceFractional);
-                    this.secondCurrencyTextView = (TextView)row.FindViewById(Resource.Id.SecondCurrency);
-                    this.unknownColor = new Color(this.tickerSymbolTextView.TextColors.DefaultColor);
                     settings.PropertyChanged += (s, e) => this.Update((ISettings)s, e.PropertyName);
                     this.Update(settings, nameof(ISettings.TickerSymbol));
                 }
@@ -109,10 +106,8 @@ namespace SmartTrade
                 private readonly TextView tickerSymbolTextView;
                 private readonly TextView firstBalanceIntegralTextView;
                 private readonly TextView firstBalanceFractionalTextView;
-                private readonly TextView firstCurrencyTextView;
                 private readonly TextView secondBalanceIntegralTextView;
                 private readonly TextView secondBalanceFractionalTextView;
-                private readonly TextView secondCurrencyTextView;
                 private readonly Color unknownColor;
 
                 private void Update(ISettings settings, string propertyName)
@@ -126,40 +121,36 @@ namespace SmartTrade
                         case nameof(ISettings.LastBalanceSecondCurrency):
                         case nameof(ISettings.Status):
                             this.tickerSymbolTextView.Text = settings.TickerSymbol;
-                            var statusColor = GuiHelper.GetStatusColor(settings.Status, this.unknownColor);
-                            this.tickerSymbolTextView.SetTextColor(statusColor);
-                            this.firstBalanceIntegralTextView.SetTextColor(statusColor);
-                            this.firstBalanceFractionalTextView.SetTextColor(statusColor);
-                            this.firstCurrencyTextView.SetTextColor(statusColor);
-                            this.secondBalanceIntegralTextView.SetTextColor(statusColor);
-                            this.secondBalanceFractionalTextView.SetTextColor(statusColor);
-                            this.secondCurrencyTextView.SetTextColor(statusColor);
 
                             if (settings.NextTradeTime == 0)
                             {
                                 this.firstBalanceIntegralTextView.Text = null;
                                 this.firstBalanceFractionalTextView.Text = null;
-                                this.firstCurrencyTextView.Text = null;
                                 this.secondBalanceIntegralTextView.Text = null;
                                 this.secondBalanceFractionalTextView.Text = null;
-                                this.secondCurrencyTextView.Text = null;
                             }
                             else
                             {
                                 GuiHelper.SetBalance(
+                                    null,
                                     this.firstBalanceIntegralTextView,
                                     this.firstBalanceFractionalTextView,
-                                    this.firstCurrencyTextView,
-                                    settings.LastBalanceFirstCurrency,
-                                    settings.FirstCurrency);
+                                    settings.FirstCurrency,
+                                    settings.LastBalanceFirstCurrency);
                                 GuiHelper.SetBalance(
+                                    null,
                                     this.secondBalanceIntegralTextView,
                                     this.secondBalanceFractionalTextView,
-                                    this.secondCurrencyTextView,
-                                    settings.LastBalanceSecondCurrency,
-                                    settings.SecondCurrency);
+                                    settings.SecondCurrency,
+                                    settings.LastBalanceSecondCurrency);
                             }
 
+                            var statusColor = GuiHelper.GetStatusColor(settings.Status, this.unknownColor);
+                            this.tickerSymbolTextView.SetTextColor(statusColor);
+                            this.firstBalanceIntegralTextView.SetTextColor(statusColor);
+                            this.firstBalanceFractionalTextView.SetTextColor(statusColor);
+                            this.secondBalanceIntegralTextView.SetTextColor(statusColor);
+                            this.secondBalanceFractionalTextView.SetTextColor(statusColor);
                             break;
                     }
                 }

@@ -9,48 +9,34 @@
     android:id="@+id/TickerSymbol"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_weight="5"
+    android:layout_weight="4"
     android:textAppearance="?android:attr/textAppearanceMedium" />
   <TextView
     android:id="@+id/FirstBalanceIntegral"
     android:layout_width="0dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_weight="3"
-    android:gravity="right|center_vertical"
-    android:textAppearance="?android:attr/textAppearanceSmall" />
+    android:gravity="right"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
   <TextView
     android:id="@+id/FirstBalanceFractional"
     android:layout_width="0dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_weight="3"
-    android:gravity="left|center_vertical"
-    android:textAppearance="?android:attr/textAppearanceSmall" />
-  <TextView
-    android:id="@+id/FirstCurrency"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="2"
-    android:gravity="left|center_vertical"
-    android:textAppearance="?android:attr/textAppearanceSmall" />
+    android:gravity="left"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
   <TextView
     android:id="@+id/SecondBalanceIntegral"
     android:layout_width="0dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_weight="3"
-    android:gravity="right|center_vertical"
-    android:textAppearance="?android:attr/textAppearanceSmall" />
+    android:gravity="right"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
   <TextView
     android:id="@+id/SecondBalanceFractional"
     android:layout_width="0dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_weight="3"
-    android:gravity="left|center_vertical"
-    android:textAppearance="?android:attr/textAppearanceSmall" />
-  <TextView
-    android:id="@+id/SecondCurrency"
-    android:layout_width="0dp"
-    android:layout_height="match_parent"
-    android:layout_weight="2"
-    android:gravity="left|center_vertical"
-    android:textAppearance="?android:attr/textAppearanceSmall" />
+    android:gravity="left"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>

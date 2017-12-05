@@ -75,14 +75,29 @@
     <TextView
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_weight="5"
+      android:layout_weight="10"
       android:textAppearance="?android:attr/textAppearanceMedium"
       android:text="@string/Balance" />
     <TextView
-      android:id="@+id/LastTradeBalance1TextView"
+      android:id="@+id/LastTradeBalance1CurrencyTextView"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_weight="14"
+      android:layout_weight="5"
+      android:gravity="left"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+      android:id="@+id/LastTradeBalance1IntegralTextView"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="8"
+      android:gravity="right"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+      android:id="@+id/LastTradeBalance1FractionalTextView"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="15"
+      android:gravity="left"
       android:textAppearance="?android:attr/textAppearanceMedium" />
   </LinearLayout>
   <LinearLayout
@@ -93,13 +108,28 @@
     <TextView
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_weight="5"
+      android:layout_weight="10"
       android:textAppearance="?android:attr/textAppearanceMedium" />
     <TextView
-      android:id="@+id/LastTradeBalance2TextView"
+      android:id="@+id/LastTradeBalance2CurrencyTextView"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:layout_weight="14"
+      android:layout_weight="5"
+      android:gravity="left"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+      android:id="@+id/LastTradeBalance2IntegralTextView"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="8"
+      android:gravity="right"
+      android:textAppearance="?android:attr/textAppearanceMedium" />
+    <TextView
+      android:id="@+id/LastTradeBalance2FractionalTextView"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="15"
+      android:gravity="left"
       android:textAppearance="?android:attr/textAppearanceMedium" />
   </LinearLayout>
   <LinearLayout
