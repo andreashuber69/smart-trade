@@ -231,13 +231,13 @@ namespace SmartTrade
                 this.lastTradeBalance1IntegralTextView,
                 this.lastTradeBalance1FractionalTextView,
                 settings.FirstCurrency,
-                settings.LastBalanceFirstCurrency);
+                this.service.IsEnabled ? settings.LastBalanceFirstCurrency : (float?)null);
             GuiHelper.SetBalance(
                 this.lastTradeBalance2CurrencyTextView,
                 this.lastTradeBalance2IntegralTextView,
                 this.lastTradeBalance2FractionalTextView,
                 settings.SecondCurrency,
-                settings.LastBalanceSecondCurrency);
+                this.service.IsEnabled ? settings.LastBalanceSecondCurrency : (float?)null);
         }
 
         private void UpdateTimesPeriodically() => this.UpdateTimesPeriodicallyImpl(++this.currentTimeUpdateId);
