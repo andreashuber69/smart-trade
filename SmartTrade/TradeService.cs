@@ -351,9 +351,9 @@ namespace SmartTrade
                     // worth of BTC.
                     // We therefore need to lower the per trade amount such that the fees paid for the additional number
                     // of trades *and* the fees paid for the trades that go over the fee threshold reaches a minimum.
-                    // Tests with 0.3% resulted in roughly 1% of the trades going over the threshold, which is why we
-                    // try with 0.4% for now.
-                    var secondAmountToTrade = secondAmount.Value * 0.996m;
+                    // Tests with 0.6% resulted in more than 1% of the trades still going over the threshold, which is
+                    // why we try with 1% for now.
+                    var secondAmountToTrade = secondAmount.Value * 0.99m;
                     Info("Amount to trade is {0} {1}.", this.Settings.SecondCurrency, secondAmountToTrade);
 
                     if (buy)
