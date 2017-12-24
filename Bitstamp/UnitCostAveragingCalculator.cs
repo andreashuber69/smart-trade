@@ -81,7 +81,7 @@ namespace Bitstamp
             }
             else
             {
-                if ((startBalance - tradeAmount) < this.minOptimalTradeAmount)
+                if (this.IsLastTrade(startBalance, tradeAmount))
                 {
                     tradeAmount = startBalance;
                 }
@@ -89,6 +89,11 @@ namespace Bitstamp
 
             return tradeAmount;
         }
+
+        /// <summary>Gets a value indicating whether a trade with <paramref name="tradeAmount"/> would be the last
+        /// trade.</summary>
+        public bool IsLastTrade(decimal startBalance, decimal tradeAmount) =>
+            (startBalance - tradeAmount) < this.minOptimalTradeAmount;
 
         /// <summary>Gets the trading fee for <paramref name="tradeAmount"/>.</summary>
         public decimal GetFee(decimal tradeAmount) => Ceiling(tradeAmount * this.feeStepsPerUnit) * this.feeStep;

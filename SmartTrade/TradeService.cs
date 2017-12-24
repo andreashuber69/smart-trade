@@ -358,9 +358,9 @@ namespace SmartTrade
 
                     if (buy)
                     {
-                        // If we're going to spend the whole second balance, we need to subtract the fee first, as the
-                        // exchange will do the same.
-                        if (secondAmount.Value == secondBalance)
+                        // If this is the last trade, we need to subtract the fee first, as the exchange will do the
+                        // same.
+                        if (calculator.IsLastTrade(secondBalance, secondAmountToTrade))
                         {
                             secondAmountToTrade -= calculator.GetFee(secondAmountToTrade);
                         }
