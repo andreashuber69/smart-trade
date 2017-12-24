@@ -43,7 +43,7 @@ namespace Bitstamp
             this.periodEnd = periodEnd;
             this.feeStep = feeStep;
             this.feeStepsPerUnit = feePercent / 100m / feeStep;
-            this.minOptimalTradeAmount = Ceiling(minTradeAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit;
+            this.minOptimalTradeAmount = Ceiling(minTradeAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit * Lower;
         }
 
         /// <summary>Gets the amount to trade right now.</summary>
@@ -87,7 +87,7 @@ namespace Bitstamp
                 }
             }
 
-            return tradeAmount;
+            return tradeAmount * Lower;
         }
 
         /// <summary>Gets a value indicating whether a trade with <paramref name="tradeAmount"/> would be the last
@@ -117,6 +117,29 @@ namespace Bitstamp
         }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // When we trade on Bitstamp, the fee is calculated as implemented in GetFee. The fee is charged in discrete
+        // steps (e.g. 0.01 for fiat and 0.00001 for BTC) and always rounded up to the next step. We therefore always
+        // want to trade a bit less, otherwise we end up paying a fee step more than necessary.
+        // Since the market can move between the time we query the price and the time our trade is executed, we cannot
+        // just subtract a constant amount (like e.g. 0.001, as we did in tests). In general, we need to lower the
+        // amount such that the average total paid to trade a given amount is as low as possible. The average total is
+        // higher than optimal because a) additional trades need to be made due to the lowered per trade amount and
+        // b) occasionly the amount traded goes over the fee threshold due to the moving market.
+        // Examples:
+        // - If we lowered the trade amount by just one satoshi, we would expect that roughly half of the
+        // trades pay higher fees than intended. With a 0.25% fee, for a goal of buying EUR 8000 worth of
+        // BTC we'd thus end up with 500 EUR 8 trades paying 3 cents in fees and 500 EUR 8 trades paying 2
+        // cents in fees. We'd therefore pay EUR 8025 for EUR 8000 worth of BTC.
+        // - If we lowered the amount per trade by 0.1%, we end up having to put in 1001 EUR 7.992 trades.
+        // If that reduced the number of trades going over the threshold to 20%, we'd get 200 trades paying
+        // 3 cents in fees and 801 trades paying 2 cents in fees. We'd therefore pay ~EUR 8022 for EUR 8000
+        // worth of BTC.
+        // We therefore need to lower the per trade amount such that the fees paid for the additional number
+        // of trades *and* the fees paid for the trades that go over the fee threshold reaches a minimum.
+        // Tests with 0.6% resulted in more than 1% of the trades still going over the threshold, which is
+        // why we try with 1% for now.
+        private const decimal Lower = .99m;
 
         private readonly DateTime periodEnd;
         private readonly decimal feeStep;
