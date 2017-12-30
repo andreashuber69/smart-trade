@@ -326,66 +326,57 @@ namespace SmartTrade
 
                 Info("Start is at {0:o}.", start);
                 Info("Current time is {0:o}.", DateTime.UtcNow);
+                Info("Amount to trade is {0} {1}.", this.Settings.SecondCurrency, secondAmount.Value);
 
-                if (secondAmount.Value > 0m)
+                if (buy)
                 {
-                    Info("Amount to trade is {0} {1}.", this.Settings.SecondCurrency, secondAmount.Value);
-
-                    if (buy)
+                    // If this is the last trade, we need to subtract the fee first, as the exchange will do the
+                    // same.
+                    if (calculator.IsLastTrade(secondBalance, secondAmount.Value))
                     {
-                        // If this is the last trade, we need to subtract the fee first, as the exchange will do the
-                        // same.
-                        if (calculator.IsLastTrade(secondBalance, secondAmount.Value))
-                        {
-                            secondAmount -= calculator.GetFee(secondAmount.Value);
-                        }
-
-                        var firstAmountToTrade = Math.Round(secondAmount.Value / ticker.Ask, this.firstDecimals);
-                        var result = await exchange.CreateBuyOrderAsync(firstAmountToTrade);
-                        this.Settings.LastTradeTime = result.DateTime;
-                        firstBalance += result.Amount;
-                        var bought = result.Amount * result.Price;
-                        notification.Update(
-                            this,
-                            Kind.Trade,
-                            this.Settings.NotifyEvents,
-                            Resource.String.BoughtNotification,
-                            this.Settings.SecondCurrency,
-                            bought,
-                            this.Settings.FirstCurrency);
-
-                        start = result.DateTime;
-                        secondBalance -= bought + calculator.GetFee(bought);
-                    }
-                    else
-                    {
-                        var firstAmountToTrade = Math.Round(secondAmount.Value / ticker.Bid, this.firstDecimals);
-                        var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
-                        this.Settings.LastTradeTime = result.DateTime;
-                        firstBalance -= result.Amount;
-                        var sold = result.Amount * result.Price;
-                        notification.Update(
-                            this,
-                            Kind.Trade,
-                            this.Settings.NotifyEvents,
-                            Resource.String.SoldNotification,
-                            this.Settings.SecondCurrency,
-                            sold,
-                            this.Settings.FirstCurrency);
-
-                        start = result.DateTime;
-                        secondBalance += sold - calculator.GetFee(sold);
+                        secondAmount -= calculator.GetFee(secondAmount.Value);
                     }
 
-                    ++this.Settings.TradeCountSinceLastTransfer;
-                    this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
-                    this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
+                    var firstAmountToTrade = Math.Round(secondAmount.Value / ticker.Ask, this.firstDecimals);
+                    var result = await exchange.CreateBuyOrderAsync(firstAmountToTrade);
+                    this.Settings.LastTradeTime = result.DateTime;
+                    firstBalance += result.Amount;
+                    var bought = result.Amount * result.Price;
+                    notification.Update(
+                        this,
+                        Kind.Trade,
+                        this.Settings.NotifyEvents,
+                        Resource.String.BoughtNotification,
+                        this.Settings.SecondCurrency,
+                        bought,
+                        this.Settings.FirstCurrency);
+
+                    start = result.DateTime;
+                    secondBalance -= bought + calculator.GetFee(bought);
                 }
                 else
                 {
+                    var firstAmountToTrade = Math.Round(secondAmount.Value / ticker.Bid, this.firstDecimals);
+                    var result = await exchange.CreateSellOrderAsync(firstAmountToTrade);
+                    this.Settings.LastTradeTime = result.DateTime;
+                    firstBalance -= result.Amount;
+                    var sold = result.Amount * result.Price;
                     notification.Update(
-                        this, Kind.NoPopup, this.Settings.NotifyEvents, Resource.String.NothingToTradeNotification);
+                        this,
+                        Kind.Trade,
+                        this.Settings.NotifyEvents,
+                        Resource.String.SoldNotification,
+                        this.Settings.SecondCurrency,
+                        sold,
+                        this.Settings.FirstCurrency);
+
+                    start = result.DateTime;
+                    secondBalance += sold - calculator.GetFee(sold);
                 }
+
+                ++this.Settings.TradeCountSinceLastTransfer;
+                this.Settings.LastBalanceFirstCurrency = (float)firstBalance;
+                this.Settings.LastBalanceSecondCurrency = (float)secondBalance;
 
                 this.Settings.RetryIntervalMilliseconds = this.Settings.MinRetryIntervalMilliseconds;
                 var nextTradeTime =

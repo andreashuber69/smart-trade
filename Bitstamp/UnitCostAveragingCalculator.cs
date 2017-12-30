@@ -43,7 +43,8 @@ namespace Bitstamp
             this.periodEnd = periodEnd;
             this.feeStep = feeStep;
             this.feeStepsPerUnit = feePercent / 100m / feeStep;
-            this.minOptimalTradeAmount = Ceiling(minTradeAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit * Lower;
+            this.minOptimalTradeAmount =
+                Ceiling(minTradeAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit * FeeOptimizationFactor;
         }
 
         /// <summary>Gets the amount to trade right now.</summary>
@@ -52,8 +53,7 @@ namespace Bitstamp
         /// </param>
         /// <param name="maxTradeAmount">The maximum amount to trade.</param>
         /// <returns>The amount to trade right now. The amount is <c>null</c>, if <paramref name="startBalance"/> is
-        /// smaller than the minimal optimal trade amount. The amount is <c>0</c>, if there's nothing to trade yet, but
-        /// there will be something to trade later.</returns>
+        /// smaller than the minimal optimal trade amount.</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="startTime"/> is greater than the current
         /// time.</exception>
         public decimal? GetTradeAmount(DateTime startTime, decimal startBalance, decimal maxTradeAmount)
@@ -77,7 +77,7 @@ namespace Bitstamp
 
             if (tradeAmount < this.minOptimalTradeAmount)
             {
-                tradeAmount = 0m;
+                return this.minOptimalTradeAmount;
             }
             else
             {
@@ -85,9 +85,9 @@ namespace Bitstamp
                 {
                     tradeAmount = startBalance;
                 }
-            }
 
-            return tradeAmount * Lower;
+                return tradeAmount * FeeOptimizationFactor;
+            }
         }
 
         /// <summary>Gets a value indicating whether a trade with <paramref name="tradeAmount"/> would be the last
@@ -139,7 +139,7 @@ namespace Bitstamp
         // of trades *and* the fees paid for the trades that go over the fee threshold reaches a minimum.
         // Tests with 0.6% resulted in more than 1% of the trades still going over the threshold, which is
         // why we try with 1% for now.
-        private const decimal Lower = .99m;
+        private const decimal FeeOptimizationFactor = .99m;
 
         private readonly DateTime periodEnd;
         private readonly decimal feeStep;

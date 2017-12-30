@@ -43,7 +43,6 @@
   <string name="BootNotification">{0}Automatic trading for all enabled services will continue according to schedule.</string>
   <string name="BootNoServiceEnabledNotification">No service is currently enabled. No automatic trading will occur.</string>
   <string name="TradeInProgressStatus">In Progress...</string>
-  <string name="NothingToTradeNotification">Nothing to trade yet.</string>
   <string name="BoughtNotification">Bought {0} {1:f5} worth of {2}.</string>
   <string name="SoldNotification">Sold {0} {1:f5} worth of {2}.</string>
   <string name="TransferredNotification">Transferred {0} {1} to the main account.</string>
