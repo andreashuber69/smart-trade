@@ -261,6 +261,9 @@ namespace SmartTrade
 
             if (lastTradeIndex >= 0)
             {
+                // TODO: Bitstamp has been observed to sometimes not report the latest of the transactions. This had the
+                // effect of this method returning an earlier time than the last trade. We should guard against this by
+                // taking the maximum of both the latest transaction and this.Settings.LastTradeTime.
                 var lastTradeTime = transactions[lastTradeIndex].DateTime;
                 return this.Settings.SectionStart > lastTradeTime ? this.Settings.SectionStart.Value : lastTradeTime;
             }
