@@ -241,8 +241,8 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060028
 			public const int BootNotification = 2131099688;
 			
-			// aapt resource value: 0x7f06002c
-			public const int BoughtNotification = 2131099692;
+			// aapt resource value: 0x7f06002b
+			public const int BoughtNotification = 2131099691;
 			
 			// aapt resource value: 0x7f06001a
 			public const int Buy = 2131099674;
@@ -259,8 +259,8 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06000f
 			public const int Hours = 2131099663;
 			
-			// aapt resource value: 0x7f060030
-			public const int InsufficientBalanceNotification = 2131099696;
+			// aapt resource value: 0x7f06002f
+			public const int InsufficientBalanceNotification = 2131099695;
 			
 			// aapt resource value: 0x7f060012
 			public const int JustNow = 2131099666;
@@ -280,11 +280,8 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06000a
 			public const int NextTrade = 2131099658;
 			
-			// aapt resource value: 0x7f06002f
-			public const int NoDepositNotification = 2131099695;
-			
-			// aapt resource value: 0x7f06002b
-			public const int NothingToTradeNotification = 2131099691;
+			// aapt resource value: 0x7f06002e
+			public const int NoDepositNotification = 2131099694;
 			
 			// aapt resource value: 0x7f060027
 			public const int NotifyErrors = 2131099687;
@@ -325,8 +322,8 @@ namespace SmartTrade
 			// aapt resource value: 0x7f060015
 			public const int SettingsTitle = 2131099669;
 			
-			// aapt resource value: 0x7f06002d
-			public const int SoldNotification = 2131099693;
+			// aapt resource value: 0x7f06002c
+			public const int SoldNotification = 2131099692;
 			
 			// aapt resource value: 0x7f06000c
 			public const int Start = 2131099660;
@@ -361,11 +358,11 @@ namespace SmartTrade
 			// aapt resource value: 0x7f06001d
 			public const int TransferToMainAccount = 2131099677;
 			
-			// aapt resource value: 0x7f06002e
-			public const int TransferredNotification = 2131099694;
+			// aapt resource value: 0x7f06002d
+			public const int TransferredNotification = 2131099693;
 			
-			// aapt resource value: 0x7f060031
-			public const int UnexpectedErrorNotification = 2131099697;
+			// aapt resource value: 0x7f060030
+			public const int UnexpectedErrorNotification = 2131099696;
 			
 			// aapt resource value: 0x7f060016
 			public const int UserId = 2131099670;
