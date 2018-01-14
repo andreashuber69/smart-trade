@@ -69,10 +69,13 @@
     <Compile Include="EthBtcTradeService.cs" />
     <Compile Include="EthEurTradeService.cs" />
     <Compile Include="EthUsdTradeService.cs" />
+    <Compile Include="BchBtcTradeService.cs" />
     <Compile Include="XrpBtcTradeService.cs" />
     <Compile Include="LtcEurTradeService .cs" />
+    <Compile Include="BchEurTradeService.cs" />
     <Compile Include="XrpEurTradeService.cs" />
     <Compile Include="LtcUsdTradeService.cs" />
+    <Compile Include="BchUsdTradeService.cs" />
     <Compile Include="XrpUsdTradeService.cs" />
     <Compile Include="EurUsdTradeService.cs" />
     <Compile Include="BtcUsdTradeService.cs" />

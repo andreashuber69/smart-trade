@@ -22,6 +22,7 @@ namespace Bitstamp
             this.Xrp = GetOptionalDecimal(data, "xrp");
             this.Ltc = GetOptionalDecimal(data, "ltc");
             this.Eth = GetOptionalDecimal(data, "eth");
+            this.Bch = GetOptionalDecimal(data, "bch");
             this.BtcUsd = GetOptionalDecimal(data, "btc_usd");
             this.BtcEur = GetOptionalDecimal(data, "btc_eur");
             this.EurUsd = GetOptionalDecimal(data, "eur_usd");
@@ -34,6 +35,9 @@ namespace Bitstamp
             this.EthUsd = GetOptionalDecimal(data, "eth_usd");
             this.EthEur = GetOptionalDecimal(data, "eth_eur");
             this.EthBtc = GetOptionalDecimal(data, "eth_btc");
+            this.BchUsd = GetOptionalDecimal(data, "bch_usd");
+            this.BchEur = GetOptionalDecimal(data, "bch_eur");
+            this.BchBtc = GetOptionalDecimal(data, "bch_btc");
             this.Fee = data["fee"];
             this.OrderId = GetOptionalInt(data, "order_id");
         }
@@ -55,6 +59,8 @@ namespace Bitstamp
         internal decimal? Ltc { get; }
 
         internal decimal? Eth { get; }
+
+        internal decimal? Bch { get; }
 
         internal decimal? BtcUsd { get; }
 
@@ -79,6 +85,12 @@ namespace Bitstamp
         internal decimal? EthEur { get; }
 
         internal decimal? EthBtc { get; }
+
+        internal decimal? BchUsd { get; }
+
+        internal decimal? BchEur { get; }
+
+        internal decimal? BchBtc { get; }
 
         internal decimal Fee { get; }
 

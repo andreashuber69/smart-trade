@@ -3,8 +3,8 @@
   android:orientation="horizontal"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:paddingTop="8dp"
-  android:paddingBottom="8dp">
+  android:paddingTop="3.4dp"
+  android:paddingBottom="3.4dp">
   <TextView
     android:id="@+id/TickerSymbol"
     android:layout_width="0dp"

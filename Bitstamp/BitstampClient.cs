@@ -60,6 +60,15 @@ namespace Bitstamp
         /// <summary>The ETH/BTC ticker symbol.</summary>
         public const string EthBtcSymbol = "ETH/BTC";
 
+        /// <summary>The BCH/USD ticker symbol.</summary>
+        public const string BchUsdSymbol = "BCH/USD";
+
+        /// <summary>The BCH/EUR ticker symbol.</summary>
+        public const string BchEurSymbol = "BCH/EUR";
+
+        /// <summary>The BCH/BTC ticker symbol.</summary>
+        public const string BchBtcSymbol = "BCH/BTC";
+
         /// <summary>Gets all supported ticker symbols.</summary>
         public static IReadOnlyList<string> TickerSymbols { get; } =
             new[]
@@ -75,7 +84,10 @@ namespace Bitstamp
                 LtcBtcSymbol,
                 EthUsdSymbol,
                 EthEurSymbol,
-                EthBtcSymbol
+                EthBtcSymbol,
+                BchUsdSymbol,
+                BchEurSymbol,
+                BchBtcSymbol
             };
 
         /// <summary>Initializes a new instance of the <see cref="BitstampClient"/> class.</summary>
@@ -96,7 +108,10 @@ namespace Bitstamp
                     new LtcBtcExchange(this),
                     new EthUsdExchange(this),
                     new EthEurExchange(this),
-                    new EthBtcExchange(this)
+                    new EthBtcExchange(this),
+                    new BchUsdExchange(this),
+                    new BchEurExchange(this),
+                    new BchBtcExchange(this)
                 };
             this.Exchanges = exchanges.ToDictionary(e => e.TickerSymbol, e => e);
         }
