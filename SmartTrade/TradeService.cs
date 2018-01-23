@@ -231,7 +231,7 @@ namespace SmartTrade
                 Info("Retrieved {0} relevant transactions.", result.Count - lastCount);
             }
 
-            if (result.Count > 0)
+            if ((result.Count > 0) && (result[0].DateTime > this.Settings.LastTransactionTimestamp))
             {
                 this.Settings.LastTransactionTimestamp = result[0].DateTime;
             }
@@ -263,13 +263,13 @@ namespace SmartTrade
 
         private DateTime GetStart(List<ITransaction> transactions)
         {
-            var lastTradeIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.MarketTrade);
+            var lastTransactionIndex = transactions.FindIndex(t => t.TransactionType == TransactionType.MarketTrade);
 
-            if (lastTradeIndex >= 0)
+            if (lastTransactionIndex >= 0)
             {
-                var lastTradeTime = transactions[lastTradeIndex].DateTime;
+                var lastTransactionTime = transactions[lastTransactionIndex].DateTime;
 
-                if (this.Settings.SectionStart > lastTradeTime)
+                if (this.Settings.SectionStart > lastTransactionTime)
                 {
                     return this.Settings.SectionStart.Value;
                 }
@@ -277,8 +277,9 @@ namespace SmartTrade
                 {
                     // Bitstamp has been observed to sometimes not report the latest of the transactions. This had the
                     // effect of this method returning an earlier time than the last trade. We guard against this by
-                    // taking the maximum of both the latest transaction and this.Settings.LastTradeTime.
-                    return this.Settings.LastTradeTime > lastTradeTime ? this.Settings.LastTradeTime.Value : lastTradeTime;
+                    // taking the maximum of both the latest transaction and this.Settings.LastTransactionTimestamp.
+                    return this.Settings.LastTransactionTimestamp > lastTransactionTime ?
+                        this.Settings.LastTransactionTimestamp : lastTransactionTime;
                 }
             }
             else
