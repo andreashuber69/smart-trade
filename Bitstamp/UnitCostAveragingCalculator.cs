@@ -73,14 +73,16 @@ namespace Bitstamp
             var duration = this.periodEnd - startTime;
             var targetBalance = (1M - ((decimal)elapsed.Ticks / duration.Ticks)) * startBalance;
             var targetAmount = Min(startBalance - targetBalance, Min(maxTradeAmount, startBalance));
-            var tradeAmount = Floor(targetAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit;
+            var tradeAmount = Max(
+                this.minOptimalTradeAmount,
+                Floor(targetAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit * FeeOptimizationFactor);
 
             if (this.IsLastTrade(startBalance, tradeAmount))
             {
-                tradeAmount = startBalance;
+                tradeAmount = startBalance * FeeOptimizationFactor;
             }
 
-            return Max(this.minOptimalTradeAmount, tradeAmount * FeeOptimizationFactor);
+            return tradeAmount;
         }
 
         /// <summary>Gets a value indicating whether a trade with <paramref name="tradeAmount"/> would be the last
