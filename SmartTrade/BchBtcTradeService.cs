@@ -15,7 +15,7 @@ namespace SmartTrade
         private sealed class BchBtcTradeService : TradeService
         {
             public BchBtcTradeService()
-                : base(BitstampClient.BchBtcSymbol, 8, 8, 0.002m, 0.00001m)
+                : base(BitstampClient.BchBtcSymbol, 8, 8, 0.001m, 0.000001m)
             {
             }
         }

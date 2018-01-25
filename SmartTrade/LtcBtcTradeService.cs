@@ -15,7 +15,7 @@ namespace SmartTrade
         private sealed class LtcBtcTradeService : TradeService
         {
             public LtcBtcTradeService()
-                : base(BitstampClient.LtcBtcSymbol, 8, 8, 0.002m, 0.00001m)
+                : base(BitstampClient.LtcBtcSymbol, 8, 8, 0.001m, 0.000001m)
             {
             }
         }
