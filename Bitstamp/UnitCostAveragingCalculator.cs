@@ -43,8 +43,7 @@ namespace Bitstamp
             this.periodEnd = periodEnd;
             this.feeStep = feeStep;
             this.feeStepsPerUnit = feePercent / 100m / feeStep;
-            this.minOptimalTradeAmount =
-                Ceiling(minTradeAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit * FeeOptimizationFactor;
+            this.minOptimalTradeAmount = Ceiling(minTradeAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit;
         }
 
         /// <summary>Gets the amount to trade right now.</summary>
@@ -75,14 +74,14 @@ namespace Bitstamp
             var targetAmount = Min(startBalance - targetBalance, Min(maxTradeAmount, startBalance));
             var tradeAmount = Max(
                 this.minOptimalTradeAmount,
-                Floor(targetAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit * FeeOptimizationFactor);
+                Floor(targetAmount * this.feeStepsPerUnit) / this.feeStepsPerUnit);
 
             if (this.IsLastTrade(startBalance, tradeAmount))
             {
-                tradeAmount = startBalance * FeeOptimizationFactor;
+                tradeAmount = startBalance;
             }
 
-            return tradeAmount;
+            return tradeAmount * FeeOptimizationFactor;
         }
 
         /// <summary>Gets a value indicating whether a trade with <paramref name="tradeAmount"/> would be the last
@@ -102,7 +101,7 @@ namespace Bitstamp
         {
             if (currentBalance >= this.minOptimalTradeAmount)
             {
-                var targetBalance = currentBalance - this.minOptimalTradeAmount;
+                var targetBalance = currentBalance - (this.minOptimalTradeAmount * FeeOptimizationFactor);
                 var duration = this.periodEnd - lastTradeTime;
                 var durationTarget = new TimeSpan((long)((1M - (targetBalance / currentBalance)) * duration.Ticks));
                 return lastTradeTime + durationTarget;
