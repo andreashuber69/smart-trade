@@ -60,7 +60,9 @@ namespace SmartTrade
 
             if (showPopup)
             {
+                #pragma warning disable CS0618 // Type or member is obsolete
                 using (var builder = new Android.App.Notification.Builder(context))
+                #pragma warning restore CS0618 // Type or member is obsolete
                 using (var intent = new Intent(context, this.activityType))
                 using (var style = new Android.App.Notification.BigTextStyle())
                 {
@@ -102,10 +104,14 @@ namespace SmartTrade
             switch (kind)
             {
                 case Kind.Error:
+                    #pragma warning disable CS0618 // Type or member is obsolete
                     builder.SetLights(Color.ParseColor("red"), 2000, 2000);
+                    #pragma warning restore CS0618 // Type or member is obsolete
                     break;
                 case Kind.Warning:
+                    #pragma warning disable CS0618 // Type or member is obsolete
                     builder.SetLights(Color.ParseColor("yellow"), 2000, 2000);
+                    #pragma warning restore CS0618 // Type or member is obsolete
                     break;
             }
         }
