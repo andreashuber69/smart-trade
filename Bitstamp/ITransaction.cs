@@ -12,7 +12,7 @@ namespace Bitstamp
     public interface ITransaction
     {
         /// <summary>Gets the transaction ID.</summary>
-        int Id { get; }
+        long Id { get; }
 
         /// <summary>Gets the date and time of the transaction.</summary>
         DateTime DateTime { get; }
@@ -35,6 +35,6 @@ namespace Bitstamp
         decimal Fee { get; }
 
         /// <summary>Gets the ID of the order that triggered this transaction.</summary>
-        int? OrderId { get; }
+        long? OrderId { get; }
     }
 }

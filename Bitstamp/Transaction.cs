@@ -39,10 +39,10 @@ namespace Bitstamp
             this.BchEur = GetOptionalDecimal(data, "bch_eur");
             this.BchBtc = GetOptionalDecimal(data, "bch_btc");
             this.Fee = data["fee"];
-            this.OrderId = GetOptionalInt(data, "order_id");
+            this.OrderId = GetOptionalLong(data, "order_id");
         }
 
-        internal int Id { get; }
+        internal long Id { get; }
 
         internal DateTime DateTime { get; }
 
@@ -94,7 +94,7 @@ namespace Bitstamp
 
         internal decimal Fee { get; }
 
-        internal int? OrderId { get; }
+        internal long? OrderId { get; }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -110,7 +110,7 @@ namespace Bitstamp
             }
         }
 
-        private static int? GetOptionalInt(JsonValue data, string key)
+        private static long? GetOptionalLong(JsonValue data, string key)
         {
             if (data.ContainsKey(key))
             {

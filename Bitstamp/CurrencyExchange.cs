@@ -49,14 +49,14 @@ namespace Bitstamp
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             protected static ITransaction CreateTransaction(
-                int id,
+                long id,
                 DateTime dateTime,
                 TransactionType transactionType,
                 decimal? firstAmount,
                 decimal? secondAmount,
                 decimal? price,
                 decimal fee,
-                int? orderId)
+                long? orderId)
             {
                 return new TransactionImpl(id, dateTime, transactionType, firstAmount, secondAmount, price, fee, orderId);
             }
@@ -122,7 +122,7 @@ namespace Bitstamp
 
             private sealed class TransactionImpl : ITransaction
             {
-                public int Id { get; }
+                public long Id { get; }
 
                 public DateTime DateTime { get; }
 
@@ -136,19 +136,19 @@ namespace Bitstamp
 
                 public decimal Fee { get; }
 
-                public int? OrderId { get; }
+                public long? OrderId { get; }
 
                 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 internal TransactionImpl(
-                    int id,
+                    long id,
                     DateTime dateTime,
                     TransactionType transactionType,
                     decimal? firstAmount,
                     decimal? secondAmount,
                     decimal? price,
                     decimal fee,
-                    int? orderId)
+                    long? orderId)
                 {
                     this.Id = id;
                     this.DateTime = dateTime;

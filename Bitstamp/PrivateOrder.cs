@@ -14,7 +14,7 @@ namespace Bitstamp
     public sealed class PrivateOrder
     {
         /// <summary>Gets the order ID.</summary>
-        public int Id { get; }
+        public long Id { get; }
 
         /// <summary>Gets the date and time of the order.</summary>
         public DateTime DateTime { get; }
