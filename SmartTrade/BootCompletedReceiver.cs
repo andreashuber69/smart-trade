@@ -14,6 +14,8 @@ namespace SmartTrade
     using Android.Content;
     using Bitstamp;
 
+    using static Logger;
+
     /// <summary>Calls <see cref="TradeService.ScheduleTrade()"/> for all ticker symbols.</summary>
     /// <remarks>Notifies the user about enabled and disabled services.</remarks>
     [BroadcastReceiver(Permission = "RECEIVE_BOOT_COMPLETED")]
@@ -25,6 +27,7 @@ namespace SmartTrade
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intentional, we want the popup to remain")]
         public sealed override void OnReceive(Context context, Intent intent)
         {
+            Info("Reboot completed at: {0}", Java.Lang.JavaSystem.CurrentTimeMillis());
             var statuses = new StringBuilder();
 
             foreach (var tickerSymbol in BitstampClient.TickerSymbols)

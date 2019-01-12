@@ -132,6 +132,8 @@ namespace SmartTrade
 
         protected sealed override async void OnHandleIntent(Intent intent)
         {
+            var currentTime = Java.Lang.JavaSystem.CurrentTimeMillis();
+            Info("Current time to trade time difference: {0}", currentTime - this.Settings.NextTradeTime);
             var calendar = Java.Util.Calendar.GetInstance(Java.Util.TimeZone.GetTimeZone("UTC"));
 
             // Schedule a new trade first so that we retry even if the user kills the app, the runtime crashes or the
